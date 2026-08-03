@@ -94,7 +94,7 @@ The project follows a modern enterprise architecture inspired by Apple VisionOS,
 
 ## Database
 
-- MongoDB
+- MySQL
 
 ---
 
@@ -272,6 +272,26 @@ AI Assistant       ░░░░░░░░░░░░░░ 0%
 ---
 
 <div align="center">
+
+---
+
+<p align="center">
+
+<img height="170" src="https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=tokyonight"/>
+
+<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=YOUR_USERNAME&layout=compact&theme=tokyonight"/>
+
+</p>
+
+---
+
+![](https://komarev.com/ghpvc/?username=YOUR_USERNAME&style=for-the-badge&color=blue)
+
+---
+
+[![trophy](https://github-profile-trophy.vercel.app/?username=YOUR_USERNAME&theme=tokyonight)](https://github.com/ryo-ma/github-profile-trophy)
+
+---
 
 ## ⭐ If you like this project, give it a Star ⭐
 
