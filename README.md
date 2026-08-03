@@ -275,24 +275,6 @@ AI Assistant       ░░░░░░░░░░░░░░ 0%
 
 ---
 
-<p align="center">
-
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=SourasishG&show_icons=true&theme=tokyonight"/>
-
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SourasishG&layout=compact&theme=tokyonight"/>
-
-</p>
-
----
-
-![](https://komarev.com/ghpvc/?username=SourasishG&style=for-the-badge&color=blue)
-
----
-
-[![trophy](https://github-profile-trophy.vercel.app/?username=YOUR_USERNAME&theme=tokyonight)](https://github.com/ryo-ma/github-profile-trophy)
-
----
-
 ## ⭐ If you like this project, give it a Star ⭐
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:00D9FF,100:7B61FF&height=120&section=footer"/>
