@@ -271,20 +271,6 @@ AI Assistant       ░░░░░░░░░░░░░░ 0%
 
 ---
 
-# 👨‍💻 Developer
-
-**Sourasish Ghosh**
-
-Final Year Computer Science Engineering Student
-
-AI Engineer
-
-Frontend Developer
-
-Team Lead — Office Aid
-
----
-
 <div align="center">
 
 ## ⭐ If you like this project, give it a Star ⭐
