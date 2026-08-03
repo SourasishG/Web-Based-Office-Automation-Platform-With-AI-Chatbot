@@ -4,7 +4,7 @@
 
 ### 🌌 Intelligent Workplace Automation Platform
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Poppins&weight=600&size=24&duration=3500&pause=1000&color=00D9FF&center=true&vCenter=true&width=700&lines=Modern+Office+Automation+Platform;AI+Powered+Workplace+Assistant;Built+with+React+%2B+Node.js+%2B+TailwindCSS;Apple+Liquid+Glass+UI" />
+<img src="https://readme-typing-svg.herokuapp.com?font=Poppins&weight=600&size=24&duration=3500&pause=1000&color=00D9FF&center=true&vCenter=true&width=700&lines=Modern+Office+Automation+Platform;AI+Powered+Workplace+Assistant;Built+with+React+%2B+Node.js+%2B+TailwindCSS" />
 
 ---
 
@@ -277,15 +277,15 @@ AI Assistant       ░░░░░░░░░░░░░░ 0%
 
 <p align="center">
 
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=tokyonight"/>
+<img height="170" src="https://github-readme-stats.vercel.app/api?username=SourasishG&show_icons=true&theme=tokyonight"/>
 
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=YOUR_USERNAME&layout=compact&theme=tokyonight"/>
+<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SourasishG&layout=compact&theme=tokyonight"/>
 
 </p>
 
 ---
 
-![](https://komarev.com/ghpvc/?username=YOUR_USERNAME&style=for-the-badge&color=blue)
+![](https://komarev.com/ghpvc/?username=SourasishG&style=for-the-badge&color=blue)
 
 ---
 
