@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import FloatingAiAssistant from "../common/FloatingAiAssistant";
 
 const DashboardLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -35,6 +36,9 @@ const DashboardLayout = ({ children }) => {
           {children}
         </main>
       </div>
+
+      {/* Global Floating AI Assistant — visible on all pages */}
+      <FloatingAiAssistant />
     </div>
   );
 };

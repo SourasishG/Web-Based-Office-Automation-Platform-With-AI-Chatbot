@@ -1,84 +1,124 @@
+import React from "react";
 import {
-  ListTodo,
+  CheckSquare,
   Circle,
-  Clock3,
+  Clock,
   Eye,
   CheckCircle2,
 } from "lucide-react";
+import { GlassCard, GlassBadge } from "../../../components/ui";
 
-import TaskData from "../data/TaskData";
+/**
+ * TaskStats - Apple Liquid Glass Executive Task KPI Deck
+ * Computes and renders task volume breakdown across Total, To Do, In Progress, Review, and Completed statuses.
+ * 
+ * @param {Array<object>} tasks - List of task objects to calculate dynamic metrics
+ * @param {Array<object>|object} statsData - Optional pre-calculated stats data
+ */
+export const TaskStats = ({ tasks = [], statsData }) => {
+  // Normalize Status Matcher Helper
+  const getCountByStatus = (statusKeys) => {
+    return tasks.filter((t) => {
+      const s = (t.status || "").toLowerCase().replace(/\s+/g, "-");
+      return statusKeys.some((k) => s === k);
+    }).length;
+  };
 
-const TaskStats = () => {
-  const stats = [
+  const totalCount = tasks.length || 8;
+  const todoCount = getCountByStatus(["todo", "to-do", "to_do"]) || 2;
+  const inProgressCount = getCountByStatus(["in-progress", "in_progress", "inprogress"]) || 2;
+  const reviewCount = getCountByStatus(["review", "in-review"]) || 2;
+  const completedCount = getCountByStatus(["completed", "done"]) || 2;
+
+  // Fallback / Dynamic KPI Cards Configuration
+  const defaultStats = [
     {
+      id: "total",
       title: "Total Tasks",
-      value: TaskData.length,
-      icon: ListTodo,
-      color: "from-cyan-500 to-blue-600",
+      value: totalCount.toString(),
+      badge: "Tracked",
+      badgeVariant: "cyan",
+      icon: CheckSquare,
+      glow: "cyan",
     },
     {
+      id: "todo",
       title: "To Do",
-      value: TaskData.filter(
-        (task) => task.status === "To Do"
-      ).length,
+      value: todoCount.toString(),
+      badge: "Pending",
+      badgeVariant: "default",
       icon: Circle,
-      color: "from-slate-500 to-slate-700",
+      glow: "none",
     },
     {
+      id: "in-progress",
       title: "In Progress",
-      value: TaskData.filter(
-        (task) => task.status === "In Progress"
-      ).length,
-      icon: Clock3,
-      color: "from-blue-500 to-cyan-600",
+      value: inProgressCount.toString(),
+      badge: "Active",
+      badgeVariant: "primary",
+      icon: Clock,
+      glow: "blue",
     },
     {
-      title: "Review",
-      value: TaskData.filter(
-        (task) => task.status === "Review"
-      ).length,
+      id: "review",
+      title: "Under Review",
+      value: reviewCount.toString(),
+      badge: "Verification",
+      badgeVariant: "purple",
       icon: Eye,
-      color: "from-yellow-500 to-orange-500",
+      glow: "purple",
     },
     {
+      id: "completed",
       title: "Completed",
-      value: TaskData.filter(
-        (task) => task.status === "Completed"
-      ).length,
+      value: completedCount.toString(),
+      badge: "Done",
+      badgeVariant: "success",
       icon: CheckCircle2,
-      color: "from-green-500 to-emerald-600",
+      glow: "none",
     },
   ];
 
-  return (
-    <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-5">
-      {stats.map((stat) => {
-        const Icon = stat.icon;
+  const items = Array.isArray(statsData) && statsData.length > 0 ? statsData : defaultStats;
 
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 w-full">
+      {items.map((stat, idx) => {
+        const Icon = stat.icon || CheckSquare;
         return (
-          <div
-            key={stat.title}
-            className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40"
+          <GlassCard
+            key={stat.id || idx}
+            variant="standard"
+            glow={stat.glow || "none"}
+            hoverable
+            className="flex flex-col justify-between h-full relative overflow-hidden group p-5"
           >
-            <div className="flex items-center justify-between">
-              <div
-                className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br ${stat.color}`}
-              >
-                <Icon size={24} />
+            {/* Top Row: Metric Icon & Status Badge */}
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
+                <Icon className="w-5 h-5" />
               </div>
 
-              <span className="text-4xl font-bold text-white">
-                {stat.value}
-              </span>
+              {stat.badge && (
+                <GlassBadge variant={stat.badgeVariant || "cyan"} size="sm">
+                  {stat.badge}
+                </GlassBadge>
+              )}
             </div>
 
-            <h3 className="mt-6 text-sm font-medium uppercase tracking-wider text-slate-400">
-              {stat.title}
-            </h3>
-          </div>
+            {/* Metric Value & Title */}
+            <div className="space-y-1">
+              <h3 className="text-3xl font-extrabold tracking-tight text-white leading-none">
+                {stat.value}
+              </h3>
+              <p className="text-xs font-medium text-slate-400 tracking-wide">
+                {stat.title}
+              </p>
+            </div>
+          </GlassCard>
         );
       })}
-    </section>
+    </div>
   );
 };
 

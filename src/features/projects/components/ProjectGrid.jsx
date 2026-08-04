@@ -1,29 +1,24 @@
-import { FolderKanban } from "lucide-react";
-
-import { EmptyState } from "../../../components/ui";
-
+import React from "react";
 import ProjectCard from "./ProjectCard";
 
-const ProjectGrid = ({ projects }) => {
-  if (projects.length === 0) {
-    return (
-      <EmptyState
-        icon={FolderKanban}
-        title="No Projects Found"
-        description="Try changing your search or filter criteria."
-      />
-    );
-  }
-
+/**
+ * ProjectGrid - Responsive Grid Container for Project Cards
+ * Maps project items across a 3-column desktop / 2-column tablet responsive deck.
+ * 
+ * @param {Array<object>} projects - List of project objects
+ * @param {function} onProjectClick - Project selection callback
+ */
+export const ProjectGrid = ({ projects = [], onProjectClick }) => {
   return (
-    <section className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
-      {projects.map((project) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      {projects.map((project, idx) => (
         <ProjectCard
-          key={project.id}
+          key={project.id || idx}
           project={project}
+          onClick={() => onProjectClick && onProjectClick(project)}
         />
       ))}
-    </section>
+    </div>
   );
 };
 

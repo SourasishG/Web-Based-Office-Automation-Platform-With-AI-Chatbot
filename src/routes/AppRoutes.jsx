@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Dashboard from "../features/dashboard/Dashboard";
 import Projects from "../features/projects/Projects";
@@ -32,6 +32,12 @@ const AppRoutes = () => {
       <Route
         path="/profile"
         element={<Profile />}
+      />
+
+      {/* Redirect any unhandled routes to home dashboard */}
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
       />
     </Routes>
   );

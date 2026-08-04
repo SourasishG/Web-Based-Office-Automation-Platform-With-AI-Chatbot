@@ -1,53 +1,167 @@
+import React from "react";
+import { Plus, Sparkles, ArrowUpDown, Filter, CheckSquare } from "lucide-react";
 import {
-  Search,
-  Filter,
-  ArrowUpDown,
-  Plus,
-} from "lucide-react";
+  GlassPanel,
+  GlassSearchBar,
+  GlassTabs,
+  GlassDropdown,
+  GlassButton,
+  GlassBadge,
+} from "../../../components/ui";
 
-const TasksHeader = () => {
+/**
+ * TasksHeader - Apple Liquid Glass Control Bar for Tasks
+ * Integrates global task search, status filter tabs, priority filtering, sorting, and task creation CTA.
+ * 
+ * @param {string} searchTerm - Active search query
+ * @param {function} onSearchChange - Search text change handler
+ * @param {string} statusFilter - Active status filter ID ('all', 'todo', 'in-progress', 'review', 'completed')
+ * @param {function} onStatusFilterChange - Status filter handler
+ * @param {string} priorityFilter - Active priority filter ID ('all', 'critical', 'high', 'medium', 'low')
+ * @param {function} onPriorityFilterChange - Priority filter handler
+ * @param {string} sortBy - Active sorting key ('dueDate', 'priority', 'progress', 'title')
+ * @param {function} onSortByChange - Sort mode change handler
+ * @param {function} onCreateClick - Create task callback
+ */
+export const TasksHeader = ({
+  searchTerm,
+  onSearchChange,
+  statusFilter = "all",
+  onStatusFilterChange,
+  priorityFilter = "all",
+  onPriorityFilterChange,
+  sortBy = "dueDate",
+  onSortByChange,
+  onCreateClick,
+}) => {
+  // Status Filter Tabs Configuration
+  const statusTabs = [
+    { id: "all", label: "All Tasks" },
+    { id: "todo", label: "To Do" },
+    { id: "in-progress", label: "In Progress" },
+    { id: "review", label: "Review" },
+    { id: "completed", label: "Completed" },
+  ];
+
+  // Priority Dropdown Options
+  const priorityOptions = [
+    { label: "All Priorities", onClick: () => onPriorityFilterChange("all") },
+    { label: "Critical Priority", onClick: () => onPriorityFilterChange("critical") },
+    { label: "High Priority", onClick: () => onPriorityFilterChange("high") },
+    { label: "Medium Priority", onClick: () => onPriorityFilterChange("medium") },
+    { label: "Low Priority", onClick: () => onPriorityFilterChange("low") },
+  ];
+
+  // Sort Dropdown Options
+  const sortOptions = [
+    { label: "Sort by Due Date", onClick: () => onSortByChange("dueDate") },
+    { label: "Sort by Priority", onClick: () => onSortByChange("priority") },
+    { label: "Sort by Progress", onClick: () => onSortByChange("progress") },
+    { label: "Sort by Title", onClick: () => onSortByChange("title") },
+  ];
+
+  const getPriorityLabel = () => {
+    if (priorityFilter === "all") return "Priority: All";
+    return `Priority: ${priorityFilter.charAt(0).toUpperCase() + priorityFilter.slice(1)}`;
+  };
+
+  const getSortLabel = () => {
+    if (sortBy === "priority") return "Priority";
+    if (sortBy === "progress") return "Progress";
+    if (sortBy === "title") return "Title";
+    return "Due Date";
+  };
+
   return (
-    <section className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div>
-        <h1 className="text-4xl font-bold text-white">
-          Tasks
-        </h1>
+    <GlassPanel
+      variant="floating"
+      padding="md"
+      className="relative overflow-hidden flex flex-col gap-4"
+    >
+      {/* Background Ambient Glow */}
+      <div className="absolute -top-16 -right-16 w-56 h-56 bg-linear-to-br from-cyan-500/15 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-        <p className="mt-2 text-slate-400">
-          Organize, assign and monitor your team's work efficiently.
-        </p>
+      {/* Top Row: Title & Primary CTA */}
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
+            <CheckSquare className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                Task Command Center
+              </h1>
+              <GlassBadge variant="cyan" size="sm" icon={Sparkles}>
+                Kanban Flow
+              </GlassBadge>
+            </div>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Organize, assign, and track team execution across agile columns.
+            </p>
+          </div>
+        </div>
+
+        {/* Primary CTA */}
+        <GlassButton
+          variant="primary"
+          size="md"
+          icon={Plus}
+          onClick={onCreateClick}
+        >
+          New Task
+        </GlassButton>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative">
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
-          />
-
-          <input
-            type="text"
-            placeholder="Search tasks..."
-            className="w-72 rounded-2xl border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-500"
+      {/* Bottom Controls Row */}
+      <div className="relative z-10 pt-3 border-t border-white/10 flex flex-col lg:flex-row items-center justify-between gap-3">
+        {/* Search Bar */}
+        <div className="w-full lg:max-w-md">
+          <GlassSearchBar
+            value={searchTerm}
+            onChange={onSearchChange}
+            placeholder="Search tasks, descriptions, assignees, or tags..."
+            shortcutKey="⌘K"
           />
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-slate-300 transition-all duration-300 hover:border-cyan-500 hover:text-white">
-          <Filter size={18} />
-          Filter
-        </button>
+        {/* Status Tabs, Priority & Sort Controls */}
+        <div className="w-full lg:w-auto flex flex-wrap items-center justify-between lg:justify-end gap-3">
+          {/* Status Filter Tabs */}
+          <div className="overflow-x-auto">
+            <GlassTabs
+              tabs={statusTabs}
+              activeTab={statusFilter}
+              onChange={onStatusFilterChange}
+              size="sm"
+            />
+          </div>
 
-        <button className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-slate-300 transition-all duration-300 hover:border-cyan-500 hover:text-white">
-          <ArrowUpDown size={18} />
-          Sort
-        </button>
+          {/* Priority & Sort Dropdowns */}
+          <div className="flex items-center gap-2">
+            <GlassDropdown
+              trigger={
+                <GlassButton variant="outline" size="sm" icon={Filter}>
+                  {getPriorityLabel()}
+                </GlassButton>
+              }
+              items={priorityOptions}
+              align="right"
+            />
 
-        <button className="flex items-center gap-2 rounded-2xl bg-linear-to-r from-cyan-500 to-blue-600 px-5 py-3 font-medium text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:scale-105">
-          <Plus size={18} />
-          New Task
-        </button>
+            <GlassDropdown
+              trigger={
+                <GlassButton variant="outline" size="sm" icon={ArrowUpDown}>
+                  Sort: {getSortLabel()}
+                </GlassButton>
+              }
+              items={sortOptions}
+              align="right"
+            />
+          </div>
+        </div>
       </div>
-    </section>
+    </GlassPanel>
   );
 };
 

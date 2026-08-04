@@ -1,106 +1,97 @@
-import { Edit, MapPin } from "lucide-react";
+import React from "react";
+import { Edit3, MessageSquare, ShieldCheck, MapPin, Sparkles, Mail } from "lucide-react";
+import {
+  GlassCard,
+  GlassAvatar,
+  GlassBadge,
+  GlassButton,
+} from "../../../components/ui";
 
-import ProfileData from "../data/ProfileData";
-import { STATUS_COLORS } from "../data/ProfileConstants";
+/**
+ * ProfileHeader - Apple Liquid Glass Hero Executive Profile Banner
+ * Displays user identity, status indicator, department role, and primary communication triggers.
+ * 
+ * @param {object} user - User profile data object
+ * @param {function} onEditClick - Edit profile button handler
+ * @param {function} onMessageClick - Message button handler
+ */
+export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
+  const name = user?.name || "Sourasish Ghosh";
+  const role = user?.role || "Administrator";
+  const department = user?.department || "Engineering";
+  const location = user?.location || "Kolkata, India";
+  const email = user?.email || "sourasishghosh062@gmail.com";
+  const status = user?.status || "online";
+  const avatar = user?.avatar;
 
-const ProfileHeader = () => {
   return (
-    <section
-      className="
-        flex
-        flex-col
-        gap-6
-        rounded-3xl
-        border
-        border-white/10
-        bg-white/5
-        p-6
-        backdrop-blur-xl
-        lg:flex-row
-        lg:items-center
-        lg:justify-between
-      "
+    <GlassCard
+      variant="floating"
+      glow="cyan"
+      className="p-6 sm:p-8 relative overflow-hidden flex flex-col md:flex-row items-center md:items-start justify-between gap-6"
     >
-      <div className="flex items-center gap-6">
-        <div className="relative">
-          <div
-            className="
-              flex
-              h-24
-              w-24
-              items-center
-              justify-center
-              rounded-full
-              bg-linear-to-br
-              from-cyan-500
-              to-blue-600
-              text-3xl
-              font-bold
-              text-white
-            "
-          >
-            {ProfileData.avatar}
+      {/* Background Ambient Radial Glow */}
+      <div className="absolute -top-20 -left-20 w-80 h-80 bg-linear-to-tr from-cyan-500/20 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+      {/* Left: Large Avatar & Profile Identity */}
+      <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
+        <GlassAvatar
+          src={avatar}
+          name={name}
+          size="2xl"
+          status={status}
+          glow
+          className="shrink-0"
+        />
+
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              {name}
+            </h1>
+            <GlassBadge variant="cyan" size="sm" icon={ShieldCheck}>
+              Verified Admin
+            </GlassBadge>
           </div>
 
-          <span
-            className={`
-              absolute
-              bottom-1
-              right-1
-              h-5
-              w-5
-              rounded-full
-              border-2
-              border-slate-900
-              ${STATUS_COLORS[ProfileData.status]}
-            `}
-          />
-        </div>
-
-        <div>
-          <h1 className="text-3xl font-bold text-white">
-            {ProfileData.fullName}
-          </h1>
-
-          <p className="mt-1 text-slate-400">
-            {ProfileData.designation}
+          <p className="text-sm font-medium text-slate-300">
+            {role} • <span className="text-cyan-400">{department}</span>
           </p>
 
-          <p className="text-slate-500">
-            {ProfileData.department}
-          </p>
-
-          <div className="mt-3 flex items-center gap-2 text-sm text-slate-400">
-            <MapPin size={16} />
-            <span>{ProfileData.location}</span>
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-400 pt-1">
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span>{location}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+              <span className="font-mono">{email}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <button
-        className="
-          flex
-          items-center
-          gap-2
-          rounded-2xl
-          bg-linear-to-r
-          from-cyan-500
-          to-blue-600
-          px-5
-          py-3
-          font-medium
-          text-white
-          shadow-lg
-          shadow-cyan-500/20
-          transition-all
-          duration-300
-          hover:scale-105
-        "
-      >
-        <Edit size={18} />
-        Edit Profile
-      </button>
-    </section>
+      {/* Right: Quick Action Buttons */}
+      <div className="relative z-10 flex items-center gap-3 shrink-0">
+        <GlassButton
+          variant="outline"
+          size="md"
+          icon={MessageSquare}
+          onClick={onMessageClick}
+        >
+          Message
+        </GlassButton>
+
+        <GlassButton
+          variant="primary"
+          size="md"
+          icon={Edit3}
+          onClick={onEditClick}
+        >
+          Edit Profile
+        </GlassButton>
+      </div>
+    </GlassCard>
   );
 };
 

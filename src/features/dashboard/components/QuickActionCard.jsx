@@ -1,62 +1,60 @@
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import React from "react";
+import { ArrowUpRight } from "lucide-react";
+import { GlassCard } from "../../../components/ui/GlassCard";
 
-const QuickActionCard = ({
+/**
+ * QuickActionCard - Apple Liquid Glass Quick Action Trigger Tile
+ * Interactive button card for immediate workspace shortcuts (+ Task, + Meeting, + Ticket).
+ * 
+ * @param {string} title - Action label
+ * @param {string} description - Brief subtitle explanation
+ * @param {React.ReactNode} icon - Action icon component
+ * @param {function} onClick - Click action handler
+ * @param {'none' | 'blue' | 'cyan' | 'purple' | 'white'} glow - Ambient hover glow color
+ */
+export const QuickActionCard = ({
   title,
   description,
   icon: Icon,
-  gradient,
+  onClick,
+  glow = "none",
 }) => {
   return (
-    <motion.button
-      whileHover={{
-        y: -6,
-        scale: 1.04,
-      }}
-
-      transition={{
-        type: "spring",
-        stiffness: 280,
-        damping: 18,
-      }}
-      whileTap={{
-        scale: 0.98,
-      }}
-      className={`
-        group
-        relative
-        overflow-hidden
-        rounded-3xl
-        border
-        border-white/10
-        bg-linear-to-br
-        ${gradient}
-        p-5
-        text-left
-        transition
-      `}
+    <GlassCard
+      variant="interactive"
+      glow={glow}
+      hoverable
+      onClick={onClick}
+      className="!p-3.5 relative overflow-hidden group cursor-pointer"
     >
-      <div className="absolute inset-0 bg-black/20 opacity-0 transition group-hover:opacity-100" />
+      <div className="flex items-center justify-between gap-2.5 w-full">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          {/* Action Icon Container */}
+          {Icon && (
+            <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
+              {React.isValidElement(Icon) ? Icon : <Icon className="w-4.5 h-4.5" />}
+            </div>
+          )}
 
-      <div className="relative z-10 flex items-start justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md">
-          <Icon size={24} />
+          {/* Title & Description */}
+          <div className="min-w-0 flex-1">
+            <h4 className="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors truncate">
+              {title}
+            </h4>
+            {description && (
+              <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                {description}
+              </p>
+            )}
+          </div>
         </div>
 
-        <ArrowRight
-          size={18}
-          className="opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"
-        />
+        {/* Right Arrow Indicator */}
+        <div className="p-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 group-hover:text-white group-hover:bg-white/15 transition-all duration-200 shrink-0">
+          <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        </div>
       </div>
-
-      <h3 className="relative z-10 mt-5 text-lg font-semibold">
-        {title}
-      </h3>
-
-      <p className="relative z-10 mt-2 text-sm text-slate-300">
-        {description}
-      </p>
-    </motion.button>
+    </GlassCard>
   );
 };
 

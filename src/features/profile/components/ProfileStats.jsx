@@ -1,103 +1,144 @@
+import React from "react";
 import {
-  FolderKanban,
+  Briefcase,
   CheckSquare,
-  CalendarDays,
+  Calendar,
   Ticket,
+  TrendingUp,
+  Award,
 } from "lucide-react";
+import { GlassCard, GlassBadge } from "../../../components/ui";
 
-import ProfileData from "../data/ProfileData";
-
-const ProfileStats = () => {
-  const stats = [
+/**
+ * ProfileStats - Apple Liquid Glass Executive Performance Metrics Deck
+ * Renders employee KPI statistics, task accomplishments, and attendance ratings.
+ * 
+ * @param {Array<object>|object} stats - Array or object of user performance metrics
+ */
+export const ProfileStats = ({ stats }) => {
+  // Fallback Executive Performance Metrics
+  const defaultStats = [
     {
-      title: "Projects",
-      value: ProfileData.stats.projects,
-      icon: FolderKanban,
-      color: "from-cyan-500 to-blue-600",
+      id: "projects",
+      title: "Projects Managed",
+      value: "8",
+      description: "Active & Delivered",
+      trend: "+2 this quarter",
+      badge: "High Output",
+      badgeVariant: "cyan",
+      icon: Briefcase,
+      glow: "cyan",
     },
     {
-      title: "Tasks",
-      value: ProfileData.stats.tasks,
+      id: "tasks",
+      title: "Completed Tasks",
+      value: "42",
+      description: "Tasks closed this month",
+      trend: "98% on-time",
+      badge: "Top Execution",
+      badgeVariant: "success",
       icon: CheckSquare,
-      color: "from-violet-500 to-purple-600",
+      glow: "none",
     },
     {
-      title: "Meetings",
-      value: ProfileData.stats.meetings,
-      icon: CalendarDays,
-      color: "from-emerald-500 to-green-600",
+      id: "meetings",
+      title: "Meetings Attended",
+      value: "16",
+      description: "Syncs & architecture reviews",
+      trend: "100% attendance",
+      badge: "Engaged",
+      badgeVariant: "primary",
+      icon: Calendar,
+      glow: "none",
     },
     {
-      title: "Tickets",
-      value: ProfileData.stats.tickets,
+      id: "tickets",
+      title: "Tickets Resolved",
+      value: "5",
+      description: "HR & IT helpdesk resolutions",
+      trend: "Avg 12m response",
+      badge: "Fast Response",
+      badgeVariant: "purple",
       icon: Ticket,
-      color: "from-orange-500 to-red-500",
+      glow: "purple",
+    },
+    {
+      id: "performance",
+      title: "Performance Rating",
+      value: "98%",
+      description: "Executive review score",
+      trend: "+3% vs Q2",
+      badge: "Exceeds Expectations",
+      badgeVariant: "success",
+      icon: TrendingUp,
+      glow: "none",
+    },
+    {
+      id: "recognition",
+      title: "Team Recognition",
+      value: "12",
+      description: "Peer commendations",
+      trend: "3 this month",
+      badge: "Key Contributor",
+      badgeVariant: "warning",
+      icon: Award,
+      glow: "none",
     },
   ];
 
+  const items = Array.isArray(stats) && stats.length > 0 ? stats : defaultStats;
+
   return (
-    <section
-      className="
-        rounded-3xl
-        border
-        border-white/10
-        bg-white/5
-        p-6
-        backdrop-blur-xl
-      "
-    >
-      <h2 className="mb-6 text-xl font-semibold text-white">
-        Quick Stats
-      </h2>
-
-      <div className="grid grid-cols-2 gap-4">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-
-          return (
-            <div
-              key={stat.title}
-              className="
-                rounded-2xl
-                border
-                border-white/10
-                bg-white/5
-                p-5
-                transition-all
-                duration-300
-                hover:-translate-y-1
-                hover:border-cyan-500/30
-              "
-            >
-              <div className="flex items-center justify-between">
-                <div
-                  className={`
-                    flex
-                    h-12
-                    w-12
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-linear-to-br
-                    ${stat.color}
-                  `}
-                >
-                  <Icon size={22} className="text-white" />
-                </div>
-
-                <span className="text-3xl font-bold text-white">
-                  {stat.value}
-                </span>
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 w-full h-full">
+      {items.map((stat, idx) => {
+        const Icon = stat.icon || Briefcase;
+        return (
+          <GlassCard
+            key={stat.id || idx}
+            variant="standard"
+            glow={stat.glow || "none"}
+            hoverable
+            className="flex flex-col justify-between h-full relative overflow-hidden group p-5"
+          >
+            {/* Top Bar: Metric Icon & Badge */}
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
+                <Icon className="w-5 h-5" />
               </div>
 
-              <p className="mt-4 text-sm font-medium text-slate-400">
+              {stat.badge && (
+                <GlassBadge variant={stat.badgeVariant || "cyan"} size="sm">
+                  {stat.badge}
+                </GlassBadge>
+              )}
+            </div>
+
+            {/* Metric Value & Title */}
+            <div className="space-y-1">
+              <h3 className="text-3xl font-extrabold tracking-tight text-white leading-none">
+                {stat.value}
+              </h3>
+              <p className="text-xs font-semibold text-slate-200 tracking-wide mt-1">
                 {stat.title}
               </p>
+              {stat.description && (
+                <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                  {stat.description}
+                </p>
+              )}
             </div>
-          );
-        })}
-      </div>
-    </section>
+
+            {/* Bottom Trend */}
+            {stat.trend && (
+              <div className="mt-4 pt-2.5 border-t border-white/10 text-[11px] font-mono text-cyan-300 flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" />
+                <span>{stat.trend}</span>
+              </div>
+            )}
+          </GlassCard>
+        );
+      })}
+    </div>
   );
 };
 

@@ -1,82 +1,125 @@
+import React from "react";
+import { Clock, Video, MapPin, CheckCircle2, Play } from "lucide-react";
 import {
-  Clock3,
-  Users,
-  Video,
-} from "lucide-react";
+  GlassCard,
+  GlassBadge,
+  GlassButton,
+  GlassAvatarGroup,
+} from "../../../components/ui";
 
-import GlassCard from "../../../components/ui/GlassCard";
-import Badge from "../../../components/ui/Badge";
+/**
+ * TimelineItem - Individual Hour Event Node along the Daily Timeline Guide Line
+ * Renders meeting details, status dots, attendee avatar stacks, and join triggers.
+ * 
+ * @param {object} item - Timeline event object
+ */
+export const TimelineItem = ({ item }) => {
+  if (!item) return null;
 
-import {
-  STATUS_COLORS,
-  TYPE_COLORS,
-} from "../data/MeetingConstants";
+  const isInProgress = item.status === "in-progress";
+  const isCompleted = item.status === "completed";
 
-const TimelineItem = ({ meeting }) => {
+  // Status Indicator Dot Marker
+  const renderStatusDot = () => {
+    if (isInProgress) {
+      return (
+        <span className="relative flex h-3.5 w-3.5 items-center justify-center">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.9)]" />
+        </span>
+      );
+    }
+    if (isCompleted) {
+      return (
+        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+      );
+    }
+    return (
+      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-500 shadow-sm" />
+    );
+  };
+
+  // Status Badge Helper
+  const getStatusBadge = () => {
+    if (isInProgress) {
+      return <GlassBadge variant="cyan" size="sm" dot glow>In Progress</GlassBadge>;
+    }
+    if (isCompleted) {
+      return <GlassBadge variant="success" size="sm" icon={CheckCircle2}>Completed</GlassBadge>;
+    }
+    return <GlassBadge variant="default" size="sm">Upcoming</GlassBadge>;
+  };
+
   return (
-    <GlassCard
-      className="
-        relative
-        flex
-        gap-5
-        hover:border-cyan-500/40
-      "
-    >
-      <div
-        className="
-          absolute
-          left-0
-          top-0
-          h-full
-          w-1
-          rounded-l-3xl
-          bg-cyan-500
-        "
-      />
-
-      <div className="min-w-22.5">
-        <p className="text-lg font-semibold text-cyan-400">
-          {meeting.time}
-        </p>
-
-        <p className="mt-1 text-sm text-slate-500">
-          {meeting.duration}
-        </p>
+    <div className="relative flex items-start gap-4 sm:gap-6 group">
+      {/* Timeline Node Dot Marker */}
+      <div className="absolute -left-3 sm:-left-6 top-5 -translate-x-1/2 z-10 flex items-center justify-center">
+        {renderStatusDot()}
       </div>
 
-      <div className="flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-lg font-semibold text-white">
-            {meeting.title}
-          </h3>
+      {/* Main Liquid Glass Event Card */}
+      <GlassCard
+        variant={isInProgress ? "floating" : "standard"}
+        glow={isInProgress ? "cyan" : "none"}
+        hoverable
+        className={`
+          flex-1 p-4 sm:p-5 relative overflow-hidden transition-all duration-300
+          ${isInProgress ? "border-cyan-400/40 bg-slate-900/70" : "hover:border-white/20"}
+        `}
+      >
+        {/* Top Bar: Time, Duration & Status */}
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-400/20">
+              {item.time}
+            </span>
+            {item.duration && (
+              <span className="text-[11px] text-slate-400 font-medium">
+                ({item.duration})
+              </span>
+            )}
+          </div>
 
-          <Badge className={STATUS_COLORS[meeting.status]}>
-            {meeting.status}
-          </Badge>
-
-          <Badge className={TYPE_COLORS[meeting.type]}>
-            {meeting.type}
-          </Badge>
+          <div className="shrink-0">{getStatusBadge()}</div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-5 text-sm text-slate-400">
-          <div className="flex items-center gap-2">
-            <Video size={16} />
-            <span>{meeting.platform}</span>
+        {/* Meeting Title & Description */}
+        <h3 className="text-sm sm:text-base font-semibold text-white group-hover:text-cyan-300 transition-colors leading-tight">
+          {item.title}
+        </h3>
+
+        {item.description && (
+          <p className="text-xs text-slate-300 mt-1.5 line-clamp-2 leading-relaxed">
+            {item.description}
+          </p>
+        )}
+
+        {/* Event Footer: Location & Attendee Avatar Stack & Action Button */}
+        <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              {item.type === "video" ? (
+                <Video className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+              ) : (
+                <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              )}
+              <span className="truncate max-w-37.5 sm:max-w-50">{item.location}</span>
+            </div>
+
+            {item.attendees && item.attendees.length > 0 && (
+              <GlassAvatarGroup avatars={item.attendees} max={3} size="xs" />
+            )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Users size={16} />
-            <span>{meeting.participants} Participants</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Clock3 size={16} />
-            <span>{meeting.room}</span>
-          </div>
+          {/* Join Call Trigger Button */}
+          {isInProgress && item.type === "video" && (
+            <GlassButton variant="cyan" size="sm" icon={Play}>
+              Join Video Call
+            </GlassButton>
+          )}
         </div>
-      </div>
-    </GlassCard>
+      </GlassCard>
+    </div>
   );
 };
 

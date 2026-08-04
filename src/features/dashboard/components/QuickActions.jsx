@@ -1,112 +1,75 @@
-import {
-  CalendarPlus,
-  TicketPlus,
-  MailPlus,
-  Upload,
-} from "lucide-react";
+import React from "react";
+import { Zap, CheckSquare, Calendar, Mail, Ticket } from "lucide-react";
+import { GlassPanel } from "../../../components/ui/GlassPanel";
+import QuickActionCard from "./QuickActionCard";
 
-import {
-  GlassCard,
-  SectionHeader,
-} from "../../../components/ui";
+/**
+ * QuickActions - Apple Liquid Glass Shortcuts Panel
+ * Grid deck container for rapid workspace creation actions (+ Task, + Meeting, + Email, + Ticket).
+ * 
+ * @param {Array<object>} actions - List of action configurations
+ */
+export const QuickActions = ({ actions }) => {
+  // Fallback Action Cards
+  const defaultActions = [
+    {
+      id: "qa-1",
+      title: "Create Task",
+      description: "Assign task to project team",
+      icon: CheckSquare,
+      glow: "cyan",
+      onClick: () => console.log("Create Task triggered"),
+    },
+    {
+      id: "qa-2",
+      title: "Schedule Sync",
+      description: "Calendar & video meeting",
+      icon: Calendar,
+      glow: "none",
+      onClick: () => console.log("Schedule Sync triggered"),
+    },
+    {
+      id: "qa-3",
+      title: "Compose Email",
+      description: "Internal message dispatch",
+      icon: Mail,
+      glow: "none",
+      onClick: () => console.log("Compose Email triggered"),
+    },
+    {
+      id: "qa-4",
+      title: "Submit Ticket",
+      description: "IT & HR desk request",
+      icon: Ticket,
+      glow: "purple",
+      onClick: () => console.log("Submit Ticket triggered"),
+    },
+  ];
 
-const actions = [
-  {
-    title: "Schedule Meeting",
-    description: "Create and invite participants.",
-    icon: CalendarPlus,
-    color: "cyan",
-  },
+  const actionList = actions && actions.length > 0 ? actions : defaultActions;
 
-  {
-    title: "Create Ticket",
-    description: "Raise a support request.",
-    icon: TicketPlus,
-    color: "orange",
-  },
-
-  {
-    title: "Send Email",
-    description: "Compose and send emails.",
-    icon: MailPlus,
-    color: "pink",
-  },
-
-  {
-    title: "Upload File",
-    description: "Store documents securely.",
-    icon: Upload,
-    color: "purple",
-  },
-];
-
-const colors = {
-  cyan: "from-cyan-500 to-blue-600",
-  orange: "from-orange-500 to-red-500",
-  pink: "from-pink-500 to-rose-500",
-  purple: "from-violet-500 to-fuchsia-500",
-};
-
-const QuickActions = () => {
   return (
-    <section className="space-y-5">
-      <SectionHeader
-        title="Quick Actions"
-        subtitle="Frequently used actions for your workspace."
-      />
-
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {actions.map((action) => {
-          const Icon = action.icon;
-
-          return (
-            <GlassCard
-              key={action.title}
-              className="cursor-pointer"
-            >
-              <div
-                className={`
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-linear-to-br
-                  ${colors[action.color]}
-                `}
-              >
-                <Icon
-                  size={22}
-                  className="text-white"
-                />
-              </div>
-
-              <h3
-                className="
-                  mt-5
-                  text-lg
-                  font-semibold
-                  text-white
-                "
-              >
-                {action.title}
-              </h3>
-
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  text-slate-400
-                "
-              >
-                {action.description}
-              </p>
-            </GlassCard>
-          );
-        })}
+    <GlassPanel
+      title="Quick Actions"
+      subtitle="Immediate operational shortcuts"
+      icon={Zap}
+      variant="default"
+      padding="sm"
+      className="h-full flex flex-col justify-start"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {actionList.map((action, idx) => (
+          <QuickActionCard
+            key={action.id || idx}
+            title={action.title || action.label}
+            description={action.description}
+            icon={action.icon}
+            glow={action.glow || "none"}
+            onClick={action.onClick}
+          />
+        ))}
       </div>
-    </section>
+    </GlassPanel>
   );
 };
 

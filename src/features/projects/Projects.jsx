@@ -1,92 +1,158 @@
-import { useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
 import ProjectStats from "./components/ProjectStats";
 import FilterBar from "./components/FilterBar";
 import ProjectGrid from "./components/ProjectGrid";
+import EmptyProjects from "./components/EmptyProjects";
 
 import ProjectData from "./data/ProjectData";
 
+/**
+ * Projects - Apple Liquid Glass Master Projects View
+ * Assembles project metrics, search/filter control bar,
+ * project card grid, and empty states.
+ */
+
 const Projects = () => {
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
 
+  // Extract raw projects list
+  const rawProjects = useMemo(() => {
+    if (Array.isArray(ProjectData)) return ProjectData;
+
+    if (
+      ProjectData?.projects &&
+      Array.isArray(ProjectData.projects)
+    ) {
+      return ProjectData.projects;
+    }
+
+    return [];
+  }, []);
+
+  // Filter & Sort Logic
   const filteredProjects = useMemo(() => {
-    let projects = [...ProjectData];
-
-    if (search) {
-      projects = projects.filter(
-        (project) =>
-          project.name
+    return [...rawProjects]
+      .filter((project) => {
+        if (statusFilter !== "all") {
+          const projectStatus = (project.status || "")
             .toLowerCase()
-            .includes(search.toLowerCase()) ||
-          project.description
+            .replace(/\s+/g, "-");
+
+          const filterStatus = statusFilter
             .toLowerCase()
-            .includes(search.toLowerCase())
-      );
-    }
+            .replace(/\s+/g, "-");
 
-    if (status !== "All") {
-      projects = projects.filter(
-        (project) => project.status === status
-      );
-    }
+          if (projectStatus !== filterStatus) return false;
+        }
 
-    switch (sortBy) {
-      case "progress":
-        projects.sort((a, b) => b.progress - a.progress);
-        break;
+        if (!searchTerm) return true;
 
-      case "dueDate":
-        projects.sort(
-          (a, b) =>
-            new Date(a.dueDate) - new Date(b.dueDate)
+        const query = searchTerm.toLowerCase();
+
+        return (
+          project.title?.toLowerCase().includes(query) ||
+          project.name?.toLowerCase().includes(query) ||
+          project.description?.toLowerCase().includes(query) ||
+          project.category?.toLowerCase().includes(query)
         );
-        break;
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "progress":
+            return (b.progress || 0) - (a.progress || 0);
 
-      case "priority": {
-        const order = {
-          High: 1,
-          Medium: 2,
-          Low: 3,
-        };
+          case "dueDate":
+            return (
+              new Date(a.dueDate || 0) -
+              new Date(b.dueDate || 0)
+            );
 
-        projects.sort(
-          (a, b) =>
-            order[a.priority] - order[b.priority]
-        );
-        break;
-      }
+          case "name":
+          default: {
+            const nameA = a.title || a.name || "";
+            const nameB = b.title || b.name || "";
 
-      default:
-        projects.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
-    }
+            return nameA.localeCompare(nameB);
+          }
+        }
+      });
+  }, [rawProjects, searchTerm, statusFilter, sortBy]);
 
-    return projects;
-  }, [search, status, sortBy]);
+  const containerVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 16,
+    },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 280,
+        damping: 22,
+      },
+    },
+  };
+
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setSortBy("name");
+  };
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
-        <ProjectStats />
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="mx-auto w-full max-w-[1600px] space-y-6 select-none"
+      >
+        {/* Statistics */}
+        <motion.div variants={itemVariants}>
+          <ProjectStats projects={rawProjects} />
+        </motion.div>
 
-        <FilterBar
-          search={search}
-          setSearch={setSearch}
-          status={status}
-          setStatus={setStatus}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-        />
+        {/* Filters */}
+        <motion.div variants={itemVariants}>
+          <FilterBar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+            sortBy={sortBy}
+            onSortByChange={setSortBy}
+          />
+        </motion.div>
 
-        <ProjectGrid
-          projects={filteredProjects}
-        />
-      </div>
+        {/* Projects */}
+        <motion.div variants={itemVariants}>
+          {filteredProjects.length > 0 ? (
+            <ProjectGrid projects={filteredProjects} />
+          ) : (
+            <EmptyProjects onReset={handleResetFilters} />
+          )}
+        </motion.div>
+      </motion.div>
     </DashboardLayout>
   );
 };

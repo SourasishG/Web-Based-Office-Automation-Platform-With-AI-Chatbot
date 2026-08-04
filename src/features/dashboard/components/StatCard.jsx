@@ -1,158 +1,86 @@
-import { motion } from "framer-motion";
-import { TrendingUp } from "lucide-react";
+import React from "react";
+import { TrendingUp, TrendingDown, ArrowUpRight } from "lucide-react";
+import { GlassCard } from "../../../components/ui/GlassCard";
+import { GlassBadge } from "../../../components/ui/GlassBadge";
 
-
-const StatCard = ({
+/**
+ * StatCard - Apple Liquid Glass Executive KPI Card
+ * Displays high-level workplace metrics with trend badges, specular light lines, and spring hover lifts.
+ * 
+ * @param {string} title - Metric label (e.g., "Active Employees")
+ * @param {string | number} value - Main statistical value (e.g., "248")
+ * @param {string} change - Growth or change statement (e.g., "+12% this month")
+ * @param {'positive' | 'negative' | 'neutral'} changeType - Trend classification
+ * @param {React.ReactNode} icon - Metric Lucide icon component
+ * @param {'none' | 'blue' | 'cyan' | 'purple' | 'white'} glow - Ambient glow color
+ * @param {function} onClick - Optional click handler
+ */
+export const StatCard = ({
   title,
   value,
-  increase,
+  change,
+  changeType = "positive",
   icon: Icon,
-  color
+  glow = "none",
+  onClick,
 }) => {
-
+  // Determine Trend Badge Variant & Icon
+  const getTrendBadge = () => {
+    if (!change) return null;
+    if (changeType === "positive") {
+      return (
+        <GlassBadge variant="success" size="sm" icon={TrendingUp}>
+          {change}
+        </GlassBadge>
+      );
+    }
+    if (changeType === "negative") {
+      return (
+        <GlassBadge variant="danger" size="sm" icon={TrendingDown}>
+          {change}
+        </GlassBadge>
+      );
+    }
+    return (
+      <GlassBadge variant="cyan" size="sm" icon={ArrowUpRight}>
+        {change}
+      </GlassBadge>
+    );
+  };
 
   return (
-
-    <motion.div
-
-      whileHover={{
-        y: -8,
-        scale: 1.03,
-      }}
-
-      transition={{
-        type: "spring",
-        stiffness: 280,
-        damping: 18,
-      }}
-
-      className="
-            rounded-3xl
-            border
-            border-white/10
-            bg-slate-900/70
-            p-6
-            text-white
-            backdrop-blur-xl
-            shadow-lg
-            "
-
+    <GlassCard
+      variant="standard"
+      glow={glow}
+      hoverable
+      onClick={onClick}
+      className="flex flex-col justify-between h-full relative overflow-hidden group"
     >
+      {/* Top Row: Metric Icon & Trend Badge */}
+      <div className="flex items-start justify-between gap-2 mb-4">
+        {Icon && (
+          <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
+            {React.isValidElement(Icon) ? Icon : <Icon className="w-5 h-5" />}
+          </div>
+        )}
 
-
-      <div className="flex items-center justify-between">
-
-
-        <div
-          className={`
-                    flex
-                    h-14
-                    w-14
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    bg-linear-to-br
-                    ${color}
-                    `}
-        >
-
-          {Icon && <Icon size={26} />}
-
-        </div>
-
-
-
-        <div
-          className="
-                    flex
-                    items-center
-                    gap-1
-                    rounded-full
-                    bg-green-500/10
-                    px-3
-                    py-1
-                    text-sm
-                    text-green-400
-                    "
-        >
-
-          <TrendingUp size={15} />
-
-          {increase}
-
-
-        </div>
-
-
+        <div className="shrink-0">{getTrendBadge()}</div>
       </div>
 
-
-
-      <p
-        className="
-                mt-6
-                text-sm
-                uppercase
-                tracking-wider
-                text-slate-400
-                "
-      >
-
-        {title}
-
-      </p>
-
-
-
-      <h2
-        className="
-                mt-2
-                text-4xl
-                font-bold
-                "
-      >
-
-        {value}
-
-      </h2>
-
-
-
-      <div
-        className="
-                mt-6
-                h-2
-                overflow-hidden
-                rounded-full
-                bg-white/10
-                "
-      >
-
-        <div
-
-          className={`
-                    h-full
-                    rounded-full
-                    bg-linear-to-r
-                    ${color}
-                    `}
-
-          style={{
-            width: "70%"
-          }}
-
-        />
-
+      {/* Main Metric Value & Title */}
+      <div className="space-y-1">
+        <h3 className="text-3xl font-extrabold tracking-tight text-white leading-none">
+          {value}
+        </h3>
+        <p className="text-xs font-medium text-slate-400 tracking-wide">
+          {title}
+        </p>
       </div>
 
-
-
-    </motion.div>
-
-
-  )
-
-}
-
+      {/* Subtle Bottom Ambient Gradient Highlight */}
+      <div className="absolute -bottom-10 -right-10 w-28 h-28 bg-gradient-to-tr from-cyan-500/10 via-blue-500/5 to-transparent rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all duration-500 pointer-events-none" />
+    </GlassCard>
+  );
+};
 
 export default StatCard;

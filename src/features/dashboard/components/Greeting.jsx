@@ -1,62 +1,106 @@
-import { Hand } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Sparkles, Clock, Calendar, ShieldCheck } from "lucide-react";
+import { GlassPanel } from "../../../components/ui/GlassPanel";
+import { GlassBadge } from "../../../components/ui/GlassBadge";
+import { GlassButton } from "../../../components/ui/GlassButton";
 
-import WeatherWidget from "./WeatherWidget";
+/**
+ * Greeting - Apple Liquid Glass Hero Greeting Banner
+ * Features dynamic time-of-day salutation, real-time clock, status pills, and AI assistant launcher.
+ */
+export const Greeting = ({ user }) => {
+  const [currentTime, setCurrentTime] = useState(new Date());
 
+  // Live Clock Ticker
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-const Greeting = () => {
+  // Time-of-Day Greeting Logic
+  const getGreetingText = () => {
+    const hour = currentTime.getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
 
-  const hour = new Date().getHours();
+  const formattedTime = currentTime.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
-  let greeting = "Good Morning";
+  const formattedDate = currentTime.toLocaleDateString([], {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
-  if (hour >= 12 && hour < 17) {
-    greeting = "Good Afternoon";
-  }
-
-  if (hour >= 17) {
-    greeting = "Good Evening";
-  }
-
+  const userName = user?.name || "Sourasish";
+  const userRole = user?.role || "Administrator";
 
   return (
-    <section className="flex items-center justify-between rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+    <GlassPanel
+      variant="floating"
+      padding="lg"
+      className="h-full flex flex-col justify-between relative overflow-hidden"
+    >
+      {/* Ambient Background Radial Glow */}
+      <div className="absolute -top-20 -left-20 w-72 h-72 bg-linear-to-tr from-cyan-500/15 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-      <div>
+      {/* Top Bar: Time & Workspace Status */}
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2">
+          <GlassBadge variant="cyan" glow icon={Sparkles}>
+            OFFICE AID WORKSPACE
+          </GlassBadge>
+          <GlassBadge variant="ghost" icon={ShieldCheck}>
+            {userRole}
+          </GlassBadge>
+        </div>
 
-        <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">
-          ✨ Office Aid Dashboard
-        </p>
-
-
-        <h1 className="mt-5 flex items-center gap-3 text-5xl font-bold text-white">
-
-          {greeting},
-          
-          <span className="text-cyan-400">
-            Sourasish
-          </span>
-
-          <Hand
-            size={42}
-            className="text-indigo-400"
-          />
-
-        </h1>
-
-
-        <p className="mt-4 text-lg text-slate-400">
-          Welcome back. Here's what's happening across your workplace today.
-        </p>
-
+        {/* Live Date/Time Badge */}
+        <div className="flex items-center gap-3 text-xs text-slate-300 font-medium bg-slate-950/40 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/10">
+          <div className="flex items-center gap-1.5 text-cyan-400">
+            <Clock className="w-3.5 h-3.5" />
+            <span className="font-mono">{formattedTime}</span>
+          </div>
+          <span className="text-white/20">|</span>
+          <div className="flex items-center gap-1.5 text-slate-300">
+            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <span>{formattedDate}</span>
+          </div>
+        </div>
       </div>
 
+      {/* Hero Headline & Personal Salutation */}
+      <div className="relative z-10 my-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
+          {getGreetingText()},{" "}
+          <span className="bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+            {userName}
+          </span>{" "}
+          <span className="inline-block animate-bounce">👋</span>
+        </h1>
+        <p className="text-sm text-slate-300 mt-2 max-w-xl leading-relaxed">
+          Welcome back to your central command. Here is what's happening across your workplace operations today.
+        </p>
+      </div>
 
-      <WeatherWidget />
+      {/* Bottom Action Bar */}
+      <div className="relative z-10 pt-6 mt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+          <span>All 8 workplace modules operational</span>
+        </div>
 
-
-    </section>
+        <GlassButton variant="primary" size="sm" icon={Sparkles}>
+          Ask AI Assistant
+        </GlassButton>
+      </div>
+    </GlassPanel>
   );
 };
-
 
 export default Greeting;

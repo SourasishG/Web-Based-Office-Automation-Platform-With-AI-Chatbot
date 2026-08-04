@@ -1,16 +1,71 @@
-import { TASK_STATUS_CONFIG } from "../data/TaskStatus";
+import React from "react";
+import { Circle, Eye, CheckCircle2 } from "lucide-react";
+import { GlassBadge } from "../../../components/ui/GlassBadge";
 
-const TaskStatusBadge = ({ status }) => {
-  const statusConfig = TASK_STATUS_CONFIG[status];
-  const StatusIcon = statusConfig.icon;
+/**
+ * TaskStatusBadge - Apple Liquid Glass Task Status Badge
+ * Renders status badges across To Do, In Progress, Review, and Completed lifecycle states.
+ * 
+ * @param {string} status - Task status value ('todo', 'in-progress', 'review', 'completed')
+ * @param {'sm' | 'md' | 'lg'} size - Badge size preset
+ * @param {string} className - Additional CSS classes
+ */
+export const TaskStatusBadge = ({
+  status = "todo",
+  size = "sm",
+  className = "",
+}) => {
+  const s = (status || "").toLowerCase().replace(/\s+/g, "-");
+
+  if (s === "in-progress" || s === "in_progress" || s === "inprogress") {
+    return (
+      <GlassBadge
+        variant="cyan"
+        size={size}
+        dot
+        glow
+        className={className}
+      >
+        In Progress
+      </GlassBadge>
+    );
+  }
+
+  if (s === "review" || s === "in-review") {
+    return (
+      <GlassBadge
+        variant="purple"
+        size={size}
+        icon={Eye}
+        className={className}
+      >
+        Review
+      </GlassBadge>
+    );
+  }
+
+  if (s === "completed" || s === "done") {
+    return (
+      <GlassBadge
+        variant="success"
+        size={size}
+        icon={CheckCircle2}
+        className={className}
+      >
+        Completed
+      </GlassBadge>
+    );
+  }
 
   return (
-    <span
-      className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${statusConfig.badge}`}
+    <GlassBadge
+      variant="default"
+      size={size}
+      icon={Circle}
+      className={className}
     >
-      <StatusIcon size={14} />
-      {statusConfig.label}
-    </span>
+      To Do
+    </GlassBadge>
   );
 };
 
