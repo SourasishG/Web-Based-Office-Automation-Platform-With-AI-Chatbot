@@ -28,6 +28,8 @@ const Navbar = ({ setMobileOpen }) => {
         justify-between
         border-b
         border-white/10
+        bg-black/80
+        backdrop-blur-xl
         px-6
         text-white
       "

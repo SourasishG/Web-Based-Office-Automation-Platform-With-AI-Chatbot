@@ -2,10 +2,12 @@
 
 html {
   scroll-behavior: smooth;
+  background: #000;
 }
 
 body {
   overflow-y: overlay;
+  background: #000;
 }
 
 ::-webkit-scrollbar {
