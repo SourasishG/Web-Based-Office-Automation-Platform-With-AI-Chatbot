@@ -42,27 +42,39 @@ export const GlassButton = ({
   // Color & Glass Tone Variants
   const variantStyles = {
     primary: `
-      bg-gradient-to-r from-blue-600/90 to-blue-500/90 hover:from-blue-500 hover:to-blue-400
-      text-white shadow-[0_0_25px_-5px_rgba(0,122,255,0.5)]
-      border border-blue-400/40 hover:border-blue-300/60
+      first-color shadow-[0_4px_20px_rgba(0,0,0,0.25)]
+      border border-white/20 hover:border-white/40
     `,
     secondary: `
-      bg-slate-900/40 hover:bg-slate-800/60 text-slate-100
-      backdrop-blur-2xl border border-white/10 hover:border-white/25
-      shadow-[0_8px_20px_-4px_rgba(0,0,0,0.4)]
+      second-color shadow-[0_4px_18px_rgba(0,0,0,0.2)]
+      border border-white/20 hover:border-white/40
     `,
     cyan: `
-      bg-gradient-to-r from-cyan-600/90 to-cyan-500/90 hover:from-cyan-500 hover:to-cyan-400
-      text-white shadow-[0_0_25px_-5px_rgba(6,182,212,0.5)]
-      border border-cyan-400/40 hover:border-cyan-300/60
+      third-color shadow-[0_4px_18px_rgba(0,0,0,0.2)]
+      border border-white/20 hover:border-white/40
     `,
     purple: `
-      bg-gradient-to-r from-purple-600/90 to-purple-500/90 hover:from-purple-500 hover:to-purple-400
-      text-white shadow-[0_0_25px_-5px_rgba(168,85,247,0.5)]
-      border border-purple-400/40 hover:border-purple-300/60
+      fourth-color shadow-[0_4px_18px_rgba(0,0,0,0.2)]
+      border border-white/20 hover:border-white/40
+    `,
+    first: `
+      first-color shadow-[0_4px_20px_rgba(0,0,0,0.25)]
+      border border-white/20 hover:border-white/40
+    `,
+    second: `
+      second-color shadow-[0_4px_18px_rgba(0,0,0,0.2)]
+      border border-white/20 hover:border-white/40
+    `,
+    third: `
+      third-color shadow-[0_4px_18px_rgba(0,0,0,0.2)]
+      border border-white/20 hover:border-white/40
+    `,
+    fourth: `
+      fourth-color shadow-[0_4px_18px_rgba(0,0,0,0.2)]
+      border border-white/20 hover:border-white/40
     `,
     danger: `
-      bg-gradient-to-r from-rose-600/80 to-rose-500/80 hover:from-rose-500 hover:to-rose-400
+      bg-gradient-to-r from-rose-600/90 to-rose-500/90 hover:from-rose-500 hover:to-rose-400
       text-white shadow-[0_0_25px_-5px_rgba(244,63,94,0.4)]
       border border-rose-400/40 hover:border-rose-300/60
     `,

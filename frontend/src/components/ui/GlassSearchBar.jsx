@@ -58,7 +58,7 @@ export const GlassSearchBar = ({
       animate={{ scale: isFocused ? 1.008 : 1 }}
       transition={{ duration: 0.15 }}
       className={`
-        relative flex items-center w-full h-11 px-4 rounded-2xl overflow-hidden select-none
+        glass-search-bar relative flex items-center w-full h-11 px-4 rounded-2xl overflow-hidden select-none
         bg-slate-950/50 backdrop-blur-3xl border transition-all duration-300
         ${glass.specular.subtle}
         ${

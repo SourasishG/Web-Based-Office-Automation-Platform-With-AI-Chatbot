@@ -55,7 +55,7 @@ export const GlassPanel = ({
       animate={{ opacity: 1, y: 0 }}
       transition={animations.spring.gentle}
       className={`
-        relative overflow-hidden rounded-[28px] text-slate-100
+        glass-panel relative overflow-hidden rounded-[28px] text-slate-100
         ${variantStyles[variant]}
         ${specular ? glass.specular.subtle : ""}
         ${glass.reflection}

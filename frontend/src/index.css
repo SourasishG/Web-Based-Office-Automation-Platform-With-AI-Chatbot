@@ -35,38 +35,72 @@ body {
 
 /* Light mode overrides for smooth glass theme transformation */
 html.light .bg-black {
+  background-color: #f8fafc !important;
+}
+
+/* All Panels, Cards, Control Bars & Surfaces — Pure White (#ffffff) in Light Mode */
+html.light .glass-panel,
+html.light .glass-card,
+html.light section,
+html.light header,
+html.light article,
+html.light [class*="bg-slate-9"],
+html.light [class*="bg-slate-8"],
+html.light [class*="bg-slate-950"],
+html.light [class*="bg-black/"] {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* GlassSearchBar in Light Mode */
+html.light .glass-search-bar,
+html.light [class*="bg-slate-950/50"],
+html.light [class*="bg-slate-900/60"] {
+  background-color: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* GlassTabs Segmented Control Track in Light Mode */
+html.light .glass-tabs-track,
+html.light [class*="bg-slate-950/60"] {
   background-color: #f1f5f9 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
 }
 
-html.light .bg-slate-950,
-html.light .bg-slate-950\/95 {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-}
-
-html.light .bg-slate-900\/40,
-html.light .bg-slate-900\/50,
-html.light .bg-slate-900\/60,
-html.light .bg-slate-950\/40,
-html.light .bg-slate-950\/60 {
-  background-color: rgba(255, 255, 255, 0.82) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+/* Active tab pill indicator in GlassTabs for light mode */
+html.light .glass-tabs-pill,
+html.light [class*="bg-slate-900/90"] {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
 html.light .bg-black\/80 {
-  background-color: rgba(255, 255, 255, 0.88) !important;
+  background-color: rgba(255, 255, 255, 0.92) !important;
 }
 
 html.light .bg-white\/5,
-html.light .bg-white\/10 {
+html.light .bg-white\/10,
+html.light .bg-white\/15,
+html.light .bg-white\/20,
+html.light [class*="bg-white/5"],
+html.light [class*="bg-white/10"] {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
-html.light .border-white\/10,
 html.light .border-white\/5,
-html.light .border-white\/15 {
-  border-color: rgba(0, 0, 0, 0.08) !important;
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light [class*="border-white/5"],
+html.light [class*="border-white/10"] {
+  border-color: rgba(0, 0, 0, 0.12) !important;
 }
 
+/* Light mode text readability fixes */
 html.light .text-white {
   color: #0f172a !important;
 }
@@ -87,12 +121,53 @@ html.light .text-slate-400 {
   color: #64748b !important;
 }
 
-html.light .hover\:bg-white\/10:hover {
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+html.light .hover\:bg-white\/10:hover,
+html.light .hover\:bg-white\/15:hover {
   background-color: rgba(0, 0, 0, 0.07) !important;
 }
 
 html.light .hover\:text-white:hover {
   color: #0f172a !important;
+}
+
+/* Inputs & Placeholders in Light Mode */
+html.light input,
+html.light textarea {
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+html.light kbd {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #475569 !important;
+}
+
+/* AI Assistant Floating Card in Light Mode */
+.ai-card-bg {
+  background: linear-gradient(135deg, rgba(15,10,30,0.92) 0%, rgba(20,15,45,0.92) 100%);
+}
+
+html.light .ai-card-bg {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 249, 0.98) 100%) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light .ai-card-bg .bg-purple-900\/30,
+html.light .ai-card-bg .bg-slate-900\/50,
+html.light .ai-card-bg .bg-slate-950\/60 {
+  background-color: rgba(243, 244, 246, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 html.light ::-webkit-scrollbar-track {
@@ -126,4 +201,58 @@ html.light ::-webkit-scrollbar-track {
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Button Color System — Dark Mode (Default) */
+.first-color { 
+  background: #fbfbfb !important; 
+  color: #0f172a !important;
+}
+	
+.second-color { 
+  background: #fff1c1 !important; 
+  color: #0f172a !important;
+}
+
+.third-color { 
+  background: #78b7bb !important; 
+  color: #0f172a !important;
+}
+
+.fourth-color { 
+  background: #808b97 !important; 
+  color: #ffffff !important;
+}
+
+/* Button Color System — Light Mode */
+html.light .first-color { 
+  background: #827055 !important; 
+  color: #ffffff !important;
+}
+	
+html.light .second-color { 
+  background: #a79e8b !important; 
+  color: #0f172a !important;
+}
+
+html.light .third-color { 
+  background: #d4ceb0 !important; 
+  color: #0f172a !important;
+}
+
+html.light .fourth-color { 
+  background: #ede7cf !important; 
+  color: #0f172a !important;
+}
+
+/* Button Hover Brightness Enhancement */
+.first-color:hover,
+.second-color:hover,
+.third-color:hover,
+.fourth-color:hover,
+html.light .first-color:hover,
+html.light .second-color:hover,
+html.light .third-color:hover,
+html.light .fourth-color:hover {
+  filter: brightness(1.08);
 }

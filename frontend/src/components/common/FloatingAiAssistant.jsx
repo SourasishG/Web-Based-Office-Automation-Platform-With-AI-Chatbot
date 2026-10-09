@@ -140,11 +140,7 @@ const FloatingAiAssistant = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 20 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            className="w-[360px] max-h-[540px] flex flex-col rounded-[28px] border border-white/15 bg-slate-900/80 backdrop-blur-3xl shadow-[0_30px_80px_-10px_rgba(0,0,0,0.8),0_0_50px_-10px_rgba(168,85,247,0.25)] overflow-hidden"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(15,10,30,0.92) 0%, rgba(20,15,45,0.92) 100%)",
-            }}
+            className="w-[360px] max-h-[540px] flex flex-col rounded-[28px] border border-white/15 bg-slate-900/80 backdrop-blur-3xl shadow-[0_30px_80px_-10px_rgba(0,0,0,0.8),0_0_50px_-10px_rgba(168,85,247,0.25)] overflow-hidden ai-card-bg"
           >
             {/* Ambient glow inside card */}
             <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-purple-600/20 via-cyan-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />

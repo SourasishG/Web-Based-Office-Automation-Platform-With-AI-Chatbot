@@ -34,7 +34,7 @@ export const GlassTabs = ({
   return (
     <div
       className={`
-        inline-flex items-center p-1.5 select-none rounded-[22px]
+        glass-tabs-track inline-flex items-center p-1.5 select-none rounded-[22px]
         bg-slate-950/60 backdrop-blur-2xl border border-white/10 shadow-inner
         ${glass.specular.subtle}
         ${fullWidth ? "w-full flex" : ""}
@@ -69,7 +69,7 @@ export const GlassTabs = ({
               <motion.div
                 layoutId={`glassTabsPill-${layoutId}`}
                 transition={animations.spring.snappy}
-                className="absolute inset-0 rounded-[18px] bg-slate-900/90 backdrop-blur-3xl border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                className="glass-tabs-pill absolute inset-0 rounded-[18px] bg-slate-900/90 backdrop-blur-3xl border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               />
             )}
 

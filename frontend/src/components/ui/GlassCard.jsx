@@ -47,7 +47,7 @@ export const GlassCard = ({
       whileTap={hoverable || onClick ? "tap" : undefined}
       transition={animations.spring.snappy}
       className={`
-        relative overflow-hidden rounded-3xl p-6 text-slate-100
+        glass-card relative overflow-hidden rounded-3xl p-6 text-slate-100
         transition-colors duration-300
         ${variantStyle}
         ${glowStyles[glow]}
