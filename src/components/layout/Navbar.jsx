@@ -1,5 +1,6 @@
 import { Menu, Bell } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import ThemeToggle from "../common/ThemeToggle";
 
 const Navbar = ({ setMobileOpen }) => {
   const location = useLocation();
@@ -47,7 +48,9 @@ const Navbar = ({ setMobileOpen }) => {
         </h2>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-4 sm:gap-5">
+        <ThemeToggle />
+
         <button
           className="
             relative
@@ -57,6 +60,7 @@ const Navbar = ({ setMobileOpen }) => {
             hover:bg-white/10
           "
         >
+
           <Bell size={22} />
 
           <span

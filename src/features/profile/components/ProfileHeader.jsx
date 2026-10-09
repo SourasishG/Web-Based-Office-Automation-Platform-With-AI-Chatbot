@@ -6,6 +6,7 @@ import {
   GlassBadge,
   GlassButton,
 } from "../../../components/ui";
+import ThemeToggle from "../../../components/common/ThemeToggle";
 
 /**
  * ProfileHeader - Apple Liquid Glass Hero Executive Profile Banner
@@ -71,8 +72,10 @@ export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
         </div>
       </div>
 
-      {/* Right: Quick Action Buttons */}
-      <div className="relative z-10 flex items-center gap-3 shrink-0">
+      {/* Right: Quick Action Buttons & Theme Toggle */}
+      <div className="relative z-10 flex flex-wrap items-center gap-3 shrink-0">
+        <ThemeToggle showLabel />
+
         <GlassButton
           variant="outline"
           size="md"
@@ -95,4 +98,4 @@ export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
   );
 };
 
-export default ProfileHeader;
+export default ProfileHeader;
