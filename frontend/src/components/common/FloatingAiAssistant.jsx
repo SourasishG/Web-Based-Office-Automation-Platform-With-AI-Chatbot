@@ -9,6 +9,7 @@ import {
   Loader2,
   ChevronDown,
 } from "lucide-react";
+import useAiAssistant from "../../hooks/useAiAssistant";
 
 const PROMPTS = [
   "Summarize unread emails",
@@ -46,7 +47,7 @@ const getAIResponse = (prompt) => {
  * Click to expand the glass AI chat card; click outside to collapse.
  */
 const FloatingAiAssistant = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useAiAssistant();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -70,7 +71,7 @@ const FloatingAiAssistant = () => {
       document.removeEventListener("mousedown", handler);
       document.removeEventListener("touchstart", handler);
     };
-  }, [isOpen]);
+  }, [isOpen, setIsOpen]);
 
   // Escape key handler
   useEffect(() => {
@@ -79,7 +80,7 @@ const FloatingAiAssistant = () => {
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, []);
+  }, [setIsOpen]);
 
   // Scroll to bottom on new message
   useEffect(() => {
