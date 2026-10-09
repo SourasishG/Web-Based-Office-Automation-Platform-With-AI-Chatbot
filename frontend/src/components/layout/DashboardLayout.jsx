@@ -32,7 +32,7 @@ const DashboardLayout = ({ children }) => {
       >
         <Navbar setMobileOpen={setMobileOpen} />
 
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="p-4 sm:p-5 lg:p-6">
           {children}
         </main>
       </div>

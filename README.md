@@ -104,13 +104,50 @@ Office-Aid/
 
 ---
 
-### 🤖 7. Intelligent AI Assistant Platform
+### 👥 7. Employee Directory & Talent Hub Module
+- **Summary Metrics Bar (`EmployeeStatsWidget.jsx`)**: Real-time staff headcount, active engagement rate, busy status counters, average performance score, and top department breakdown.
+- **Directory Control Bar (`EmployeesHeader.jsx`)**: Spotlight search bar (`⌘K`), department tabs (*All Staff, Executive, Engineering, Design, Product, Marketing, HR*), presence status filter dropdown, and layout switcher.
+- **Multi-View Engine**:
+  - **Grid View (`EmployeeGrid.jsx` & `EmployeeCard.jsx`)**: Apple Liquid Glass cards with status avatars, contact links, skill tag clouds, assigned project counts, performance ratings, and message/edit action buttons.
+  - **Table View (`EmployeeTable.jsx`)**: Structured data table view displaying employee metadata, role tiers, department tags, and direct action triggers.
+  - **Org Chart Hierarchy (`OrgChart.jsx`)**: Visual tree diagram mapping Executive Leadership -> Department Leads -> Team Specialists.
+- **Add / Edit Employee Modal (`AddEmployeeModal.jsx`)**: Interactive glass modal form to add or edit employee records, role tiers, and skill sets.
+
+---
+
+### 📧 8. Internal Mail & Communications Module
+- **Control Bar (`EmailsHeader.jsx`)**: Spotlight search bar (`⌘K`), category dropdown (*Announcements, Project Sync, HR Memos, IT Alerts, Meeting Minutes*), and "+ Compose Email" CTA.
+- **Folder Navigation Sidebar (`EmailSidebar.jsx`)**: Navigation for *Inbox*, *Starred*, *Sent*, *Drafts*, and *Trash* with unread count badges and category shortcuts.
+- **Message List (`EmailList.jsx`)**: Thread items featuring sender avatars, subject lines, snippet previews, category badges, timestamps, unread indicator dots, and star toggles.
+- **Detail Reading Pane (`EmailDetailView.jsx`)**: Full message body display with **✨ AI Thread Summarizer** (one-click bullet takeaways) and **✨ AI Auto-Reply Drafter**.
+- **Compose Modal (`ComposeEmailModal.jsx`)**: Interactive glass modal form for drafting and sending workplace emails with **✨ AI Template Drafting**.
+
+---
+
+### 🎫 9. IT Helpdesk & Support Tickets Module
+- **Summary Metrics Bar (`TicketStatsWidget.jsx`)**: Real-time helpdesk queue counters (*Total Tickets, Open Issues, In Progress, Critical Escalations*).
+- **Control Bar (`TicketsHeader.jsx`)**: Spotlight search bar (`⌘K`), category filter tabs (*Access & Security, IT Infrastructure, Software & Tools, Facilities, HR Ops*), priority dropdown (*Critical, High, Medium, Low*), and "+ Submit Ticket" CTA.
+- **Multi-View Engine**:
+  - **List View (`TicketList.jsx` & `TicketCard.jsx`)**: Glass cards with ticket IDs, requester/assignee avatars, priority badges, SLA countdown timers, and quick resolve actions.
+  - **Helpdesk Kanban Board (`TicketKanban.jsx`)**: Multi-column board categorizing tickets into *Open Queue*, *In Progress*, *Under Review*, and *Resolved*.
+- **Ticket Detail Timeline Modal (`TicketDetailModal.jsx`)**: Full issue description, requester info, status switcher, comment stream, and **✨ AI Resolution Assistant** (generates fix drafts).
+- **Submit Ticket Modal (`CreateTicketModal.jsx`)**: Glass modal form to log support tickets with priority tier selection.
+
+---
+
+### 🤖 10. Intelligent AI Assistant Platform
 - **Slide-out Glass Drawer (`FloatingAiAssistant.jsx`)**: Floating action button that opens an AI assistant sidebar.
 - **Features**: Contextual prompt chips (*Summarize Tasks, Draft Email, Meeting Notes, Project Risks*), message bubble formatting, code block copying, and message history streaming.
 
 ---
 
-### 🧩 8. Core Component Library (`src/components/ui`)
+### 🚫 11. Custom 404 Error Page (`NotFound.jsx`)
+- **Topographic Organic Wave Styling**: Dark matte background overlay with topographic SVG contour curves, massive serif `404` typography, elegant subtitle, and primary theme `RETURN TO HOME` CTA button.
+- **Route Interception**: Intercepts all invalid or unhandled URLs (e.g. `/invalid-page`, `/xyz`) and displays the 404 view.
+
+---
+
+### 🧩 12. Core Component Library (`src/components/ui`)
 - `GlassPanel`: Versatile glass container with specular lighting and depth variants (*default, floating, inset, bordered*).
 - `GlassCard`: Card component with hover lift animations and glow accents (*blue, cyan, purple, white*).
 - `GlassButton`: Button with size presets (*sm, md, lg*), variant colors (*primary, secondary, third, fourth, ghost, danger*), and icons.

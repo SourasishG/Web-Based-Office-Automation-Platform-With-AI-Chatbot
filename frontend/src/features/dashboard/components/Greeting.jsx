@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Clock, Calendar, ShieldCheck } from "lucide-react";
+import { Sparkles, Clock, Calendar, ShieldCheck, Sun, Moon, Sunset } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";
@@ -7,29 +7,61 @@ import useAiAssistant from "../../../hooks/useAiAssistant";
 
 /**
  * Greeting - Apple Liquid Glass Hero Greeting Banner
- * Features dynamic time-of-day salutation, real-time clock, status pills, and AI assistant launcher.
+ * Features dynamic precise time-of-day salutation, real-time live clock ticker, and AI assistant launcher.
+ * 
+ * @param {object} user - User profile object containing name and role
  */
 export const Greeting = ({ user }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { openAssistant } = useAiAssistant();
 
-  // Live Clock Ticker
+  // Live Second-by-Second Clock Ticker
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Time-of-Day Greeting Logic
-  const getGreetingText = () => {
+  // Precise Time-of-Day Salutation & Icon Logic
+  const getGreetingData = () => {
     const hour = currentTime.getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 18) return "Good Afternoon";
-    return "Good Evening";
+    
+    if (hour >= 5 && hour < 12) {
+      return {
+        text: "Good Morning",
+        icon: <Sun className="w-6 h-6 text-amber-400 inline-block ml-1 animate-spin-slow" />,
+        greetingEmoji: "☀️",
+      };
+    }
+    
+    if (hour >= 12 && hour < 17) {
+      return {
+        text: "Good Afternoon",
+        icon: <Sun className="w-6 h-6 text-amber-400 inline-block ml-1" />,
+        greetingEmoji: "🌤️",
+      };
+    }
+    
+    if (hour >= 17 && hour < 22) {
+      return {
+        text: "Good Evening",
+        icon: <Sunset className="w-6 h-6 text-purple-400 inline-block ml-1" />,
+        greetingEmoji: "🌆",
+      };
+    }
+
+    return {
+      text: "Good Evening",
+      icon: <Moon className="w-6 h-6 text-indigo-300 inline-block ml-1" />,
+      greetingEmoji: "🌙",
+    };
   };
+
+  const greetingData = getGreetingData();
 
   const formattedTime = currentTime.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
   });
 
   const formattedDate = currentTime.toLocaleDateString([], {
@@ -66,7 +98,7 @@ export const Greeting = ({ user }) => {
         <div className="flex items-center gap-3 text-xs text-slate-300 font-medium bg-slate-950/40 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/10">
           <div className="flex items-center gap-1.5 text-cyan-400">
             <Clock className="w-3.5 h-3.5" />
-            <span className="font-mono">{formattedTime}</span>
+            <span className="font-mono tracking-wider">{formattedTime}</span>
           </div>
           <span className="text-white/20">|</span>
           <div className="flex items-center gap-1.5 text-slate-300">
@@ -78,15 +110,17 @@ export const Greeting = ({ user }) => {
 
       {/* Hero Headline & Personal Salutation */}
       <div className="relative z-10 my-2">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
-          {getGreetingText()},{" "}
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white flex items-center flex-wrap gap-2">
+          <span>{greetingData.text},</span>{" "}
           <span className="bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             {userName}
           </span>{" "}
-          <span className="inline-block animate-bounce">👋</span>
+          <span className="inline-block hover:scale-125 transition-transform cursor-default">
+            {greetingData.greetingEmoji}
+          </span>
         </h1>
         <p className="text-sm text-slate-300 mt-2 max-w-xl leading-relaxed">
-          Welcome back to your central command. Here is what's happening across your workplace operations today.
+          Welcome back to your central command. Operational metrics, team schedules, and AI productivity tools are synced and active.
         </p>
       </div>
 
