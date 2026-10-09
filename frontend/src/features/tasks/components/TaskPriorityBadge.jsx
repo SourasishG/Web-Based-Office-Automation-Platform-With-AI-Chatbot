@@ -1,4 +1,3 @@
-import React from "react";
 import { AlertOctagon, AlertCircle, ArrowUp, ArrowDown } from "lucide-react";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 

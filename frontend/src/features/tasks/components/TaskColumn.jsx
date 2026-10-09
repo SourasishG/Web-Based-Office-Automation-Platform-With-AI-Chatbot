@@ -1,4 +1,4 @@
-import React from "react";
+import { isValidElement } from "react";
 import { motion } from "framer-motion";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
@@ -9,7 +9,6 @@ import { Inbox } from "lucide-react";
  * TaskColumn - Apple Liquid Glass Floating Column Surface
  * Container panel for agile kanban task cards with sticky headers, task counters, and column accents.
  * 
- * @param {string} id - Column identifier
  * @param {string} title - Column header title
  * @param {React.ReactNode} icon - Column header icon component
  * @param {'slate' | 'blue' | 'purple' | 'emerald'} accent - Column theme accent
@@ -17,7 +16,6 @@ import { Inbox } from "lucide-react";
  * @param {function} onTaskClick - Task card selection callback
  */
 export const TaskColumn = ({
-  id,
   title,
   icon: Icon,
   accent = "slate",
@@ -58,7 +56,7 @@ export const TaskColumn = ({
           <div className="flex items-center gap-2.5">
             {Icon && (
               <div className="p-2 rounded-xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
-                {React.isValidElement(Icon) ? Icon : <Icon className="w-4 h-4" />}
+                {isValidElement(Icon) ? Icon : <Icon className="w-4 h-4" />}
               </div>
             )}
             <h3 className="text-sm font-semibold text-white tracking-tight">

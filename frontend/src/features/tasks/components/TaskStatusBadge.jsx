@@ -1,4 +1,3 @@
-import React from "react";
 import { Circle, Eye, CheckCircle2 } from "lucide-react";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 

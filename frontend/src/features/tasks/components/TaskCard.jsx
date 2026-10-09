@@ -1,4 +1,3 @@
-import React from "react";
 import { Calendar, MoreVertical } from "lucide-react";
 import {
   GlassCard,

@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import TaskColumn from "./TaskColumn";
 import { Circle, Clock, Eye, CheckCircle2 } from "lucide-react";
