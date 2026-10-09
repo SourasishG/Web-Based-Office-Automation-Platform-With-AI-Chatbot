@@ -13,270 +13,67 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![NodeJS](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express.js-black?style=for-the-badge&logo=express)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 
 </div>
 
 ---
 
-# ✨ Overview
+# 📂 Repository Structure
 
-Office Aid is a modern workplace automation platform designed to centralize every daily office operation into a single intelligent dashboard.
+This project is organized as a **Full-Stack Monorepo**:
 
-Instead of switching between multiple applications for meetings, tasks, projects, emails, employees, and files, Office Aid provides one seamless workspace enhanced with Artificial Intelligence.
-
-The project follows a modern enterprise architecture inspired by Apple VisionOS, Linear, Notion, Raycast and Slack.
+```text
+Office-Aid/
+├── 🎨 frontend/        # React 19 + Vite + TailwindCSS (Apple Liquid Glass UI)
+└── ⚡ backend/         # Node.js + Express.js + MySQL (API Services)
+```
 
 ---
 
 # 🎯 Key Features
 
-✅ AI Workplace Assistant
-
-✅ Executive Dashboard
-
-✅ Project Management
-
-✅ Smart Task Board
-
-✅ Meeting Scheduler
-
-✅ Employee Management
-
-✅ Internal Email System
-
-✅ Ticket Management
-
-✅ File Management
-
-✅ Calendar Integration
-
-✅ Department Analytics
-
-✅ Team Availability
-
-✅ Company Announcements
-
-✅ Beautiful Apple Liquid Glass UI
+✅ **AI Workplace Assistant**  
+✅ **Executive Dashboard**  
+✅ **Project Management**  
+✅ **Smart Task Board (Kanban)**  
+✅ **Meeting Scheduler**  
+✅ **Employee Management**  
+✅ **Internal Email System**  
+✅ **Ticket Management**  
+✅ **Dark Mode & Light Mode Theme Toggle**  
+✅ **Beautiful Apple Liquid Glass Design System**  
 
 ---
 
-# 🖥️ Screenshots
+# ⚙️ Quick Start
 
-> *(Add screenshots here later)*
-
-| Dashboard | Projects |
-|-----------|-----------|
-| ![](docs/dashboard.png) | ![](docs/projects.png) |
-
----
-
-# ⚙️ Tech Stack
-
-## Frontend
-
-- ⚛ React 19
-- ⚡ Vite
-- 🎨 Tailwind CSS
-- 🎞 Framer Motion
-- 🔀 React Router
-- 🎯 Lucide React Icons
-
----
-
-## Future plan
-## Backend
-
-- Node.js
-- Express.js
-
----
-
-## Database
-
-- MySQL
-
----
-
-## Authentication
-
-- JWT Authentication
-
----
-
-## Future Integrations
-
-- OpenAI
-- Gemini API
-- Email APIs
-- Cloud Storage
-- WebSockets
-- Notifications
-
----
-
-# 📂 Folder Structure
-
-```text
-src
-│
-├── assets/
-│
-├── components/
-│   ├── layout/
-│   ├── ui/
-│   ├── cards/
-│   ├── buttons/
-│   ├── badges/
-│   └── common/
-│
-├── features/
-│   ├── dashboard/
-│   ├── projects/
-│   ├── tasks/
-│   ├── meetings/
-│   ├── profile/
-│   ├── employees/
-│   ├── emails/
-│   ├── tickets/
-│   └── files/
-│
-├── routes/
-│
-├── hooks/
-│
-├── utils/
-│
-├── services/
-│
-├── theme/
-│
-├── App.jsx
-│
-└── main.jsx
-```
-
----
-
-# 🎨 Design Philosophy
-
-Office Aid follows a premium design language inspired by
-
-- 🍎 Apple VisionOS
-- 📐 Linear
-- 📝 Notion
-- 🚀 Raycast
-- 💬 Slack
-
-Design Goals
-
-- Minimal
-- Professional
-- Fast
-- Smooth
-- Glass Morphism
-- Modern Animations
-- Responsive
-- Accessible
-
----
-
-# 🚀 Current Modules
-
-| Module | Status |
-|---------|--------|
-| Dashboard | ✅ Complete |
-| Projects | ✅ Complete |
-| Tasks | ✅ Complete |
-| Meetings | ✅ Complete |
-| Profile | ✅ Complete |
-| Employees | 🚧 In Progress |
-| Emails | 🚧 Planned |
-| Tickets | 🚧 Planned |
-| Files | 🚧 Planned |
-| AI Assistant | 🚧 Planned |
-
----
-
-# 🛠 Installation
-
-Clone the repository
-
+### 🎨 Running the Frontend
 ```bash
-git clone https://github.com/SourasishG/office-aid.git
-```
-
-Go inside
-
-```bash
-cd office-aid
-```
-
-Install dependencies
-
-```bash
+cd frontend
 npm install
-```
-
-Run development server
-
-```bash
 npm run dev
 ```
 
-Build production
-
+### ⚡ Running the Backend
 ```bash
-npm run build
+cd backend
+npm install
+npm run dev
 ```
 
 ---
 
-# 🌟 Future Roadmap
+# 🛠 Tech Stack
 
-- AI Chatbot
-- Voice Assistant
-- Employee Attendance
-- HR Portal
-- Video Meetings
-- Notifications
-- Mobile Application
-- Cloud Sync
-- Analytics Dashboard
-- Admin Panel
+## **Frontend**
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS + Custom Liquid Glass Theme
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Routing**: React Router DOM
 
----
-
-# 📈 Project Status
-
-```text
-Dashboard          ██████████████ 100%
-
-Projects           ██████████████ 100%
-
-Tasks              ██████████████ 100%
-
-Meetings           ██████████████ 100%
-
-Profile            ██████████████ 100%
-
-Employees          ████░░░░░░░░░░ 30%
-
-Emails             ██░░░░░░░░░░░░ 15%
-
-Files              ░░░░░░░░░░░░░░ 0%
-
-AI Assistant       ░░░░░░░░░░░░░░ 0%
-```
-
----
-
-<div align="center">
-
----
-
-## ⭐ If you like this project, give it a Star ⭐
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00D9FF,100:7B61FF&height=120&section=footer"/>
-
-</div>
+## **Backend (Planned)**
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MySQL
+- **Auth**: JWT (JSON Web Tokens)
