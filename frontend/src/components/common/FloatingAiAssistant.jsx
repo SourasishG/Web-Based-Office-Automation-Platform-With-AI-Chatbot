@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -95,11 +95,16 @@ const FloatingAiAssistant = () => {
     }
   }, [isOpen]);
 
+  const msgCounterRef = useRef(1);
+
   const handleSend = (promptText) => {
     const text = promptText ?? input.trim();
     if (!text) return;
 
-    const userMsg = { role: "user", content: text, id: Date.now() };
+    const id1 = `msg-${msgCounterRef.current++}`;
+    const id2 = `msg-${msgCounterRef.current++}`;
+
+    const userMsg = { role: "user", content: text, id: id1 };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsTyping(true);
@@ -108,11 +113,11 @@ const FloatingAiAssistant = () => {
       const aiMsg = {
         role: "ai",
         content: getAIResponse(text),
-        id: Date.now() + 1,
+        id: id2,
       };
       setMessages((prev) => [...prev, aiMsg]);
       setIsTyping(false);
-    }, 1200 + Math.random() * 600);
+    }, 1500);
   };
 
   const handleKeyDown = (e) => {

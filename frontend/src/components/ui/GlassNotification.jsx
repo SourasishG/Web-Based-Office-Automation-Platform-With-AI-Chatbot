@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Info, CheckCircle2, AlertTriangle, XCircle, Sparkles, Calendar, X } from "lucide-react";
 import { glass } from "../../theme/glass";

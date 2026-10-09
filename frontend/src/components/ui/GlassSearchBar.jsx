@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, X, Loader2 } from "lucide-react";
 import { glass } from "../../theme/glass";

@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { glass } from "../../theme/glass";
 import { animations } from "../../theme/animations";

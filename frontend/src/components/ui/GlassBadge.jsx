@@ -1,5 +1,4 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { isValidElement } from "react";
 import { X } from "lucide-react";
 import { glass } from "../../theme/glass";
 
@@ -103,7 +102,7 @@ export const GlassBadge = ({
       {/* Icon */}
       {Icon && (
         <span className="shrink-0">
-          {React.isValidElement(Icon) ? Icon : <Icon className="w-3.5 h-3.5" />}
+          {isValidElement(Icon) ? Icon : <Icon className="w-3.5 h-3.5" />}
         </span>
       )}
 

@@ -1,16 +1,10 @@
-import { createContext, useEffect, useState } from "react";
-
-export const ThemeContext = createContext();
+import { useEffect, useState } from "react";
+import ThemeContext from "./ThemeContext";
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    // 1. Check saved localStorage preference
     const savedTheme = localStorage.getItem("office_aid_theme");
-    if (savedTheme) {
-      return savedTheme;
-    }
-    // 2. Default to dark mode for Apple Liquid Glass design
-    return "dark";
+    return savedTheme || "dark";
   });
 
   useEffect(() => {
@@ -36,5 +30,4 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-export default ThemeContext;
-
+export default ThemeProvider;

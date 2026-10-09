@@ -1,11 +1,5 @@
-import { createContext, useState } from "react";
-
-/**
- * AiAssistantContext - Global state for the Floating AI Assistant open/close toggle.
- * Wrap the app (inside BrowserRouter) with <AiAssistantProvider> to make
- * the openAssistant() trigger available in any component without prop-drilling.
- */
-export const AiAssistantContext = createContext(null);
+import { useState } from "react";
+import AiAssistantContext from "./AiAssistantContext";
 
 export const AiAssistantProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,5 +17,4 @@ export const AiAssistantProvider = ({ children }) => {
   );
 };
 
-export default AiAssistantContext;
-
+export default AiAssistantProvider;
