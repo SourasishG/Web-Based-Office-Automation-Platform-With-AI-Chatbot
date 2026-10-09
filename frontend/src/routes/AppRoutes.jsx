@@ -8,6 +8,7 @@ import Profile from "../features/profile/Profile";
 import Employees from "../features/employees/Employees";
 import Emails from "../features/emails/Emails";
 import Tickets from "../features/tickets/Tickets";
+import Notifications from "../features/notifications/Notifications";
 import NotFound from "../features/error/NotFound";
 
 const AppRoutes = () => {
@@ -46,6 +47,11 @@ const AppRoutes = () => {
       <Route
         path="/tickets"
         element={<Tickets />}
+      />
+
+      <Route
+        path="/notifications"
+        element={<Notifications />}
       />
 
       <Route

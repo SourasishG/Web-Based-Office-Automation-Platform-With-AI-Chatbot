@@ -38,6 +38,7 @@ Office-Aid/
 │   │   │   ├── employees/      # Staff Roster, Grid/Table/OrgChart Views, Add/Edit Modal
 │   │   │   ├── emails/         # Internal Mail Client, Folders, AI Summarizer & Auto-Reply
 │   │   │   ├── tickets/        # IT Helpdesk Queue, SLA Tracking, AI Resolution Assistant
+│   │   │   ├── notifications/  # Workplace Notification Center, Category & Read Filters, Priority Alerts
 │   │   │   ├── profile/        # Executive Identity, Performance Stats, Security Settings
 │   │   │   └── error/          # Topographic 404 Error Page
 │   │   ├── hooks/              # Custom React Hooks (useTheme, useAiAssistant)
@@ -169,6 +170,13 @@ Office-Aid/
 
 ---
 
+### 🔔 Workplace Notifications Center Module
+* **Summary Metrics Bar (`NotificationStatsWidget.jsx`)**: Real-time notification counters (*Total Alerts, Unread Notifications, Urgent/High Priority, Acknowledged Alerts*).
+* **Control Bar (`NotificationsHeader.jsx`)**: Spotlight search (`⌘K`), category tabs (*All Categories, Tasks, Meetings, Emails, Tickets, System*), read status switcher (*All, Unread, Read*), priority dropdown (*Urgent, High, Normal, Low*), and global CTAs (*Mark All as Read, Clear All*).
+* **Interactive Notification Cards (`NotificationCard.jsx` & `NotificationList.jsx`)**: Apple Liquid Glass cards with category icons, animated unread glow indicators, sender avatars, priority badges, action links, read toggle buttons, and Framer Motion layout transitions.
+
+---
+
 ### 🤖 Intelligent AI Assistant Platform
 * **Slide-out Glass Drawer (`FloatingAiAssistant.jsx`)**: Floating action button that opens an AI assistant sidebar accessible across all pages.
 * **Features**: Contextual prompt chips (*Summarize Tasks, Draft Email, Meeting Notes, Project Risks*), message bubble formatting, code block copying, and message history streaming.
@@ -207,10 +215,6 @@ graph TD
 ```
 
 ### Phase 1: Remaining Frontend Modules
-- **Notifications Center Module**:
-  - Popover dropdown & dedicated notifications page.
-  - Category filters (*Task Updates, Meeting Invites, Mention Alerts, System Warnings*).
-  - Unread badge counters and mark-all-as-read actions.
 - **Settings & Role-Based Access Control (RBAC)**:
   - System preference configuration panel (*General, Security, Notifications, API Keys*).
   - Fine-grained RBAC permission matrix (*Admin, Manager, Employee, Guest*).
