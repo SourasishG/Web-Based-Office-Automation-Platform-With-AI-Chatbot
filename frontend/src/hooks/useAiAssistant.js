@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import AiAssistantContext from "../context/AiAssistantContext";
+import AiAssistantContext from "../context/AiAssistantContextObject";
 
 export const useAiAssistant = () => {
   const ctx = useContext(AiAssistantContext);

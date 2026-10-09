@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AiAssistantContext from "./AiAssistantContext";
+import AiAssistantContext from "./AiAssistantContextObject";
 
 export const AiAssistantProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
