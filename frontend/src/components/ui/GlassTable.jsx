@@ -1,4 +1,3 @@
-import React from "react";
 import { Loader2, Inbox } from "lucide-react";
 import { glass } from "../../theme/glass";
 

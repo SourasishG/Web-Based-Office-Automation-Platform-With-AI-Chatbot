@@ -1,5 +1,4 @@
-import React from "react";
-import { Clock, Video, MapPin, CheckCircle2, Play } from "lucide-react";
+import { Video, MapPin, CheckCircle2, Play } from "lucide-react";
 import {
   GlassCard,
   GlassBadge,

@@ -1,4 +1,3 @@
-import React from "react";
 import { Calendar, ArrowRight, Inbox } from "lucide-react";
 import {
   GlassPanel,

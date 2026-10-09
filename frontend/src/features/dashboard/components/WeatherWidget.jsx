@@ -1,5 +1,4 @@
-import React from "react";
-import { CloudSun, Sun, CloudRain, Wind, Droplets, MapPin, RefreshCw } from "lucide-react";
+import { CloudSun, Sun, CloudRain, Wind, Droplets, MapPin } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 

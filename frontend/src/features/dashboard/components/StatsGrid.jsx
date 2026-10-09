@@ -1,4 +1,3 @@
-import React from "react";
 import { Users, Briefcase, Calendar, Mail, Ticket } from "lucide-react";
 import StatCard from "./StatCard";
 

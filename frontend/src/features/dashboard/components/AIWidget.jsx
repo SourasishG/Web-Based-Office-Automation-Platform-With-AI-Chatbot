@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Sparkles, ArrowRight, Bot, Zap, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { Sparkles, Bot, Zap } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";

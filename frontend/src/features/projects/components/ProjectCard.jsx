@@ -1,11 +1,9 @@
-import React from "react";
-import { Calendar, MoreVertical, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { Calendar, MoreVertical, AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   GlassCard,
   GlassBadge,
   GlassAvatarGroup,
   GlassDropdown,
-  ProgressRing,
 } from "../../../components/ui";
 import ProgressBar from "./ProgressBar";
 

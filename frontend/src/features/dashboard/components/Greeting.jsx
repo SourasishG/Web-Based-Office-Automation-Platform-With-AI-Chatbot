@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Sparkles, Clock, Calendar, ShieldCheck } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";
+import useAiAssistant from "../../../hooks/useAiAssistant";
 
 /**
  * Greeting - Apple Liquid Glass Hero Greeting Banner
@@ -10,6 +11,7 @@ import { GlassButton } from "../../../components/ui/GlassButton";
  */
 export const Greeting = ({ user }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { openAssistant } = useAiAssistant();
 
   // Live Clock Ticker
   useEffect(() => {
@@ -95,7 +97,7 @@ export const Greeting = ({ user }) => {
           <span>All 8 workplace modules operational</span>
         </div>
 
-        <GlassButton variant="primary" size="sm" icon={Sparkles}>
+        <GlassButton variant="primary" size="sm" icon={Sparkles} onClick={openAssistant}>
           Ask AI Assistant
         </GlassButton>
       </div>

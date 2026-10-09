@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, Video, ArrowRight, CheckCircle2 } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
@@ -12,6 +12,7 @@ import { GlassAvatarGroup } from "../../../components/ui/GlassAvatar";
  * @param {Array<object>} schedule - Array of meeting / schedule items
  */
 export const ScheduleWidget = ({ schedule }) => {
+  const navigate = useNavigate();
   // Fallback Schedule Items
   const defaultSchedule = [
     {
@@ -86,7 +87,7 @@ export const ScheduleWidget = ({ schedule }) => {
       subtitle="3 meetings scheduled for today"
       icon={Calendar}
       action={
-        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight}>
+        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight} onClick={() => navigate("/meetings")}>
           View All
         </GlassButton>
       }

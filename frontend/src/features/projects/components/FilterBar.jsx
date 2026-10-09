@@ -1,4 +1,3 @@
-import React from "react";
 import { ArrowUpDown, Sparkles, Plus } from "lucide-react";
 import {
   GlassPanel,

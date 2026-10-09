@@ -1,4 +1,4 @@
-import React from "react";
+import { isValidElement } from "react";
 import { TrendingUp, TrendingDown, ArrowUpRight } from "lucide-react";
 import { GlassCard } from "../../../components/ui/GlassCard";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
@@ -60,7 +60,7 @@ export const StatCard = ({
       <div className="flex items-start justify-between gap-2 mb-4">
         {Icon && (
           <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
-            {React.isValidElement(Icon) ? Icon : <Icon className="w-5 h-5" />}
+            {isValidElement(Icon) ? Icon : <Icon className="w-5 h-5" />}
           </div>
         )}
 

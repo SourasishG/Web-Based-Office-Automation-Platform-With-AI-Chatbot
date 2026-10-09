@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Zap, CheckSquare, Calendar, Mail, Ticket } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import QuickActionCard from "./QuickActionCard";
@@ -10,7 +10,9 @@ import QuickActionCard from "./QuickActionCard";
  * @param {Array<object>} actions - List of action configurations
  */
 export const QuickActions = ({ actions }) => {
-  // Fallback Action Cards
+  const navigate = useNavigate();
+
+  // Fallback Action Cards with functional routing
   const defaultActions = [
     {
       id: "qa-1",
@@ -18,7 +20,7 @@ export const QuickActions = ({ actions }) => {
       description: "Assign task to project team",
       icon: CheckSquare,
       glow: "cyan",
-      onClick: () => console.log("Create Task triggered"),
+      onClick: () => navigate("/tasks"),
     },
     {
       id: "qa-2",
@@ -26,7 +28,7 @@ export const QuickActions = ({ actions }) => {
       description: "Calendar & video meeting",
       icon: Calendar,
       glow: "none",
-      onClick: () => console.log("Schedule Sync triggered"),
+      onClick: () => navigate("/meetings"),
     },
     {
       id: "qa-3",
@@ -34,7 +36,7 @@ export const QuickActions = ({ actions }) => {
       description: "Internal message dispatch",
       icon: Mail,
       glow: "none",
-      onClick: () => console.log("Compose Email triggered"),
+      onClick: () => navigate("/profile"),
     },
     {
       id: "qa-4",
@@ -42,7 +44,7 @@ export const QuickActions = ({ actions }) => {
       description: "IT & HR desk request",
       icon: Ticket,
       glow: "purple",
-      onClick: () => console.log("Submit Ticket triggered"),
+      onClick: () => navigate("/projects"),
     },
   ];
 

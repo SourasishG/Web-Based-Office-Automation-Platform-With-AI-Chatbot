@@ -1,4 +1,3 @@
-import React from "react";
 import { PieChart, Users, Layers } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";

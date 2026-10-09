@@ -1,4 +1,3 @@
-import React from "react";
 import { Video, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { GlassCard, GlassBadge } from "../../../components/ui";
 

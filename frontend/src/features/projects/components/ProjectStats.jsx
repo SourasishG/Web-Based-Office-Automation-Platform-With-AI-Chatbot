@@ -1,4 +1,3 @@
-import React from "react";
 import { Briefcase, Play, CheckCircle2, PauseCircle } from "lucide-react";
 import { GlassCard, GlassBadge } from "../../../components/ui";
 

@@ -1,5 +1,4 @@
-import React from "react";
-import { Code, Sparkles, Cpu, Award } from "lucide-react";
+import { Code, Sparkles } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 

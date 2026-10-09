@@ -1,5 +1,4 @@
-import React from "react";
-import { Edit3, MessageSquare, ShieldCheck, MapPin, Sparkles, Mail } from "lucide-react";
+import { Edit3, MessageSquare, ShieldCheck, MapPin, Mail } from "lucide-react";
 import {
   GlassCard,
   GlassAvatar,

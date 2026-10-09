@@ -1,4 +1,3 @@
-import React from "react";
 import { FolderSearch, RotateCcw } from "lucide-react";
 import { GlassPanel, GlassButton } from "../../../components/ui";
 

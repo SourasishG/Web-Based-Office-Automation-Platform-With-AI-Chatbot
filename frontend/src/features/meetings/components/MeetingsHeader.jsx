@@ -1,5 +1,4 @@
-import React from "react";
-import { Calendar, Plus, Sparkles, Video } from "lucide-react";
+import { Plus, Sparkles, Video } from "lucide-react";
 import {
   GlassPanel,
   GlassSearchBar,

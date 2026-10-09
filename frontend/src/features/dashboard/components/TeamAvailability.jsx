@@ -1,5 +1,4 @@
-import React from "react";
-import { Users, Mail, ArrowRight } from "lucide-react";
+import { Users, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassAvatar } from "../../../components/ui/GlassAvatar";
 import { GlassBadge } from "../../../components/ui/GlassBadge";

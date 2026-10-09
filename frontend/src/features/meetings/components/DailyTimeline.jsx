@@ -1,9 +1,7 @@
-import React from "react";
-import { Clock, Calendar, Video, Inbox } from "lucide-react";
+import { Clock, Inbox } from "lucide-react";
 import {
   GlassPanel,
   GlassBadge,
-  GlassButton,
 } from "../../../components/ui";
 import TimelineItem from "./TimelineItem";
 

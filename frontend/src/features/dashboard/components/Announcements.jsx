@@ -1,4 +1,3 @@
-import React from "react";
 import { Megaphone, Pin, Calendar, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";

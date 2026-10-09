@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Clock, AlertCircle, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
@@ -12,6 +12,8 @@ import { ProgressRing } from "../../../components/ui/ProgressRing";
  * @param {Array<object>} deadlines - Array of upcoming milestone deadline objects
  */
 export const UpcomingDeadlines = ({ deadlines }) => {
+  const navigate = useNavigate();
+
   // Fallback Deadline Items matching Office Aid Platform projects
   const defaultDeadlines = [
     {
@@ -67,7 +69,7 @@ export const UpcomingDeadlines = ({ deadlines }) => {
       subtitle="Milestones & target project completions"
       icon={Clock}
       action={
-        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight}>
+        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight} onClick={() => navigate("/projects")}>
           Projects
         </GlassButton>
       }

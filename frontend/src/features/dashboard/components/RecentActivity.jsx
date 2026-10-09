@@ -1,5 +1,4 @@
-import React from "react";
-import { Activity, Clock, CheckCircle2, GitCommit, FileText, ArrowRight } from "lucide-react";
+import { Activity, Clock, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassAvatar } from "../../../components/ui/GlassAvatar";
 import { GlassBadge } from "../../../components/ui/GlassBadge";

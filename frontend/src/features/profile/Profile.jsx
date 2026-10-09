@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import ProfileHeader from "./components/ProfileHeader";

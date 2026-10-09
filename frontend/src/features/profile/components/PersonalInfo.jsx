@@ -1,4 +1,3 @@
-import React from "react";
 import { Mail, Phone, Building2, MapPin, Calendar, UserCheck, Hash, Shield } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";

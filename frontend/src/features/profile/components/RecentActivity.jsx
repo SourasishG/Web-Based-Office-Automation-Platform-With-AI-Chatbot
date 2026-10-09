@@ -1,4 +1,3 @@
-import React from "react";
 import { Activity, Clock, CheckCircle2, GitCommit, Layers, Sparkles } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassCard } from "../../../components/ui/GlassCard";

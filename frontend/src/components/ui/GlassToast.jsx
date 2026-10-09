@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, AlertTriangle, Info, Sparkles, X } from "lucide-react";
 import { glass } from "../../theme/glass";

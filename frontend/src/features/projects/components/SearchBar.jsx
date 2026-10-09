@@ -1,4 +1,3 @@
-import React from "react";
 import { GlassSearchBar } from "../../../components/ui";
 
 /**
