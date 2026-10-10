@@ -8,7 +8,6 @@ import {
   Ticket,
   Bell,
   User,
-  Settings,
   ChevronLeft,
   ChevronRight,
   X,
@@ -61,11 +60,6 @@ const menuItems = [
     name: "Profile",
     path: "/profile",
     icon: User,
-  },
-  {
-    name: "Settings",
-    path: "/settings",
-    icon: Settings,
   },
 ];
 
