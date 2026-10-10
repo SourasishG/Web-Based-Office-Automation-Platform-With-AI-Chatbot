@@ -1,9 +1,10 @@
 import { Menu, Bell } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "../common/ThemeToggle";
 
 const Navbar = ({ setMobileOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const pageTitles = {
     "/": "Dashboard",
@@ -15,7 +16,6 @@ const Navbar = ({ setMobileOpen }) => {
     "/tickets": "Tickets",
     "/notifications": "Notifications",
     "/profile": "Profile",
-    "/settings": "Settings",
   };
 
   const pageTitle = pageTitles[location.pathname] || "Office Aid";
@@ -37,6 +37,7 @@ const Navbar = ({ setMobileOpen }) => {
     >
       <div className="flex items-center">
         <button
+          type="button"
           onClick={() => setMobileOpen(true)}
           className="mr-4 lg:hidden"
         >
@@ -51,16 +52,20 @@ const Navbar = ({ setMobileOpen }) => {
       <div className="flex items-center gap-4 sm:gap-5">
         <ThemeToggle />
 
+        {/* Notification Center Bell Button */}
         <button
+          type="button"
+          onClick={() => navigate("/notifications")}
+          title="Notification Center"
           className="
             relative
             rounded-xl
             p-2
             transition
             hover:bg-white/10
+            cursor-pointer
           "
         >
-
           <Bell size={22} />
 
           <span
@@ -68,15 +73,21 @@ const Navbar = ({ setMobileOpen }) => {
               absolute
               right-1
               top-1
-              h-2
-              w-2
+              h-2.5
+              w-2.5
               rounded-full
-              bg-red-500
+              bg-cyan-400
+              shadow-[0_0_8px_#06b6d4]
+              animate-pulse
             "
           />
         </button>
 
+        {/* User Profile Quick Trigger */}
         <button
+          type="button"
+          onClick={() => navigate("/profile")}
+          title="View Profile"
           className="
             flex
             items-center
@@ -86,6 +97,7 @@ const Navbar = ({ setMobileOpen }) => {
             py-1
             transition
             hover:bg-white/10
+            cursor-pointer
           "
         >
           <div
