@@ -307,6 +307,102 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "4. Agile Kanban Tasks",
+      "item": [
+        {
+          "name": "Get Kanban Board (Grouped by Columns)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/kanban",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", "kanban"]
+            },
+            "description": "Returns tasks grouped by TODO, IN_PROGRESS, REVIEW, and COMPLETED columns for the Kanban UI."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task Stats & Overdue Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", "stats"]
+            },
+            "description": "Calculates task counters per Kanban column, critical priority count, and overdue deadline count."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Tasks (Priority & Search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks?priority=CRITICAL",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks"],
+              "query": [
+                { "key": "priority", "value": "CRITICAL" }
+              ]
+            },
+            "description": "Filters tasks by priority tier or search query."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Kanban Task (with Subtasks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Implement Real-Time Socket.io Kanban updates\",\n  \"description\": \"Broadcast task column movements to all active client sessions.\",\n  \"status\": \"TODO\",\n  \"priority\": \"HIGH\",\n  \"orderIndex\": 6.0,\n  \"dueDate\": \"2026-10-25\",\n  \"subtasks\": [\n    { \"id\": \"s1\", \"title\": \"Socket.io client hook\", \"completed\": false },\n    { \"id\": \"s2\", \"title\": \"Kanban broadcast event handler\", \"completed\": false }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks"]
+            },
+            "description": "Creates a new task card with subtasks JSON."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
