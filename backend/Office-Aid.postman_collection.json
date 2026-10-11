@@ -136,6 +136,99 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "2. Employee Directory & Org Chart",
+      "item": [
+        {
+          "name": "Get Employee Directory (Roster)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["employees"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Fetches staff roster with project and task counts."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Employees (Department & Search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees?department=Engineering&search=DevOps",
+              "host": ["{{baseUrl}}"],
+              "path": ["employees"],
+              "query": [
+                { "key": "department", "value": "Engineering" },
+                { "key": "search", "value": "DevOps" }
+              ]
+            },
+            "description": "Filters staff by department and search query."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Employee Headcount & Status Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["employees", "stats"]
+            },
+            "description": "Calculates total headcount, online engagement rate, and department distribution."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Org Chart Hierarchy Tree",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/org-chart",
+              "host": ["{{baseUrl}}"],
+              "path": ["employees", "org-chart"]
+            },
+            "description": "Returns hierarchical leadership tree (CEO -> VPs -> Specialists)."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

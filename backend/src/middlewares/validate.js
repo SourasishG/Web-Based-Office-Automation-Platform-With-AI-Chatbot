@@ -23,8 +23,14 @@ export const validate = (schema) => (req, res, next) => {
 
     // Assign sanitized/parsed data back to req
     if (parsed.data.body) req.body = parsed.data.body;
-    if (parsed.data.query) req.query = parsed.data.query;
     if (parsed.data.params) req.params = parsed.data.params;
+    if (parsed.data.query) {
+      try {
+        req.query = parsed.data.query;
+      } catch {
+        Object.assign(req.query, parsed.data.query);
+      }
+    }
 
     return next();
   } catch (error) {
