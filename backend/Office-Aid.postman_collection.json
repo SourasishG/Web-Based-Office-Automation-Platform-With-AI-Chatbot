@@ -229,6 +229,84 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "3. Projects Management",
+      "item": [
+        {
+          "name": "Get Projects (Portfolio List)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/projects?status=all&sortBy=progress&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"],
+              "query": [
+                { "key": "status", "value": "all" },
+                { "key": "sortBy", "value": "progress" },
+                { "key": "sortOrder", "value": "desc" }
+              ]
+            },
+            "description": "Lists all projects with owner, members stack, and task counts."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project Stats & Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/projects/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "stats"]
+            },
+            "description": "Calculates active/completed project counts and average portfolio completion percentage."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"AI Chatbot Integration v2\",\n  \"description\": \"Connecting Google Gemini 1.5 Pro API with PostgreSQL RAG function calling.\",\n  \"department\": \"Engineering\",\n  \"priority\": \"HIGH\",\n  \"status\": \"ACTIVE\",\n  \"progress\": 25,\n  \"dueDate\": \"2026-11-20\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"]
+            },
+            "description": "Creates a new workplace project."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
