@@ -5,6 +5,7 @@ import employeeRouter from "./employee.routes.js";
 import projectRouter from "./project.routes.js";
 import taskRouter from "./task.routes.js";
 import ticketRouter from "./ticket.routes.js";
+import meetingRouter from "./meeting.routes.js";
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use("/employees", employeeRouter);
 router.use("/projects", projectRouter);
 router.use("/tasks", taskRouter);
 router.use("/tickets", ticketRouter);
+router.use("/meetings", meetingRouter);
 
 export default router;

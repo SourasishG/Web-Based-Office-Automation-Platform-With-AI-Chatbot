@@ -502,6 +502,124 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "6. Meetings & Calendar",
+      "item": [
+        {
+          "name": "Get Meetings (Calendar List)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/meetings?status=all&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["meetings"],
+              "query": [
+                { "key": "status", "value": "all" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Lists scheduled meetings with host and attendee avatar stacks."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Daily Timeline (Hour-by-Hour)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/meetings/timeline",
+              "host": ["{{baseUrl}}"],
+              "path": ["meetings", "timeline"]
+            },
+            "description": "Fetches chronological operational events for the daily schedule timeline view."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Upcoming Meetings Widget",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/meetings/upcoming",
+              "host": ["{{baseUrl}}"],
+              "path": ["meetings", "upcoming"]
+            },
+            "description": "Fetches the next 5 upcoming meetings starting from today."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Meeting Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/meetings/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["meetings", "stats"]
+            },
+            "description": "Calculates meeting counters: total, today, upcoming, completed."
+          },
+          "response": []
+        },
+        {
+          "name": "Schedule Meeting (Meet / Zoom / Teams)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Liquid Glass Component Design Review\",\n  \"description\": \"Reviewing specular blur variables and theme toggle micro-interactions.\",\n  \"date\": \"2026-10-15\",\n  \"startTime\": \"03:00 PM\",\n  \"endTime\": \"04:00 PM\",\n  \"platform\": \"GOOGLE_MEET\",\n  \"meetingLink\": \"https://meet.google.com/off-glass-sync\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/meetings",
+              "host": ["{{baseUrl}}"],
+              "path": ["meetings"]
+            },
+            "description": "Schedules a new video call sync."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
