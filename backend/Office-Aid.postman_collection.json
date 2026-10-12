@@ -767,6 +767,99 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "9. Executive Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard KPI Metrics (StatsGrid)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "metrics"]
+            },
+            "description": "Aggregates core KPI metrics for the Executive Dashboard greeting and StatsGrid: active projects, pending tasks, today's syncs, staff count, open tickets."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department Headcount Breakdown (Chart)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "departments"]
+            },
+            "description": "Returns department distribution numbers and percentages for DepartmentChart.jsx."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Company Announcements Board",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/announcements",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "announcements"]
+            },
+            "description": "Lists broadcast company announcements with author info and pinned items prioritized."
+          },
+          "response": []
+        },
+        {
+          "name": "Broadcast Announcement (Admin / Manager)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"🎉 Q4 Company Town Hall Scheduled\",\n  \"content\": \"Join us this Friday at 4 PM for our all-hands roadmap showcase and platform awards!\",\n  \"category\": \"Company\",\n  \"isPinned\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/announcements",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "announcements"]
+            },
+            "description": "Broadcasts a pinned company announcement."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

@@ -8,6 +8,7 @@ import ticketRouter from "./ticket.routes.js";
 import meetingRouter from "./meeting.routes.js";
 import emailRouter from "./email.routes.js";
 import notificationRouter from "./notification.routes.js";
+import dashboardRouter from "./dashboard.routes.js";
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use("/tickets", ticketRouter);
 router.use("/meetings", meetingRouter);
 router.use("/emails", emailRouter);
 router.use("/notifications", notificationRouter);
+router.use("/dashboard", dashboardRouter);
 
 export default router;
