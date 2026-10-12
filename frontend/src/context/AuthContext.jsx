@@ -86,6 +86,25 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const updateUser = useCallback((updatedUserData) => {
+    setUser((prev) => {
+      const merged = { ...prev, ...updatedUserData };
+      localStorage.setItem("office_aid_user", JSON.stringify(merged));
+      return merged;
+    });
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const freshUser = await authService.getCurrentUser();
+      setUser(freshUser);
+      localStorage.setItem("office_aid_user", JSON.stringify(freshUser));
+      return freshUser;
+    } catch {
+      return null;
+    }
+  }, []);
+
   const value = {
     user,
     token,
@@ -94,6 +113,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    updateUser,
+    refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

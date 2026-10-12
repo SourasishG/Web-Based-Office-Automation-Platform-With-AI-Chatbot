@@ -3,13 +3,17 @@ import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 
 export const PersonalInfo = ({ info }) => {
-  const email = info?.email || "sourasishghosh062@gmail.com";
-  const phone = info?.phone || "+91 99031 29873";
-  const employeeId = info?.employeeId || info?.empId || "EMP-1001";
-  const department = info?.department || "Engineering";
+  const email = info?.email || "sourasish.ghosh@officeaid.com";
+  const phone = info?.phone || "+91 98765 43210";
+  const employeeId = info?.id ? `OA-${info.id.slice(0, 8).toUpperCase()}` : (info?.empId || "OA-EXEC-001");
+  const department = info?.department || "Executive";
   const location = info?.location || "Kolkata, India";
-  const joiningDate = info?.joiningDate || info?.joined || "15 January 2025";
-  const manager = info?.manager || "Direct Board Reporting";
+  const joiningDate = info?.createdAt
+    ? new Date(info.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : (info?.joiningDate || "January 2025");
+  const manager = info?.manager
+    ? `${info.manager.firstName} ${info.manager.lastName}`
+    : "Executive Board / Direct Reporting";
 
   const rows = [
     {

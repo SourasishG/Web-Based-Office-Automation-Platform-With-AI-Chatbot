@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import {
   Briefcase,
   CheckSquare,
@@ -85,7 +86,35 @@ export const ProfileStats = ({ stats }) => {
     },
   ];
 
-  const items = Array.isArray(stats) && stats.length > 0 ? stats : defaultStats;
+  const items = React.useMemo(() => {
+    if (Array.isArray(stats) && stats.length > 0) return stats;
+
+    const projectsVal = stats?.projects ?? stats?._count?.projectMemberships ?? 4;
+    const tasksVal = stats?.tasks ?? stats?._count?.assignedTasks ?? 12;
+    const meetingsVal = stats?.meetings ?? 6;
+    const ticketsVal = stats?.tickets ?? stats?._count?.requestedTickets ?? 2;
+
+    return [
+      {
+        ...defaultStats[0],
+        value: String(projectsVal),
+      },
+      {
+        ...defaultStats[1],
+        value: String(tasksVal),
+      },
+      {
+        ...defaultStats[2],
+        value: String(meetingsVal),
+      },
+      {
+        ...defaultStats[3],
+        value: String(ticketsVal),
+      },
+      defaultStats[4],
+      defaultStats[5],
+    ];
+  }, [stats]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 w-full h-full">

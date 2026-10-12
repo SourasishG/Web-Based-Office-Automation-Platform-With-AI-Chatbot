@@ -16,13 +16,21 @@ import ThemeToggle from "../../../components/common/ThemeToggle";
  * @param {function} onMessageClick - Message button handler
  */
 export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
-  const name = user?.name || "Sourasish Ghosh";
-  const role = user?.role || "Administrator";
-  const department = user?.department || "Engineering";
+  const fullName = user?.firstName
+    ? `${user.firstName} ${user.lastName}`
+    : (user?.name || user?.fullName || "Sourasish Ghosh");
+  const role = user?.jobTitle || user?.role || "Administrator";
+  const department = user?.department || "General";
   const location = user?.location || "Kolkata, India";
-  const email = user?.email || "sourasishghosh062@gmail.com";
-  const status = user?.status || "online";
-  const avatar = user?.avatar;
+  const email = user?.email || "sourasish.ghosh@officeaid.com";
+  const status = (user?.presenceStatus || user?.status || "ONLINE").toLowerCase();
+  const avatar = user?.avatarUrl || user?.avatar;
+  const verifiedBadge =
+    user?.role === "ADMIN"
+      ? "Verified Admin"
+      : user?.role === "MANAGER"
+      ? "Team Manager"
+      : "Verified Staff";
 
   return (
     <GlassCard
@@ -31,13 +39,13 @@ export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
       className="p-6 sm:p-8 relative overflow-hidden flex flex-col md:flex-row items-center md:items-start justify-between gap-6"
     >
       {/* Background Ambient Radial Glow */}
-      <div className="absolute -top-20 -left-20 w-80 h-80 bg-linear-to-tr from-cyan-500/20 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-20 -left-20 w-80 h-80 bg-gradient-to-tr from-cyan-500/20 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       {/* Left: Large Avatar & Profile Identity */}
       <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
         <GlassAvatar
           src={avatar}
-          name={name}
+          name={fullName}
           size="2xl"
           status={status}
           glow
@@ -47,10 +55,10 @@ export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              {name}
+              {fullName}
             </h1>
             <GlassBadge variant="cyan" size="sm" icon={ShieldCheck}>
-              Verified Admin
+              {verifiedBadge}
             </GlassBadge>
           </div>
 

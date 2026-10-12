@@ -18,7 +18,28 @@ export const SkillsCard = ({ skills }) => {
     { name: "AI & LLM Tool Integration", level: 85, category: "Advanced", color: "from-amber-500 to-orange-600" },
   ];
 
-  const skillList = Array.isArray(skills) && skills.length > 0 ? skills : defaultSkills;
+  const skillList = Array.isArray(skills) && skills.length > 0
+    ? skills.map((s, idx) => {
+        if (typeof s === "string") {
+          const levels = [95, 92, 88, 85, 90, 84, 89];
+          const categories = ["Master", "Expert", "Advanced", "Proficient"];
+          const colors = [
+            "from-cyan-500 to-blue-600",
+            "from-purple-500 to-pink-600",
+            "from-blue-500 to-cyan-500",
+            "from-emerald-500 to-teal-600",
+            "from-amber-500 to-orange-600",
+          ];
+          return {
+            name: s,
+            level: levels[idx % levels.length],
+            category: categories[idx % categories.length],
+            color: colors[idx % colors.length],
+          };
+        }
+        return s;
+      })
+    : defaultSkills;
 
   return (
     <GlassPanel

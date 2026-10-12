@@ -1,39 +1,56 @@
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import ProfileHeader from "./components/ProfileHeader";
 import PersonalInfo from "./components/PersonalInfo";
 import ProfileStats from "./components/ProfileStats";
 import SkillsCard from "./components/SkillsCard";
 import RecentActivity from "./components/RecentActivity";
-import ProfileData from "./data/ProfileData";
+import EditProfileModal from "./components/EditProfileModal";
+
+import useAuth from "../../hooks/useAuth";
+import authService from "../../services/authService";
 
 /**
  * Profile - Apple Liquid Glass Executive Profile Workspace
+ * Live integration with Supabase PostgreSQL and current user authentication context
  */
 const Profile = () => {
-  // Normalize profile data
-  const userProfile = useMemo(() => {
-    if (ProfileData?.user) return ProfileData.user;
-    return ProfileData || {};
-  }, []);
+  const { user: authUser, updateUser } = useAuth();
+  const navigate = useNavigate();
 
-  const stats = useMemo(() => {
-    return ProfileData?.stats || userProfile?.stats || [];
-  }, [userProfile]);
+  const [profileData, setProfileData] = useState(authUser || {});
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const skills = useMemo(() => {
-    return ProfileData?.skills || userProfile?.skills || [];
-  }, [userProfile]);
+  // Fetch full live profile with counts, manager, and skills from backend
+  useEffect(() => {
+    let isMounted = true;
 
-  const activities = useMemo(() => {
-    return (
-      ProfileData?.recentActivity ||
-      ProfileData?.activities ||
-      userProfile?.recentActivity ||
-      []
-    );
-  }, [userProfile]);
+    const fetchLiveProfile = async () => {
+      setIsLoading(true);
+      try {
+        const liveUser = await authService.getCurrentUser();
+        if (isMounted && liveUser) {
+          setProfileData(liveUser);
+          updateUser(liveUser);
+        }
+      } catch (err) {
+        console.warn("Could not fetch fresh profile, using session data:", err.message);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchLiveProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [updateUser]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -67,30 +84,50 @@ const Profile = () => {
         animate="show"
         className="mx-auto w-full max-w-[1600px] space-y-6 select-none"
       >
+        {/* Header Banner */}
         <motion.div variants={itemVariants}>
-          <ProfileHeader user={userProfile} />
+          <ProfileHeader
+            user={profileData}
+            onEditClick={() => setIsEditModalOpen(true)}
+            onMessageClick={() => navigate("/emails")}
+          />
         </motion.div>
 
+        {/* Info & Stats Deck */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <motion.div variants={itemVariants} className="lg:col-span-5">
-            <PersonalInfo info={userProfile} />
+            <PersonalInfo info={profileData} />
           </motion.div>
 
           <motion.div variants={itemVariants} className="lg:col-span-7">
-            <ProfileStats stats={stats} />
+            <ProfileStats stats={profileData?._count || profileData?.stats} />
           </motion.div>
         </div>
 
+        {/* Skills & Audit Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <motion.div variants={itemVariants} className="lg:col-span-5">
-            <SkillsCard skills={skills} />
+            <SkillsCard skills={profileData?.skills} />
           </motion.div>
 
           <motion.div variants={itemVariants} className="lg:col-span-7">
-            <RecentActivity activities={activities} />
+            <RecentActivity activities={profileData?.recentActivity} />
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Edit Profile Glass Modal */}
+      {isEditModalOpen && (
+        <EditProfileModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          user={profileData}
+          onSaveSuccess={(updated) => {
+            setProfileData(updated);
+            updateUser(updated);
+          }}
+        />
+      )}
     </DashboardLayout>
   );
 };
