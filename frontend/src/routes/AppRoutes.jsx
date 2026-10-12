@@ -12,6 +12,7 @@ import Employees from "../features/employees/Employees";
 import Emails from "../features/emails/Emails";
 import Tickets from "../features/tickets/Tickets";
 import Notifications from "../features/notifications/Notifications";
+import Chatbot from "../features/chatbot/Chatbot";
 import NotFound from "../features/error/NotFound";
 
 const AppRoutes = () => {
@@ -26,6 +27,24 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/chatbot"
+        element={
+          <ProtectedRoute>
+            <Chatbot />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/herric"
+        element={
+          <ProtectedRoute>
+            <Chatbot />
           </ProtectedRoute>
         }
       />

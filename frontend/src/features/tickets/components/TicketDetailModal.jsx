@@ -7,7 +7,6 @@ import {
   Loader2,
   Send,
   Trash2,
-  CheckCircle2,
   AlertCircle,
   Copy,
   Check,

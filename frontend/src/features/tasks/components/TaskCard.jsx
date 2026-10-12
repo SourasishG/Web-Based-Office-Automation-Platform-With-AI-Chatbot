@@ -20,17 +20,8 @@ import TaskProgress from "./TaskProgress";
  * @param {function} onDelete - Delete callback
  */
 export const TaskCard = ({ task, onClick, onStatusChange, onDelete }) => {
-  if (!task) return null;
-
-  const {
-    id,
-    title = "Untitled Task",
-    description,
-    priority = "MEDIUM",
-    status = "TODO",
-  } = task;
-
   const computedProgress = useMemo(() => {
+    if (!task) return 0;
     if (typeof task.progress === "number") return task.progress;
     if (Array.isArray(task.subtasks) && task.subtasks.length > 0) {
       const completed = task.subtasks.filter((s) => s.completed).length;
@@ -42,6 +33,16 @@ export const TaskCard = ({ task, onClick, onStatusChange, onDelete }) => {
     if (s === "IN_PROGRESS") return 45;
     return 0;
   }, [task]);
+
+  if (!task) return null;
+
+  const {
+    id,
+    title = "Untitled Task",
+    description,
+    priority = "MEDIUM",
+    status = "TODO",
+  } = task;
 
   const assigneeName = task.assignee
     ? `${task.assignee.firstName || ""} ${task.assignee.lastName || ""}`.trim() ||

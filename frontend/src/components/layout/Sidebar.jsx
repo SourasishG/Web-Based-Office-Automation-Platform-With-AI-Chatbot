@@ -1,5 +1,6 @@
 import {
   LayoutDashboard,
+  Sparkles,
   Users,
   FolderKanban,
   ListTodo,
@@ -21,6 +22,13 @@ const menuItems = [
     name: "Dashboard",
     path: "/",
     icon: LayoutDashboard,
+  },
+  {
+    name: "Herric AI",
+    path: "/chatbot",
+    icon: Sparkles,
+    badge: "AI",
+    highlight: true,
   },
   {
     name: "Projects",
@@ -155,15 +163,28 @@ const Sidebar = ({
                       collapsed ? "justify-center" : ""
                     } ${
                       isActive
-                        ? "bg-cyan-500/15 text-cyan-400 border border-cyan-400/30 shadow-sm"
+                        ? "bg-cyan-500/15 text-cyan-400 border border-cyan-400/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]"
+                        : item.highlight
+                        ? "text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 hover:text-cyan-200 border border-cyan-500/25 shadow-[0_0_12px_rgba(6,182,212,0.15)]"
                         : "text-slate-400 hover:bg-white/10 hover:text-white border border-transparent"
                     }`
                   }
                 >
-                  <Icon size={20} className="shrink-0" />
+                  <Icon
+                    size={20}
+                    className={`shrink-0 ${
+                      item.highlight ? "text-cyan-400" : ""
+                    }`}
+                  />
 
                   {!collapsed && (
-                    <span className="text-sm truncate">{item.name}</span>
+                    <span className="text-sm truncate flex-1">{item.name}</span>
+                  )}
+
+                  {!collapsed && item.badge && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded-md bg-cyan-500/25 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(6,182,212,0.3)]">
+                      {item.badge}
+                    </span>
                   )}
                 </NavLink>
               </motion.div>

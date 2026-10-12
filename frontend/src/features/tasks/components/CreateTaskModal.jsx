@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   CheckSquare,
-  Calendar,
   User,
   FolderKanban,
   AlertCircle,
   Plus,
   Trash2,
-  Sparkles,
   Loader2,
 } from "lucide-react";
 import {
@@ -36,31 +34,13 @@ export const CreateTaskModal = ({
   const [assigneeId, setAssigneeId] = useState("");
   const [subtasks, setSubtasks] = useState([]);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
-
   const [projects, setProjects] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingOptions, setLoadingOptions] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (isOpen) {
-      setTitle("");
-      setDescription("");
-      setStatus(defaultStatus || "TODO");
-      setPriority("MEDIUM");
-      setDueDate("");
-      setProjectId("");
-      setAssigneeId("");
-      setSubtasks([]);
-      setNewSubtaskTitle("");
-      setError("");
-
-      loadDropdownData();
-    }
-  }, [isOpen, defaultStatus]);
-
-  const loadDropdownData = async () => {
+  const loadDropdownData = useCallback(async () => {
     try {
       setLoadingOptions(true);
       const [projRes, empRes] = await Promise.allSettled([
@@ -79,7 +59,24 @@ export const CreateTaskModal = ({
     } finally {
       setLoadingOptions(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTitle("");
+      setDescription("");
+      setStatus(defaultStatus || "TODO");
+      setPriority("MEDIUM");
+      setDueDate("");
+      setProjectId("");
+      setAssigneeId("");
+      setSubtasks([]);
+      setNewSubtaskTitle("");
+      setError("");
+
+      loadDropdownData();
+    }
+  }, [isOpen, defaultStatus, loadDropdownData]);
 
   const handleAddSubtask = () => {
     if (!newSubtaskTitle.trim()) return;

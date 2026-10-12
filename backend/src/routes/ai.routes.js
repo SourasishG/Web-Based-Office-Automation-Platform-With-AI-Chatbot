@@ -27,6 +27,7 @@ router.post("/chat", validate(chatSchema), aiController.chat);
  * @access  Private
  */
 router.get("/briefing", aiController.getBriefing);
+router.post("/briefing", aiController.getBriefing);
 
 /**
  * @route   POST /api/v1/ai/summarize-email

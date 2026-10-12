@@ -10,7 +10,6 @@ export const HerricMarkdown = ({ content = "" }) => {
   const lines = content.split("\n");
   const renderedElements = [];
 
-  let inList = false;
   let currentList = [];
 
   const flushList = (key) => {
@@ -26,7 +25,6 @@ export const HerricMarkdown = ({ content = "" }) => {
         </ul>
       );
       currentList = [];
-      inList = false;
     }
   };
 
@@ -42,7 +40,7 @@ export const HerricMarkdown = ({ content = "" }) => {
     while (remaining.length > 0) {
       const match = remaining.match(regex);
       if (!match) {
-        parts.push(<React.Fragment key={keyIdx++}>{remaining}</React.Fragment>);
+        parts.push(<React.Fragment key={keyIdx}>{remaining}</React.Fragment>);
         break;
       }
 
@@ -132,7 +130,6 @@ export const HerricMarkdown = ({ content = "" }) => {
 
     // Bullet points (- or *)
     if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
-      inList = true;
       currentList.push(trimmed.substring(2));
       return;
     }
