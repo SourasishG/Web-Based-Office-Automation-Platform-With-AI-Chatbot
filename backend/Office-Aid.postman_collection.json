@@ -403,6 +403,105 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "5. IT Helpdesk Tickets",
+      "item": [
+        {
+          "name": "Get Tickets (Queue List)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tickets?category=all&status=all&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets"],
+              "query": [
+                { "key": "category", "value": "all" },
+                { "key": "status", "value": "all" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Lists IT support tickets with requester, assignee, and SLA countdown info."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket Queue Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tickets/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets", "stats"]
+            },
+            "description": "Calculates open queue, in progress, critical escalations, and SLA breached counts."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket Kanban Board",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tickets/kanban",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets", "kanban"]
+            },
+            "description": "Returns support tickets categorized into OPEN, IN_PROGRESS, REVIEW, and RESOLVED."
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Support Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"🔑 AWS Staging Bastion SSH Key Expired\",\n  \"description\": \"Unable to connect to staging database via bastion host due to expired RSA public key.\",\n  \"category\": \"ACCESS_SECURITY\",\n  \"priority\": \"HIGH\",\n  \"slaHours\": 12\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tickets",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets"]
+            },
+            "description": "Submits a new support ticket and sets calculated SLA deadline."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

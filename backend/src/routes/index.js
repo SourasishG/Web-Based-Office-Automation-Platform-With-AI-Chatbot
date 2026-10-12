@@ -4,6 +4,7 @@ import authRouter from "./auth.routes.js";
 import employeeRouter from "./employee.routes.js";
 import projectRouter from "./project.routes.js";
 import taskRouter from "./task.routes.js";
+import ticketRouter from "./ticket.routes.js";
 
 const router = Router();
 
@@ -13,5 +14,6 @@ router.use("/auth", authRouter);
 router.use("/employees", employeeRouter);
 router.use("/projects", projectRouter);
 router.use("/tasks", taskRouter);
+router.use("/tickets", ticketRouter);
 
 export default router;
