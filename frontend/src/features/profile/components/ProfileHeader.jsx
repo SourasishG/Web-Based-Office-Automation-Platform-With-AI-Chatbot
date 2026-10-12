@@ -36,73 +36,76 @@ export const ProfileHeader = ({ user, onEditClick, onMessageClick }) => {
     <GlassCard
       variant="floating"
       glow="cyan"
-      className="p-6 sm:p-8 relative overflow-hidden flex flex-col md:flex-row items-center md:items-start justify-between gap-6"
+      className="p-6 sm:p-8 relative overflow-hidden"
     >
       {/* Background Ambient Radial Glow */}
       <div className="absolute -top-20 -left-20 w-80 h-80 bg-gradient-to-tr from-cyan-500/20 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-      {/* Left: Large Avatar & Profile Identity */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
-        <GlassAvatar
-          src={avatar}
-          name={fullName}
-          size="2xl"
-          status={status}
-          glow
-          className="shrink-0"
-        />
+      {/* Main Flex Wrapper - places profile info on left and actions on right with generous padding */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 sm:gap-8">
+        {/* Left: Large Avatar & Profile Identity */}
+        <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5 sm:gap-6">
+          <GlassAvatar
+            src={avatar}
+            name={fullName}
+            size="2xl"
+            status={status}
+            glow
+            className="shrink-0"
+          />
 
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              {fullName}
-            </h1>
-            <GlassBadge variant="cyan" size="sm" icon={ShieldCheck}>
-              {verifiedBadge}
-            </GlassBadge>
-          </div>
-
-          <p className="text-sm font-medium text-slate-300">
-            {role} • <span className="text-cyan-400">{department}</span>
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-400 pt-1">
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span>{location}</span>
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                {fullName}
+              </h1>
+              <GlassBadge variant="cyan" size="sm" icon={ShieldCheck}>
+                {verifiedBadge}
+              </GlassBadge>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-              <span className="font-mono">{email}</span>
+
+            <p className="text-sm font-medium text-slate-300">
+              {role} • <span className="text-cyan-400">{department}</span>
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-400 pt-2 pb-1">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <span>{location}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <span className="font-mono">{email}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Right: Quick Action Buttons & Theme Toggle */}
-      <div className="relative z-10 flex flex-wrap items-center gap-3 shrink-0">
-        <ThemeToggle showLabel />
+        {/* Right: Quick Action Buttons & Theme Toggle with clean padding and separation */}
+        <div className="flex flex-wrap items-center gap-3 shrink-0 pt-5 md:pt-0 border-t border-white/10 md:border-t-0 w-full md:w-auto justify-start md:justify-end mt-2 md:mt-0">
+          <ThemeToggle showLabel />
 
-        <GlassButton
-          variant="outline"
-          size="md"
-          icon={MessageSquare}
-          onClick={onMessageClick}
-        >
-          Message
-        </GlassButton>
+          <GlassButton
+            variant="outline"
+            size="md"
+            icon={MessageSquare}
+            onClick={onMessageClick}
+          >
+            Message
+          </GlassButton>
 
-        <GlassButton
-          variant="primary"
-          size="md"
-          icon={Edit3}
-          onClick={onEditClick}
-        >
-          Edit Profile
-        </GlassButton>
+          <GlassButton
+            variant="primary"
+            size="md"
+            icon={Edit3}
+            onClick={onEditClick}
+          >
+            Edit Profile
+          </GlassButton>
+        </div>
       </div>
     </GlassCard>
   );
 };
 
-export default ProfileHeader;
+export default ProfileHeader;
