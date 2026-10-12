@@ -860,6 +860,143 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "10. Herric AI Assistant",
+      "item": [
+        {
+          "name": "Chat with Herric (Workspace Copilot)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Hi Herric, what meetings and priority tasks do I have on my radar today?\",\n  \"contextMode\": \"workspace\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai/chat",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "chat"]
+            },
+            "description": "Engage with Herric, the Office Aid AI Assistant with live awareness of the requesting user's tasks, meetings, tickets, and unread mail."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Executive Daily Briefing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/briefing",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "briefing"]
+            },
+            "description": "Retrieves Herric's personalized executive morning briefing including stats, sync agenda, priority tasks, and top 3 recommended actions."
+          },
+          "response": []
+        },
+        {
+          "name": "Summarize Email Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Urgent: Q3 Security Audit Compliance Submission Required\",\n  \"content\": \"Team, please ensure all access log reviews are signed off before 5pm today without exception. Staging environment credentials will be suspended for teams that do not comply.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai/summarize-email",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "summarize-email"]
+            },
+            "description": "Generates a structured executive summary with key points, deliverables, urgency rating, and recommended next steps."
+          },
+          "response": []
+        },
+        {
+          "name": "Draft Reply Copilot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Re: Q3 Security Audit Compliance Submission Required\",\n  \"instructions\": \"Confirm our engineering team has signed off on all access logs 2 hours ahead of the deadline.\",\n  \"tone\": \"PROFESSIONAL\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai/draft-reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "draft-reply"]
+            },
+            "description": "Drafts an executive workplace email response adhering to specified tone (PROFESSIONAL, CASUAL, CONCISE, URGENT) and instructions."
+          },
+          "response": []
+        },
+        {
+          "name": "IT Ticket Diagnostic Assist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"GlobalProtect VPN 504 Gateway Timeout on corporate Wi-Fi\",\n  \"description\": \"Periodic disconnects every 15 minutes when connecting from corporate subnet to internal staging cluster.\",\n  \"category\": \"ACCESS_SECURITY\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai/ticket-assist",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "ticket-assist"]
+            },
+            "description": "Performs diagnostic root-cause hypothesis, generates step-by-step troubleshooting protocol, draft user response, and priority recommendation."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
