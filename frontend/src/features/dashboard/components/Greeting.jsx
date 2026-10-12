@@ -4,6 +4,7 @@ import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";
 import useAiAssistant from "../../../hooks/useAiAssistant";
+import useAuth from "../../../hooks/useAuth";
 
 /**
  * Greeting - Apple Liquid Glass Hero Greeting Banner
@@ -14,6 +15,7 @@ import useAiAssistant from "../../../hooks/useAiAssistant";
 export const Greeting = ({ user }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { openAssistant } = useAiAssistant();
+  const { user: authUser } = useAuth();
 
   // Live Second-by-Second Clock Ticker
   useEffect(() => {
@@ -71,8 +73,10 @@ export const Greeting = ({ user }) => {
     year: "numeric",
   });
 
-  const userName = user?.name || "Sourasish";
-  const userRole = user?.role || "Administrator";
+  const userName = authUser?.firstName
+    ? `${authUser.firstName} ${authUser.lastName}`
+    : (user?.name || "Sourasish");
+  const userRole = authUser?.jobTitle || authUser?.role || (user?.role || "Administrator");
 
   return (
     <GlassPanel
@@ -132,7 +136,7 @@ export const Greeting = ({ user }) => {
         </div>
 
         <GlassButton variant="primary" size="sm" icon={Sparkles} onClick={openAssistant}>
-          Ask AI Assistant
+          Ask Herric AI
         </GlassButton>
       </div>
     </GlassPanel>
