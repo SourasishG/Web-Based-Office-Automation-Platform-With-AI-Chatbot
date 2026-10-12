@@ -1,19 +1,24 @@
-import { Video, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { Video, Clock, CheckCircle2, Calendar } from "lucide-react";
 import { GlassCard, GlassBadge } from "../../../components/ui";
 
 /**
  * MeetingStats - Apple Liquid Glass Executive Meeting KPI Deck
- * Displays key statistical metrics for today's, upcoming, completed, and cancelled meetings.
+ * Displays key statistical metrics for today's, upcoming, completed, and total meetings.
  * 
  * @param {Array<object> | object} stats - Meeting statistics dataset
  */
 export const MeetingStats = ({ stats }) => {
-  // Fallback Meeting KPI Data
+  // If stats is an object from backend
+  const todayVal = stats?.todayCount ?? stats?.todays ?? "0";
+  const upcomingVal = stats?.upcomingCount ?? stats?.upcoming ?? "0";
+  const completedVal = stats?.completedCount ?? stats?.completed ?? "0";
+  const totalVal = stats?.total ?? "0";
+
   const defaultStats = [
     {
       id: "todays",
       title: "Today's Meetings",
-      value: "2",
+      value: String(todayVal),
       badge: "Active Today",
       badgeVariant: "cyan",
       icon: Video,
@@ -22,28 +27,28 @@ export const MeetingStats = ({ stats }) => {
     {
       id: "upcoming",
       title: "Upcoming Syncs",
-      value: "5",
+      value: String(upcomingVal),
       badge: "Scheduled",
       badgeVariant: "primary",
       icon: Clock,
-      glow: "none",
+      glow: "blue",
     },
     {
       id: "completed",
       title: "Completed",
-      value: "12",
-      badge: "This Week",
+      value: String(completedVal),
+      badge: "Archived",
       badgeVariant: "success",
       icon: CheckCircle2,
       glow: "none",
     },
     {
-      id: "cancelled",
-      title: "Cancelled",
-      value: "1",
-      badge: "This Month",
-      badgeVariant: "ghost",
-      icon: XCircle,
+      id: "total",
+      title: "Total Syncs",
+      value: String(totalVal),
+      badge: "Workspace",
+      badgeVariant: "purple",
+      icon: Calendar,
       glow: "none",
     },
   ];

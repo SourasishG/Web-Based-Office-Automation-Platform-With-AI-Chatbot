@@ -6,17 +6,36 @@ import { GlassCard } from "../../../components/ui/GlassCard";
  * TicketStatsWidget - Top Metric Cards for IT Helpdesk & Support Tickets
  * 
  * @param {Array} tickets - Array of support ticket records
+ * @param {object} statsData - Pre-calculated metrics from backend stats endpoint
  */
-export const TicketStatsWidget = ({ tickets = [] }) => {
+export const TicketStatsWidget = ({ tickets = [], statsData }) => {
   const stats = useMemo(() => {
+    if (statsData) {
+      return {
+        total: statsData.total !== undefined ? statsData.total : tickets.length,
+        open: statsData.openCount !== undefined ? statsData.openCount : 0,
+        inProgress:
+          (statsData.inProgressCount || 0) + (statsData.reviewCount || 0),
+        critical: statsData.criticalCount !== undefined ? statsData.criticalCount : 0,
+        resolved: statsData.resolvedCount !== undefined ? statsData.resolvedCount : 0,
+      };
+    }
+
+    const norm = (s) => (s || "").toUpperCase().replace(/-/g, "_");
     const total = tickets.length;
-    const open = tickets.filter((t) => t.status === "open").length;
-    const inProgress = tickets.filter((t) => t.status === "in-progress" || t.status === "review").length;
-    const critical = tickets.filter((t) => t.priority === "Critical" && t.status !== "resolved").length;
-    const resolved = tickets.filter((t) => t.status === "resolved").length;
+    const open = tickets.filter((t) => norm(t.status) === "OPEN").length;
+    const inProgress = tickets.filter(
+      (t) => norm(t.status) === "IN_PROGRESS" || norm(t.status) === "REVIEW"
+    ).length;
+    const critical = tickets.filter(
+      (t) =>
+        (t.priority || "").toUpperCase() === "CRITICAL" &&
+        norm(t.status) !== "RESOLVED"
+    ).length;
+    const resolved = tickets.filter((t) => norm(t.status) === "RESOLVED").length;
 
     return { total, open, inProgress, critical, resolved };
-  }, [tickets]);
+  }, [tickets, statsData]);
 
   const cards = [
     {
@@ -41,7 +60,7 @@ export const TicketStatsWidget = ({ tickets = [] }) => {
       id: "in-progress",
       title: "In Progress / Review",
       value: stats.inProgress,
-      subtitle: "Active Agent Investigation",
+      subtitle: "Active Investigation",
       icon: CheckCircle2,
       glow: "purple",
       badgeText: "Under Way",
@@ -86,9 +105,7 @@ export const TicketStatsWidget = ({ tickets = [] }) => {
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 tracking-tight">
                 {card.value}
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                {card.subtitle}
-              </p>
+              <p className="text-xs text-slate-400 mt-1">{card.subtitle}</p>
             </div>
           </GlassCard>
         );

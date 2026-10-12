@@ -9,34 +9,36 @@ import TicketCard from "./TicketCard";
  * @param {function} onResolveTicket - Quick resolve handler
  */
 export const TicketKanban = ({ tickets = [], onSelectTicket, onResolveTicket }) => {
+  const normStatus = (s) => (s || "").toUpperCase().replace(/-/g, "_");
+
   const columns = [
     {
-      id: "open",
+      id: "OPEN",
       title: "Open Queue",
       icon: Clock,
       color: "text-cyan-400 border-cyan-400/30 bg-cyan-500/10",
-      tickets: tickets.filter((t) => t.status === "open"),
+      tickets: tickets.filter((t) => normStatus(t.status) === "OPEN"),
     },
     {
-      id: "in-progress",
+      id: "IN_PROGRESS",
       title: "In Progress",
       icon: RefreshCw,
       color: "text-amber-400 border-amber-400/30 bg-amber-500/10",
-      tickets: tickets.filter((t) => t.status === "in-progress"),
+      tickets: tickets.filter((t) => normStatus(t.status) === "IN_PROGRESS"),
     },
     {
-      id: "review",
+      id: "REVIEW",
       title: "Under Review",
       icon: AlertCircle,
       color: "text-purple-400 border-purple-400/30 bg-purple-500/10",
-      tickets: tickets.filter((t) => t.status === "review"),
+      tickets: tickets.filter((t) => normStatus(t.status) === "REVIEW"),
     },
     {
-      id: "resolved",
+      id: "RESOLVED",
       title: "Resolved",
       icon: CheckCircle2,
       color: "text-emerald-400 border-emerald-400/30 bg-emerald-500/10",
-      tickets: tickets.filter((t) => t.status === "resolved"),
+      tickets: tickets.filter((t) => normStatus(t.status) === "RESOLVED"),
     },
   ];
 

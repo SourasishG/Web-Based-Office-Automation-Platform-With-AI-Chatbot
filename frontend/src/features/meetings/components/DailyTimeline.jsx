@@ -14,93 +14,56 @@ import TimelineItem from "./TimelineItem";
  * @param {string} activeTab - Active filter tab ('all', 'today', 'upcoming', 'completed')
  */
 export const DailyTimeline = ({ schedule = [], searchTerm = "", activeTab = "all" }) => {
-  // Fallback Daily Timeline Events
-  const defaultTimeline = [
-    {
-      id: "tl-1",
-      time: "09:00 AM",
-      duration: "30 min",
-      title: "Executive Morning Operational Briefing",
-      description: "Daily review of key workspace indicators, tickets, and operational health.",
-      location: "Google Meet",
-      type: "video",
-      status: "completed",
-      organizer: "Sourasish Ghosh",
-      attendees: [{ name: "Sourasish Ghosh" }, { name: "Ananya Roy" }],
-    },
-    {
-      id: "tl-2",
-      time: "10:00 AM",
-      duration: "30 min",
-      title: "Daily Engineering & Sprint Stand-up",
-      description: "Quick team sync on Liquid Glass UI migration, project blockers, and deployment targets.",
-      location: "Google Meet",
-      type: "video",
-      status: "in-progress",
-      organizer: "Ananya Roy",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Ananya Roy" },
-        { name: "Rahul Sharma" },
-      ],
-    },
-    {
-      id: "tl-3",
-      time: "11:30 AM",
-      duration: "60 min",
-      title: "AI Chatbot Assistant Architecture Review",
-      description: "Deep dive into LLM function calling, context window injection, and UI integration.",
-      location: "Conference Room B",
-      type: "room",
-      status: "upcoming",
-      organizer: "Priya Patel",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Priya Patel" },
-        { name: "Vikram Das" },
-      ],
-    },
-    {
-      id: "tl-4",
-      time: "02:00 PM",
-      duration: "45 min",
-      title: "Product Roadmap & Design System Sync",
-      description: "Reviewing Apple visionOS UI polish across Tasks, Meetings, and Profile features.",
-      location: "Google Meet",
-      type: "video",
-      status: "upcoming",
-      organizer: "Sourasish Ghosh",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Ananya Roy" },
-        { name: "Neha Sen" },
-      ],
-    },
-    {
-      id: "tl-5",
-      time: "04:00 PM",
-      duration: "30 min",
-      title: "Cyber Security Compliance Audit Briefing",
-      description: "Quarterly review of JWT authentication security, encryption, and API tokens.",
-      location: "Conference Room A",
-      type: "room",
-      status: "upcoming",
-      organizer: "Rahul Sharma",
-      attendees: [
-        { name: "Rahul Sharma" },
-        { name: "Sourasish Ghosh" },
-      ],
-    },
-  ];
+  // Normalize live meeting items
+  const normalizedSchedule = schedule.map((m) => {
+    const rawStatus = (m.status || "upcoming").toLowerCase().replace(/_/g, "-");
+    const mappedStatus =
+      rawStatus === "scheduled" ? "upcoming" : rawStatus;
 
-  const rawEvents = schedule.length > 0 ? schedule : defaultTimeline;
+    return {
+      id: m.id,
+      time: m.time || `${m.startTime || ""} - ${m.endTime || ""}`.trim() || "10:00 AM",
+      duration: m.duration || "30 min",
+      title: m.title,
+      description: m.description,
+      location:
+        m.location ||
+        (m.platform === "GOOGLE_MEET"
+          ? "Google Meet"
+          : m.platform === "ZOOM"
+          ? "Zoom"
+          : m.platform === "TEAMS"
+          ? "Microsoft Teams"
+          : "Virtual Room"),
+      type: "video",
+      status: mappedStatus,
+      organizer: m.host
+        ? `${m.host.firstName || ""} ${m.host.lastName || ""}`.trim()
+        : m.organizer?.name || m.organizer || "Host",
+      attendees: Array.isArray(m.attendees)
+        ? m.attendees.map((a) => ({
+            name: a.user
+              ? `${a.user.firstName || ""} ${a.user.lastName || ""}`.trim()
+              : a.name || "Attendee",
+            src: a.user?.avatarUrl || a.avatar,
+          }))
+        : [],
+      meetingLink: m.meetingLink,
+    };
+  });
 
   // Filter events by tab and search query
-  const filteredEvents = rawEvents.filter((event) => {
+  const filteredEvents = normalizedSchedule.filter((event) => {
     // Tab Filter
-    if (activeTab === "today" && event.status === "completed" && event.status === "cancelled") return false;
-    if (activeTab === "upcoming" && event.status !== "upcoming" && event.status !== "in-progress") return false;
-    if (activeTab === "completed" && event.status !== "completed") return false;
+    if (activeTab === "today" && (event.status === "completed" || event.status === "cancelled")) {
+      return false;
+    }
+    if (activeTab === "upcoming" && event.status !== "upcoming" && event.status !== "in-progress") {
+      return false;
+    }
+    if (activeTab === "completed" && event.status !== "completed") {
+      return false;
+    }
 
     // Search Query Filter
     if (!searchTerm) return true;

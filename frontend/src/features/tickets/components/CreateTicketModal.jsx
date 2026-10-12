@@ -1,66 +1,114 @@
-import { useState } from "react";
-import { Ticket, ShieldAlert, Sparkles, Building, CheckSquare } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Ticket,
+  ShieldAlert,
+  Sparkles,
+  Building,
+  CheckSquare,
+  User,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 import { GlassModal } from "../../../components/ui/GlassModal";
 import { GlassInput } from "../../../components/ui/GlassInput";
 import { GlassTextarea } from "../../../components/ui/GlassTextarea";
 import { GlassButton } from "../../../components/ui/GlassButton";
+import { GlassSelect } from "../../../components/ui/GlassSelect";
+import { ticketService } from "../../../services/ticketService";
+import { employeeService } from "../../../services/employeeService";
 
-/**
- * CreateTicketModal - Glass modal form interface to log new IT support tickets
- * 
- * @param {boolean} isOpen - Modal visibility state
- * @param {function} onClose - Modal close handler
- * @param {function} onSubmit - Submit callback (ticketData)
- */
 export const CreateTicketModal = ({
   isOpen = false,
   onClose,
-  onSubmit,
+  onTicketCreated,
 }) => {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("IT Infrastructure");
-  const [priority, setPriority] = useState("High");
+  const [category, setCategory] = useState("SOFTWARE_TOOLS");
+  const [priority, setPriority] = useState("HIGH");
   const [description, setDescription] = useState("");
+  const [assigneeId, setAssigneeId] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (isOpen) {
+      setTitle("");
+      setCategory("SOFTWARE_TOOLS");
+      setPriority("HIGH");
+      setDescription("");
+      setAssigneeId("");
+      setError("");
+
+      employeeService
+        .getAllEmployees()
+        .then((res) => {
+          const list = res?.data?.employees || res?.data || [];
+          setEmployees(list);
+        })
+        .catch((err) => console.warn("Failed to load employees for ticket modal:", err));
+    }
+  }, [isOpen]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
+    if (!title.trim() || !description.trim()) {
+      setError("Please fill out both the ticket title and description.");
+      return;
+    }
 
-    const newTicket = {
-      title: title.trim(),
-      description: description.trim(),
-      category: category,
-      priority: priority,
-      status: "open",
-      requester: {
-        name: "Sourasish Ghosh",
-        email: "sourasish.ghosh@officeaid.com",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
-        department: "Executive",
-      },
-      assignee: {
-        name: "Aarav Sharma",
-        email: "aarav.sharma@officeaid.com",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
-        role: "VP of Engineering",
-      },
-      slaTime: "4 hrs left",
-      createdDate: new Date().toISOString().split("T")[0],
-      createdTime: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      commentsCount: 0,
-    };
+    try {
+      setLoading(true);
+      setError("");
 
-    onSubmit(newTicket);
-    handleReset();
-    onClose();
+      const payload = {
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        priority,
+        assigneeId: assigneeId || undefined,
+      };
+
+      const res = await ticketService.createTicket(payload);
+      const createdTicket = res?.data || res;
+      if (onTicketCreated) {
+        onTicketCreated(createdTicket);
+      }
+      onClose();
+    } catch (err) {
+      console.error("Failed to submit ticket:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to submit ticket to helpdesk."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleReset = () => {
-    setTitle("");
-    setCategory("IT Infrastructure");
-    setPriority("High");
-    setDescription("");
-  };
+  const categoryOptions = [
+    { value: "SOFTWARE_TOOLS", label: "Software & Tools" },
+    { value: "ACCESS_SECURITY", label: "Access & Security" },
+    { value: "INFRASTRUCTURE", label: "IT Infrastructure" },
+    { value: "FACILITIES", label: "Facilities & Workplace" },
+    { value: "HR_OPS", label: "HR Operations" },
+  ];
+
+  const priorityOptions = [
+    { value: "CRITICAL", label: "Critical Priority (SLA: 4 hrs)" },
+    { value: "HIGH", label: "High Priority (SLA: 12 hrs)" },
+    { value: "MEDIUM", label: "Medium Priority (SLA: 24 hrs)" },
+    { value: "LOW", label: "Low Priority (SLA: 72 hrs)" },
+  ];
+
+  const assigneeOptions = [
+    { value: "", label: "Auto-assign to IT Pool" },
+    ...employees.map((e) => ({
+      value: e.id,
+      label: `${e.firstName || ""} ${e.lastName || ""}`.trim() || e.email,
+    })),
+  ];
 
   return (
     <GlassModal
@@ -69,9 +117,37 @@ export const CreateTicketModal = ({
       title="Submit IT Support Ticket"
       subtitle="Log technical issues, software requests, access permissions, or facility tickets."
       icon={Ticket}
-      maxWidth="max-w-2xl"
+      maxWidth="2xl"
+      footer={
+        <div className="flex items-center justify-end gap-3 w-full">
+          <GlassButton
+            variant="ghost"
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancel
+          </GlassButton>
+          <GlassButton
+            variant="primary"
+            type="button"
+            icon={loading ? Loader2 : Sparkles}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Submitting..." : "Submit Ticket"}
+          </GlassButton>
+        </div>
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {/* Ticket Title */}
         <GlassInput
           label="Ticket Title *"
@@ -84,39 +160,33 @@ export const CreateTicketModal = ({
 
         {/* Category & Priority Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <Building className="w-3.5 h-3.5 text-cyan-400" /> Category Tag
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400/60"
-            >
-              <option value="IT Infrastructure" className="bg-slate-900">IT Infrastructure</option>
-              <option value="Access & Security" className="bg-slate-900">Access & Security</option>
-              <option value="Software & Tools" className="bg-slate-900">Software & Tools</option>
-              <option value="Facilities" className="bg-slate-900">Facilities</option>
-              <option value="HR Operations" className="bg-slate-900">HR Operations</option>
-            </select>
-          </div>
+          <GlassSelect
+            label="Category Tag"
+            icon={Building}
+            options={categoryOptions}
+            value={category}
+            onChange={(val) => setCategory(val)}
+          />
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> Priority Level
-            </label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400/60"
-            >
-              <option value="Critical" className="bg-slate-900">Critical Priority (SLA: 2 hrs)</option>
-              <option value="High" className="bg-slate-900">High Priority (SLA: 6 hrs)</option>
-              <option value="Medium" className="bg-slate-900">Medium Priority (SLA: 24 hrs)</option>
-              <option value="Low" className="bg-slate-900">Low Priority (SLA: 48 hrs)</option>
-            </select>
-          </div>
+          <GlassSelect
+            label="Priority Level"
+            icon={ShieldAlert}
+            options={priorityOptions}
+            value={priority}
+            onChange={(val) => setPriority(val)}
+          />
         </div>
+
+        {/* Assignee Picker */}
+        <GlassSelect
+          label="Assign Support Engineer (Optional)"
+          icon={User}
+          options={assigneeOptions}
+          value={assigneeId}
+          onChange={(val) => setAssigneeId(val)}
+          searchable
+          placeholder="Select an engineer..."
+        />
 
         {/* Detailed Issue Description */}
         <GlassTextarea
@@ -127,16 +197,6 @@ export const CreateTicketModal = ({
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-
-        {/* Action Buttons */}
-        <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/10">
-          <GlassButton variant="ghost" type="button" onClick={onClose}>
-            Cancel
-          </GlassButton>
-          <GlassButton variant="primary" type="submit" icon={Sparkles}>
-            Submit Ticket
-          </GlassButton>
-        </div>
       </form>
     </GlassModal>
   );
