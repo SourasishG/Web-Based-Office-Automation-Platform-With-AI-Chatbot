@@ -26,7 +26,19 @@ export const MeetingCard = ({ meeting, onJoin }) => {
     type = "video",
     category,
     attendees = [],
+    meetingLink,
   } = meeting;
+
+  const handleJoin = (e) => {
+    e.stopPropagation();
+    if (onJoin) {
+      onJoin(meeting);
+    } else if (meetingLink) {
+      window.open(meetingLink, "_blank", "noopener,noreferrer");
+    } else {
+      window.open("https://meet.google.com", "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
     <GlassCard
@@ -100,10 +112,7 @@ export const MeetingCard = ({ meeting, onJoin }) => {
           variant="ghost"
           size="sm"
           rightIcon={ExternalLink}
-          onClick={(e) => {
-            e.stopPropagation();
-            onJoin?.(meeting);
-          }}
+          onClick={handleJoin}
         >
           Join
         </GlassButton>

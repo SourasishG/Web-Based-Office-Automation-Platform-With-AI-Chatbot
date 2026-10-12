@@ -53,6 +53,22 @@ export const EmailList = ({
       {emails.map((email) => {
         const isSelected = selectedEmailId === email.id;
 
+        const senderName = email.sender
+          ? `${email.sender.firstName || ""} ${email.sender.lastName || ""}`.trim() ||
+            email.sender.name ||
+            "Colleague"
+          : "Colleague";
+        const senderAvatar = email.sender?.avatarUrl || email.sender?.avatar;
+
+        const displayTime = email.createdAt
+          ? new Date(email.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })
+          : email.timestamp || email.date || "";
+
+        const snippetText = email.snippet || email.body?.slice(0, 80) || "";
+
         return (
           <div
             key={email.id}
@@ -77,8 +93,8 @@ export const EmailList = ({
             {/* Left Content: Avatar & Identity */}
             <div className="flex items-start gap-3 pl-2 min-w-0">
               <GlassAvatar
-                src={email.sender.avatar}
-                name={email.sender.name}
+                src={senderAvatar}
+                name={senderName}
                 size="md"
                 className="shrink-0 mt-0.5"
               />
@@ -87,14 +103,16 @@ export const EmailList = ({
                 {/* Header: Sender Name & Category Badge */}
                 <div className="flex items-center gap-2 flex-wrap">
                   <h4 className={`text-sm tracking-tight truncate ${!email.isRead ? "font-extrabold text-white" : "font-medium text-slate-200"}`}>
-                    {email.sender.name}
+                    {senderName}
                   </h4>
-                  <GlassBadge
-                    variant={getCategoryVariant(email.category)}
-                    size="sm"
-                  >
-                    {email.category}
-                  </GlassBadge>
+                  {email.category && (
+                    <GlassBadge
+                      variant={getCategoryVariant(email.category)}
+                      size="sm"
+                    >
+                      {email.category}
+                    </GlassBadge>
+                  )}
                 </div>
 
                 {/* Subject */}
@@ -104,15 +122,15 @@ export const EmailList = ({
 
                 {/* Snippet Preview */}
                 <p className="text-xs text-slate-400 mt-1 line-clamp-1">
-                  {email.snippet}
+                  {snippetText}
                 </p>
               </div>
             </div>
 
             {/* Right Meta: Date & Star Trigger */}
             <div className="flex flex-col items-end gap-2 shrink-0">
-              <span className="text-[11px] font-medium text-slate-400">
-                {email.timestamp}
+              <span className="text-[11px] font-medium text-slate-400 font-mono">
+                {displayTime}
               </span>
 
               <button

@@ -1,177 +1,232 @@
-import { useState } from "react";
-import { Mail, Sparkles, Send, FileText, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Mail, Sparkles, Send, FileText, User, AlertCircle, Loader2 } from "lucide-react";
 import { GlassModal } from "../../../components/ui/GlassModal";
 import { GlassInput } from "../../../components/ui/GlassInput";
 import { GlassTextarea } from "../../../components/ui/GlassTextarea";
 import { GlassButton } from "../../../components/ui/GlassButton";
+import { GlassSelect } from "../../../components/ui/GlassSelect";
+import { employeeService } from "../../../services/employeeService";
+import { aiService } from "../../../services/aiService";
 
-/**
- * ComposeEmailModal - Glass modal interface for drafting and sending internal corporate emails
- * 
- * @param {boolean} isOpen - Modal open state
- * @param {function} onClose - Modal close handler callback
- * @param {function} onSend - Send email callback (emailData)
- * @param {function} onSaveDraft - Save draft callback (emailData)
- */
 export const ComposeEmailModal = ({
   isOpen = false,
   onClose,
   onSend,
   onSaveDraft,
 }) => {
-  const [recipient, setRecipient] = useState("");
+  const [recipientId, setRecipientId] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [category, setCategory] = useState("Project Sync");
   const [body, setBody] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingAi, setLoadingAi] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleAiDraft = () => {
-    if (category === "Announcement") {
-      setSubject("📢 Workplace Update: Q4 Milestones & Team Sync");
-      setBody(
-        `Dear All,\n\nWe are excited to share key updates regarding our upcoming project sprint milestones. Thanks to everyone for their hard work.\n\nBest,\nSourasish Ghosh`
-      );
-    } else if (category === "IT Alert") {
-      setSubject("⚡ IT Notice: Scheduled Server System Update");
-      setBody(
-        `Team,\n\nPlease note that IT maintenance will occur this weekend. System availability will resume immediately following update verification.\n\nRegards,\nIT Ops`
-      );
-    } else {
-      setSubject("🚀 Project Update & Milestone Status Report");
-      setBody(
-        `Hi Team,\n\nHere is a quick status update on our latest project sprint. All core deliverables remain on schedule for release.\n\nBest regards,\nSourasish Ghosh`
-      );
+  useEffect(() => {
+    if (isOpen) {
+      setRecipientId("");
+      setRecipientEmail("");
+      setSubject("");
+      setCategory("Project Sync");
+      setBody("");
+      setError("");
+
+      employeeService
+        .getAllEmployees()
+        .then((res) => {
+          const list = res?.data?.employees || res?.data || [];
+          setEmployees(list);
+        })
+        .catch((err) => console.warn("Failed to load employees for compose:", err));
+    }
+  }, [isOpen]);
+
+  const handleRecipientSelect = (val) => {
+    setRecipientId(val);
+    const found = employees.find((e) => e.id === val);
+    if (found) {
+      setRecipientEmail(found.email);
     }
   };
 
-  const handleSend = (e) => {
+  const handleAiDraft = async () => {
+    try {
+      setLoadingAi(true);
+      setError("");
+      const instructions = `Draft a workplace email regarding ${category}${subject ? `: "${subject}"` : ""}. Keep it polished, executive, and structured.`;
+      const res = await aiService.draftReply({
+        instructions,
+        tone: "PROFESSIONAL",
+      });
+      const draftText = res?.data?.draft || res?.draft || "";
+      if (draftText) {
+        setBody(draftText);
+        if (!subject.trim()) {
+          setSubject(`${category} Update & Next Steps`);
+        }
+      }
+    } catch (err) {
+      console.error("Herric AI draft error:", err);
+      // Fallback
+      setBody(
+        `Dear Team,\n\nHere is an update regarding our ongoing project milestones and next deliverables. Please review the details and let me know if you have any questions.\n\nBest regards,\nOffice Aid Team`
+      );
+      if (!subject.trim()) {
+        setSubject(`${category} Status Update`);
+      }
+    } finally {
+      setLoadingAi(false);
+    }
+  };
+
+  const handleSend = async (e) => {
     e.preventDefault();
-    if (!recipient.trim() || !subject.trim() || !body.trim()) return;
+    if ((!recipientId && !recipientEmail.trim()) || !subject.trim() || !body.trim()) {
+      setError("Please specify a recipient, subject line, and message body.");
+      return;
+    }
 
-    const emailPayload = {
-      sender: {
-        name: "Sourasish Ghosh",
-        email: "sourasish.ghosh@officeaid.com",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
-        role: "CEO & Admin",
-      },
-      recipients: [recipient.trim()],
-      subject: subject.trim(),
-      snippet: body.trim().slice(0, 80) + "...",
-      body: body.trim(),
-      category: category,
-      folder: "sent",
-      isRead: true,
-      isStarred: false,
-      timestamp: "Just now",
-      date: new Date().toISOString().split("T")[0],
-    };
+    try {
+      setLoading(true);
+      setError("");
 
-    onSend(emailPayload);
-    handleReset();
-    onClose();
+      const payload = {
+        recipientId: recipientId || undefined,
+        recipientEmail: recipientEmail.trim() || undefined,
+        subject: subject.trim(),
+        body: body.trim(),
+        category,
+        folder: "INBOX",
+      };
+
+      await onSend(payload);
+      onClose();
+    } catch (err) {
+      console.error("Failed to send email:", err);
+      setError(err.response?.data?.message || "Failed to send email.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDraft = () => {
-    if (!subject.trim() && !body.trim()) return;
+  const handleDraft = async () => {
+    if (!subject.trim() && !body.trim()) {
+      setError("Please provide at least a subject or body for your draft.");
+      return;
+    }
 
-    const draftPayload = {
-      sender: {
-        name: "Sourasish Ghosh",
-        email: "sourasish.ghosh@officeaid.com",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
-        role: "CEO & Admin",
-      },
-      recipients: [recipient.trim() || "Unspecified"],
-      subject: subject.trim() || "(No Subject)",
-      snippet: body.trim().slice(0, 80) || "(Empty Draft)",
-      body: body.trim(),
-      category: category,
-      folder: "drafts",
-      isRead: true,
-      isStarred: false,
-      timestamp: "Draft",
-      date: new Date().toISOString().split("T")[0],
-    };
+    try {
+      setLoading(true);
+      const payload = {
+        recipientId: recipientId || undefined,
+        recipientEmail: recipientEmail.trim() || undefined,
+        subject: subject.trim() || "(No Subject)",
+        body: body.trim() || "(Empty Draft)",
+        category,
+        folder: "DRAFTS",
+      };
 
-    onSaveDraft(draftPayload);
-    handleReset();
-    onClose();
+      await onSaveDraft(payload);
+      onClose();
+    } catch (err) {
+      console.error("Failed to save draft:", err);
+      setError("Failed to save draft.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleReset = () => {
-    setRecipient("");
-    setSubject("");
-    setCategory("Project Sync");
-    setBody("");
-  };
+  const categoryOptions = [
+    { value: "Project Sync", label: "Project Sync" },
+    { value: "Announcement", label: "Announcement" },
+    { value: "IT Alert", label: "IT Alert" },
+    { value: "HR Operations", label: "HR Operations" },
+    { value: "General", label: "General" },
+  ];
+
+  const employeeOptions = employees.map((e) => ({
+    value: e.id,
+    label: `${e.firstName || ""} ${e.lastName || ""}`.trim() || e.email,
+  }));
 
   return (
     <GlassModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Compose Internal Email"
-      subtitle="Draft and send workplace communications, executive announcements, and department memos."
+      title="Compose Workplace Message"
+      subtitle="Draft corporate communication with Herric AI assistance"
       icon={Mail}
-      maxWidth="max-w-2xl"
+      maxWidth="2xl"
     >
       <form onSubmit={handleSend} className="space-y-4">
-        {/* Recipient & Category Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <GlassInput
-            label="To (Recipient Email) *"
+        {error && (
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Recipient Picker */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <GlassSelect
+            label="Recipient Colleague"
             icon={User}
-            placeholder="e.g. all-staff@officeaid.com"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            required
+            options={employeeOptions}
+            value={recipientId}
+            onChange={handleRecipientSelect}
+            searchable
+            placeholder="Select team member..."
           />
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              Category Tag
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400/60"
-            >
-              <option value="Project Sync" className="bg-slate-900">Project Sync</option>
-              <option value="Announcement" className="bg-slate-900">Announcement</option>
-              <option value="HR Memo" className="bg-slate-900">HR Memo</option>
-              <option value="IT Alert" className="bg-slate-900">IT Alert</option>
-              <option value="Meeting Minutes" className="bg-slate-900">Meeting Minutes</option>
-            </select>
-          </div>
+          <GlassInput
+            label="Or Direct Email"
+            placeholder="colleague@officeaid.com"
+            value={recipientEmail}
+            onChange={(e) => setRecipientEmail(e.target.value)}
+          />
         </div>
 
-        {/* Subject Line & AI Assistant Trigger */}
-        <div className="space-y-1">
-          <div className="flex items-center justify-between">
-            <label className="block text-xs font-medium text-slate-300">Subject Line *</label>
-            <GlassButton
-              variant="ghost"
-              size="sm"
-              icon={Sparkles}
-              type="button"
-              onClick={handleAiDraft}
-              className="text-[11px]"
-            >
-              Draft Template with AI
-            </GlassButton>
+        {/* Subject & Category Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="sm:col-span-2">
+            <GlassInput
+              label="Subject *"
+              placeholder="e.g. Q3 Performance Milestones & Strategic Sync"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              required
+            />
           </div>
 
-          <GlassInput
-            placeholder="e.g. Q4 Strategic Roadmap & Key Milestones"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            required
+          <GlassSelect
+            label="Category Tag"
+            options={categoryOptions}
+            value={category}
+            onChange={(val) => setCategory(val)}
           />
+        </div>
+
+        {/* Herric AI Drafter Trigger */}
+        <div className="flex items-center justify-between pt-1">
+          <span className="text-xs font-semibold text-slate-300">Message Content</span>
+          <GlassButton
+            type="button"
+            variant="ghost"
+            size="xs"
+            icon={loadingAi ? Loader2 : Sparkles}
+            onClick={handleAiDraft}
+            disabled={loadingAi}
+            className="text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/10"
+          >
+            {loadingAi ? "Herric Writing..." : "Draft with Herric"}
+          </GlassButton>
         </div>
 
         {/* Message Body */}
         <GlassTextarea
-          label="Message Body *"
-          placeholder="Write your email contents here..."
+          placeholder="Type your message or ask Herric to generate a draft..."
           rows={6}
           value={body}
           onChange={(e) => setBody(e.target.value)}
@@ -179,22 +234,33 @@ export const ComposeEmailModal = ({
         />
 
         {/* Action Buttons */}
-        <div className="pt-4 flex items-center justify-between border-t border-white/10">
+        <div className="pt-3 flex items-center justify-between border-t border-white/10">
           <GlassButton
             variant="ghost"
             type="button"
             icon={FileText}
             onClick={handleDraft}
+            disabled={loading}
           >
-            Save Draft
+            Save as Draft
           </GlassButton>
 
-          <div className="flex items-center gap-3">
-            <GlassButton variant="ghost" type="button" onClick={onClose}>
+          <div className="flex items-center gap-2">
+            <GlassButton
+              variant="outline"
+              type="button"
+              onClick={onClose}
+              disabled={loading}
+            >
               Cancel
             </GlassButton>
-            <GlassButton variant="primary" type="submit" icon={Send}>
-              Send Email
+            <GlassButton
+              variant="primary"
+              type="submit"
+              icon={loading ? Loader2 : Send}
+              disabled={loading}
+            >
+              {loading ? "Sending..." : "Send Message"}
             </GlassButton>
           </div>
         </div>

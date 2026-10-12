@@ -23,9 +23,19 @@ export const NotificationCard = ({ notification, onToggleRead, onDelete }) => {
     priority,
     isRead,
     timestamp,
+    createdAt,
     actionUrl,
     sender,
   } = notification;
+
+  const displayTime = createdAt
+    ? new Date(createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : timestamp || "Just now";
 
   // Category Icon & Tone Helper
   const getCategoryIcon = (cat) => {
@@ -118,8 +128,8 @@ export const NotificationCard = ({ notification, onToggleRead, onDelete }) => {
 
         {/* Right Section: Timestamp & Actions */}
         <div className="flex flex-col items-end justify-between gap-3 shrink-0 self-stretch">
-          <span className="text-[11px] font-medium text-slate-400">
-            {timestamp}
+          <span className="text-[11px] font-medium text-slate-400 font-mono">
+            {displayTime}
           </span>
 
           <div className="flex items-center gap-1">

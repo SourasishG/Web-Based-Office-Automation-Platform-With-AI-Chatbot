@@ -12,63 +12,50 @@ import MeetingCard from "./MeetingCard";
  * 
  * @param {Array<object>} meetings - List of upcoming meeting objects
  * @param {string} searchTerm - Search query filter
+ * @param {function} onJoinMeeting - Join callback handler
  */
-export const UpcomingMeetings = ({ meetings = [], searchTerm = "" }) => {
-  // Fallback Upcoming Meetings Data
-  const defaultMeetings = [
-    {
-      id: "meet-1",
-      title: "Daily Stand-up & Sprint Planning",
-      organizer: { name: "Sourasish Ghosh", role: "Admin" },
-      time: "10:00 AM - 10:30 AM",
-      date: "21 Jul 2026",
-      type: "video",
-      location: "Google Meet",
-      status: "upcoming",
-      category: "Stand-up",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Ananya Roy" },
-        { name: "Rahul Sharma" },
-      ],
-    },
-    {
-      id: "meet-2",
-      title: "AI Assistant Integration Architecture",
-      organizer: { name: "Priya Patel", role: "AI Lead" },
-      time: "02:00 PM - 03:00 PM",
-      date: "22 Jul 2026",
-      type: "room",
-      location: "Conference Room B",
-      status: "upcoming",
-      category: "Architecture",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Priya Patel" },
-        { name: "Vikram Das" },
-      ],
-    },
-    {
-      id: "meet-3",
-      title: "Q3 Design System & UI Review",
-      organizer: { name: "Ananya Roy", role: "Design Lead" },
-      time: "04:30 PM - 05:30 PM",
-      date: "24 Jul 2026",
-      type: "video",
-      location: "Google Meet",
-      status: "upcoming",
-      category: "Design Sync",
-      attendees: [
-        { name: "Ananya Roy" },
-        { name: "Sourasish Ghosh" },
-      ],
-    },
-  ];
-
-  const rawMeetings = meetings.length > 0 ? meetings : defaultMeetings;
+export const UpcomingMeetings = ({ meetings = [], searchTerm = "", onJoinMeeting }) => {
+  const normalizedMeetings = meetings.map((m) => ({
+    id: m.id,
+    title: m.title,
+    organizer: m.host
+      ? {
+          name: `${m.host.firstName || ""} ${m.host.lastName || ""}`.trim(),
+          avatar: m.host.avatarUrl,
+        }
+      : m.organizer || { name: "Host" },
+    time: m.time || `${m.startTime || ""} - ${m.endTime || ""}`.trim(),
+    date: m.date
+      ? new Date(m.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })
+      : m.date,
+    type: "video",
+    location:
+      m.location ||
+      (m.platform === "GOOGLE_MEET"
+        ? "Google Meet"
+        : m.platform === "ZOOM"
+        ? "Zoom"
+        : m.platform === "TEAMS"
+        ? "Microsoft Teams"
+        : "Virtual"),
+    status: (m.status || "upcoming").toLowerCase(),
+    category: m.category || (m.platform ? m.platform.replace(/_/g, " ") : "Sync"),
+    attendees: Array.isArray(m.attendees)
+      ? m.attendees.map((a) => ({
+          name: a.user
+            ? `${a.user.firstName || ""} ${a.user.lastName || ""}`.trim()
+            : a.name,
+          src: a.user?.avatarUrl || a.avatar,
+        }))
+      : [],
+    meetingLink: m.meetingLink,
+  }));
 
   // Filter meetings by search query
-  const filteredMeetings = rawMeetings.filter((item) => {
+  const filteredMeetings = normalizedMeetings.filter((item) => {
     if (!searchTerm) return true;
     const query = searchTerm.toLowerCase();
     return (
@@ -97,7 +84,11 @@ export const UpcomingMeetings = ({ meetings = [], searchTerm = "" }) => {
       <div className="space-y-3.5">
         {filteredMeetings.length > 0 ? (
           filteredMeetings.map((meeting, idx) => (
-            <MeetingCard key={meeting.id || idx} meeting={meeting} />
+            <MeetingCard
+              key={meeting.id || idx}
+              meeting={meeting}
+              onJoin={onJoinMeeting}
+            />
           ))
         ) : (
           <div className="py-12 flex flex-col items-center justify-center text-center text-slate-400">
@@ -109,7 +100,7 @@ export const UpcomingMeetings = ({ meetings = [], searchTerm = "" }) => {
 
       {/* Bottom Footer Action */}
       <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-        <span className="text-xs text-slate-400 font-medium">Auto-synced with Outlook</span>
+        <span className="text-xs text-slate-400 font-medium">Auto-synced with Calendar</span>
         <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight}>
           View Calendar
         </GlassButton>

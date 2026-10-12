@@ -1,5 +1,5 @@
 import { Briefcase, Play, CheckCircle2, PauseCircle } from "lucide-react";
-import { GlassCard, GlassBadge } from "../../../components/ui";
+import { GlassCard } from "../../../components/ui";
 
 /**
  * ProjectStats - Apple Liquid Glass Executive Project KPI Deck
@@ -9,24 +9,28 @@ import { GlassCard, GlassBadge } from "../../../components/ui";
  * @param {Array<object>|object} statsData - Optional precomputed statistics data
  */
 export const ProjectStats = ({ projects = [], statsData }) => {
-  // Compute dynamic stats if statsData is not directly provided
-  const totalCount = projects.length || 8;
-  const activeCount = projects.filter(
-    (p) => (p.status || "").toLowerCase() === "active"
-  ).length || 4;
-  const completedCount = projects.filter(
-    (p) => (p.status || "").toLowerCase() === "completed"
-  ).length || 2;
-  const onHoldCount = projects.filter(
-    (p) => (p.status || "").toLowerCase() === "on-hold" || (p.status || "").toLowerCase() === "on hold"
-  ).length || 1;
+  const normStatus = (s) => (s || "").toUpperCase().replace(/[\s-]+/g, "_");
 
-  // Fallback / Computed KPI Items
+  const totalCount =
+    statsData?.total !== undefined ? statsData.total : projects.length;
+  const activeCount =
+    statsData?.activeCount !== undefined
+      ? statsData.activeCount
+      : projects.filter((p) => normStatus(p.status) === "ACTIVE").length;
+  const completedCount =
+    statsData?.completedCount !== undefined
+      ? statsData.completedCount
+      : projects.filter((p) => normStatus(p.status) === "COMPLETED").length;
+  const onHoldCount =
+    statsData?.onHoldCount !== undefined
+      ? statsData.onHoldCount
+      : projects.filter((p) => normStatus(p.status) === "ON_HOLD").length;
+
   const defaultStats = [
     {
       id: "total",
       title: "Total Projects",
-      value: totalCount.toString(),
+      value: String(totalCount),
       badge: "All Tracked",
       badgeVariant: "cyan",
       icon: Briefcase,
@@ -35,7 +39,7 @@ export const ProjectStats = ({ projects = [], statsData }) => {
     {
       id: "active",
       title: "Active Projects",
-      value: activeCount.toString(),
+      value: String(activeCount),
       badge: "In Progress",
       badgeVariant: "primary",
       icon: Play,
@@ -44,7 +48,7 @@ export const ProjectStats = ({ projects = [], statsData }) => {
     {
       id: "completed",
       title: "Completed",
-      value: completedCount.toString(),
+      value: String(completedCount),
       badge: "Delivered",
       badgeVariant: "success",
       icon: CheckCircle2,
@@ -53,7 +57,7 @@ export const ProjectStats = ({ projects = [], statsData }) => {
     {
       id: "on-hold",
       title: "On Hold",
-      value: onHoldCount.toString(),
+      value: String(onHoldCount),
       badge: "Paused",
       badgeVariant: "warning",
       icon: PauseCircle,
@@ -75,16 +79,16 @@ export const ProjectStats = ({ projects = [], statsData }) => {
             hoverable
             className="flex flex-col justify-between h-full relative overflow-hidden group p-5"
           >
-            {/* Top Row: Metric Icon & Status Badge */}
+            {/* Top Row: Icon & Status Badge */}
             <div className="flex items-center justify-between gap-3 mb-4">
               <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
                 <Icon className="w-5 h-5" />
               </div>
 
               {stat.badge && (
-                <GlassBadge variant={stat.badgeVariant || "cyan"} size="sm">
+                <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-400/20">
                   {stat.badge}
-                </GlassBadge>
+                </span>
               )}
             </div>
 

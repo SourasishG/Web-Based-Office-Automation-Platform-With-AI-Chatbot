@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import EmailsHeader from "./components/EmailsHeader";
@@ -6,19 +6,22 @@ import EmailSidebar from "./components/EmailSidebar";
 import EmailList from "./components/EmailList";
 import EmailDetailView from "./components/EmailDetailView";
 import ComposeEmailModal from "./components/ComposeEmailModal";
-
+import { emailService } from "../../services/emailService";
 import initialEmails from "./data/emailData";
+import { Loader2 } from "lucide-react";
 
 /**
  * Emails - Apple Liquid Glass Master Email & Communications Feature Page
- * Assembles header control bar, folder navigation sidebar, message list, detail reading pane, and compose modal.
+ * Connected to live Express 5 backend with Herric AI summarization and auto-draft reply.
  */
 export const Emails = () => {
-  const [emails, setEmails] = useState(initialEmails);
+  const [emails, setEmails] = useState([]);
+  const [folderCounts, setFolderCounts] = useState({ inboxUnread: 0, starred: 0, drafts: 0 });
   const [activeFolder, setActiveFolder] = useState("inbox"); // 'inbox', 'sent', 'starred', 'drafts', 'trash'
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [selectedEmailId, setSelectedEmailId] = useState("MAIL-201");
+  const [selectedEmailId, setSelectedEmailId] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Modal & Toast state
   const [isComposeOpen, setIsComposeOpen] = useState(false);
@@ -29,24 +32,54 @@ export const Emails = () => {
     setTimeout(() => setToastMessage(""), 3500);
   };
 
-  // Folder and Unread Counters
-  const counts = useMemo(() => {
-    const inboxUnread = emails.filter((e) => e.folder === "inbox" && !e.isRead).length;
-    const starred = emails.filter((e) => e.isStarred).length;
-    const drafts = emails.filter((e) => e.folder === "drafts").length;
-    return { inboxUnread, starred, drafts };
-  }, [emails]);
+  const fetchEmailData = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const folderParam =
+        activeFolder === "starred"
+          ? "STARRED"
+          : activeFolder.toUpperCase();
+
+      const [emailsRes, countsRes] = await Promise.allSettled([
+        emailService.getEmails({ folder: folderParam, limit: 100 }),
+        emailService.getFolderCounts(),
+      ]);
+
+      if (emailsRes.status === "fulfilled" && emailsRes.value?.data) {
+        const liveEmails =
+          emailsRes.value.data.emails ||
+          (Array.isArray(emailsRes.value.data) ? emailsRes.value.data : []);
+        const list = liveEmails.length > 0 ? liveEmails : initialEmails;
+        setEmails(list);
+        if (!selectedEmailId && list.length > 0) {
+          setSelectedEmailId(list[0].id);
+        }
+      } else {
+        setEmails(initialEmails);
+        if (!selectedEmailId && initialEmails.length > 0) {
+          setSelectedEmailId(initialEmails[0].id);
+        }
+      }
+
+      if (countsRes.status === "fulfilled" && countsRes.value?.data) {
+        setFolderCounts(countsRes.value.data);
+      }
+    } catch (err) {
+      console.error("Failed to load email hub data:", err);
+      setEmails(initialEmails);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeFolder]);
+
+  useEffect(() => {
+    fetchEmailData();
+  }, [fetchEmailData]);
 
   // Filtered Emails List
   const filteredEmails = useMemo(() => {
     return emails.filter((email) => {
-      // Folder Filter
-      if (activeFolder === "starred") {
-        if (!email.isStarred) return false;
-      } else if (email.folder !== activeFolder) {
-        return false;
-      }
-
       // Category Filter
       if (categoryFilter !== "all" && email.category !== categoryFilter) {
         return false;
@@ -56,15 +89,21 @@ export const Emails = () => {
       if (!searchTerm.trim()) return true;
 
       const query = searchTerm.toLowerCase();
+      const senderName = email.sender
+        ? `${email.sender.firstName || ""} ${email.sender.lastName || ""}`.toLowerCase() ||
+          email.sender.name?.toLowerCase() ||
+          ""
+        : "";
+
       return (
         email.subject?.toLowerCase().includes(query) ||
-        email.sender.name?.toLowerCase().includes(query) ||
-        email.sender.email?.toLowerCase().includes(query) ||
+        senderName.includes(query) ||
+        email.sender?.email?.toLowerCase().includes(query) ||
         email.snippet?.toLowerCase().includes(query) ||
         email.body?.toLowerCase().includes(query)
       );
     });
-  }, [emails, activeFolder, categoryFilter, searchTerm]);
+  }, [emails, categoryFilter, searchTerm]);
 
   // Currently Selected Email Object
   const selectedEmail = useMemo(() => {
@@ -72,67 +111,110 @@ export const Emails = () => {
   }, [emails, selectedEmailId, filteredEmails]);
 
   // Handler: Select Email
-  const handleSelectEmail = (email) => {
+  const handleSelectEmail = async (email) => {
     setSelectedEmailId(email.id);
-    // Mark as read when selected
     if (!email.isRead) {
       setEmails((prev) =>
         prev.map((e) => (e.id === email.id ? { ...e, isRead: true } : e))
       );
+      try {
+        await emailService.toggleRead(email.id);
+        const countsRes = await emailService.getFolderCounts();
+        if (countsRes?.data) setFolderCounts(countsRes.data);
+      } catch (err) {
+        console.error("Failed to mark email read:", err);
+      }
     }
   };
 
   // Handler: Toggle Star
-  const handleToggleStar = (emailId) => {
+  const handleToggleStar = async (emailId) => {
     setEmails((prev) =>
       prev.map((e) =>
         e.id === emailId ? { ...e, isStarred: !e.isStarred } : e
       )
     );
+    try {
+      await emailService.toggleStar(emailId);
+      const countsRes = await emailService.getFolderCounts();
+      if (countsRes?.data) setFolderCounts(countsRes.data);
+    } catch (err) {
+      console.error("Failed to toggle star:", err);
+    }
   };
 
   // Handler: Delete Email
-  const handleDeleteEmail = (emailId) => {
+  const handleDeleteEmail = async (emailId) => {
     const target = emails.find((e) => e.id === emailId);
-    setEmails((prev) =>
-      prev.map((e) => (e.id === emailId ? { ...e, folder: "trash" } : e))
-    );
+    setEmails((prev) => prev.filter((e) => e.id !== emailId));
     showToast(`Moved "${target?.subject || "Email"}" to Trash`);
+
     if (selectedEmailId === emailId) {
-      setSelectedEmailId("");
+      const remaining = emails.filter((e) => e.id !== emailId);
+      setSelectedEmailId(remaining[0]?.id || "");
+    }
+
+    try {
+      await emailService.moveFolder(emailId, "TRASH");
+      const countsRes = await emailService.getFolderCounts();
+      if (countsRes?.data) setFolderCounts(countsRes.data);
+    } catch (err) {
+      console.error("Failed to move email to trash:", err);
     }
   };
 
   // Handler: Send New Email
-  const handleSendEmail = (emailPayload) => {
-    const fullEmail = {
-      ...emailPayload,
-      id: `MAIL-${emails.length + 101}`,
-    };
-    setEmails((prev) => [fullEmail, ...prev]);
-    setSelectedEmailId(fullEmail.id);
-    showToast(`Email sent successfully to ${fullEmail.recipients.join(", ")}!`);
+  const handleSendEmail = async (emailPayload) => {
+    try {
+      const res = await emailService.sendEmail(emailPayload);
+      const created = res?.data || emailPayload;
+      setEmails((prev) => [created, ...prev]);
+      setSelectedEmailId(created.id);
+      showToast("Message dispatched successfully!");
+      const countsRes = await emailService.getFolderCounts();
+      if (countsRes?.data) setFolderCounts(countsRes.data);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      throw err;
+    }
   };
 
   // Handler: Save Draft
-  const handleSaveDraft = (draftPayload) => {
-    const fullDraft = {
-      ...draftPayload,
-      id: `MAIL-DRAFT-${emails.length + 101}`,
-    };
-    setEmails((prev) => [fullDraft, ...prev]);
-    showToast("Saved draft to Drafts folder");
+  const handleSaveDraft = async (draftPayload) => {
+    try {
+      const res = await emailService.sendEmail(draftPayload);
+      const created = res?.data || draftPayload;
+      setEmails((prev) => [created, ...prev]);
+      showToast("Saved message to Drafts");
+      const countsRes = await emailService.getFolderCounts();
+      if (countsRes?.data) setFolderCounts(countsRes.data);
+    } catch (err) {
+      console.error("Failed to save draft:", err);
+      throw err;
+    }
   };
 
   // Handler: Quick Reply
-  const handleSendReply = (emailId, replyText) => {
+  const handleSendReply = async (emailId, replyText) => {
     const target = emails.find((e) => e.id === emailId);
-    showToast(`Sent reply to ${target?.sender.name || "sender"}: "${replyText.slice(0, 20)}..."`);
+    try {
+      await emailService.sendEmail({
+        recipientId: target?.senderId || target?.sender?.id || undefined,
+        recipientEmail: target?.sender?.email || undefined,
+        subject: `Re: ${target?.subject || "Message"}`,
+        body: replyText,
+        category: target?.category || "Project Sync",
+      });
+      showToast(`Reply sent to ${target?.sender?.name || target?.sender?.firstName || "colleague"}!`);
+    } catch (err) {
+      console.error("Failed to send quick reply:", err);
+      showToast("Failed to dispatch quick reply.");
+    }
   };
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 pb-2">
+      <div className="space-y-4 pb-2 select-none">
         {/* Toast Alert Popup */}
         <AnimatePresence>
           {toastMessage && (
@@ -163,18 +245,25 @@ export const Emails = () => {
             <EmailSidebar
               activeFolder={activeFolder}
               onFolderChange={setActiveFolder}
-              counts={counts}
+              counts={folderCounts}
             />
           </div>
 
           {/* Middle Email List (4 cols) */}
           <div className="lg:col-span-4">
-            <EmailList
-              emails={filteredEmails}
-              selectedEmailId={selectedEmail?.id}
-              onSelectEmail={handleSelectEmail}
-              onToggleStar={handleToggleStar}
-            />
+            {loading ? (
+              <div className="h-full flex flex-col items-center justify-center text-cyan-400 gap-2">
+                <Loader2 className="w-7 h-7 animate-spin" />
+                <span className="text-xs text-slate-400">Loading inbox...</span>
+              </div>
+            ) : (
+              <EmailList
+                emails={filteredEmails}
+                selectedEmailId={selectedEmail?.id}
+                onSelectEmail={handleSelectEmail}
+                onToggleStar={handleToggleStar}
+              />
+            )}
           </div>
 
           {/* Right Detail Reading Pane (5 cols) */}

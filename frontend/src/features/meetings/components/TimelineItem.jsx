@@ -112,7 +112,19 @@ export const TimelineItem = ({ item }) => {
 
           {/* Join Call Trigger Button */}
           {isInProgress && item.type === "video" && (
-            <GlassButton variant="cyan" size="sm" icon={Play}>
+            <GlassButton
+              variant="cyan"
+              size="sm"
+              icon={Play}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (item.meetingLink) {
+                  window.open(item.meetingLink, "_blank", "noopener,noreferrer");
+                } else {
+                  window.open("https://meet.google.com", "_blank", "noopener,noreferrer");
+                }
+              }}
+            >
               Join Video Call
             </GlassButton>
           )}

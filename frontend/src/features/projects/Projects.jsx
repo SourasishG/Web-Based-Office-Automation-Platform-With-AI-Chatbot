@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -8,45 +8,68 @@ import FilterBar from "./components/FilterBar";
 import ProjectGrid from "./components/ProjectGrid";
 import EmptyProjects from "./components/EmptyProjects";
 
+import { projectService } from "../../services/projectService";
 import ProjectData from "./data/ProjectData";
+import { Loader2 } from "lucide-react";
 
 /**
  * Projects - Apple Liquid Glass Master Projects View
- * Assembles project metrics, search/filter control bar,
- * project card grid, and empty states.
+ * Connected to live Express 5 / Supabase backend with live metrics, search, and progress tracking.
  */
-
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [statsData, setStatsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
 
-  // Extract raw projects list
-  const rawProjects = useMemo(() => {
-    if (Array.isArray(ProjectData)) return ProjectData;
+  const fetchProjectData = useCallback(async () => {
+    try {
+      setLoading(true);
 
-    if (
-      ProjectData?.projects &&
-      Array.isArray(ProjectData.projects)
-    ) {
-      return ProjectData.projects;
+      const [projectsRes, statsRes] = await Promise.allSettled([
+        projectService.getAllProjects({ limit: 100 }),
+        projectService.getProjectStats(),
+      ]);
+
+      if (projectsRes.status === "fulfilled" && projectsRes.value?.data) {
+        const liveList =
+          projectsRes.value.data.projects ||
+          (Array.isArray(projectsRes.value.data) ? projectsRes.value.data : []);
+        setProjects(liveList.length > 0 ? liveList : (ProjectData?.projects || ProjectData || []));
+      } else {
+        setProjects(ProjectData?.projects || ProjectData || []);
+      }
+
+      if (statsRes.status === "fulfilled" && statsRes.value?.data) {
+        setStatsData(statsRes.value.data);
+      }
+    } catch (err) {
+      console.error("Failed to load projects workspace data:", err);
+      setProjects(ProjectData?.projects || ProjectData || []);
+    } finally {
+      setLoading(false);
     }
-
-    return [];
   }, []);
+
+  useEffect(() => {
+    fetchProjectData();
+  }, [fetchProjectData]);
 
   // Filter & Sort Logic
   const filteredProjects = useMemo(() => {
-    return [...rawProjects]
+    return [...projects]
       .filter((project) => {
         if (statusFilter !== "all") {
           const projectStatus = (project.status || "")
             .toLowerCase()
-            .replace(/\s+/g, "-");
+            .replace(/[\s_]+/g, "-");
 
           const filterStatus = statusFilter
             .toLowerCase()
-            .replace(/\s+/g, "-");
+            .replace(/[\s_]+/g, "-");
 
           if (projectStatus !== filterStatus) return false;
         }
@@ -59,6 +82,7 @@ const Projects = () => {
           project.title?.toLowerCase().includes(query) ||
           project.name?.toLowerCase().includes(query) ||
           project.description?.toLowerCase().includes(query) ||
+          project.department?.toLowerCase().includes(query) ||
           project.category?.toLowerCase().includes(query)
         );
       })
@@ -82,12 +106,10 @@ const Projects = () => {
           }
         }
       });
-  }, [rawProjects, searchTerm, statusFilter, sortBy]);
+  }, [projects, searchTerm, statusFilter, sortBy]);
 
   const containerVariants = {
-    hidden: {
-      opacity: 0,
-    },
+    hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
@@ -98,10 +120,7 @@ const Projects = () => {
   };
 
   const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 16,
-    },
+    hidden: { opacity: 0, y: 16 },
     show: {
       opacity: 1,
       y: 0,
@@ -129,7 +148,7 @@ const Projects = () => {
       >
         {/* Statistics */}
         <motion.div variants={itemVariants}>
-          <ProjectStats projects={rawProjects} />
+          <ProjectStats projects={projects} statsData={statsData} />
         </motion.div>
 
         {/* Filters */}
@@ -145,13 +164,22 @@ const Projects = () => {
         </motion.div>
 
         {/* Projects */}
-        <motion.div variants={itemVariants}>
-          {filteredProjects.length > 0 ? (
-            <ProjectGrid projects={filteredProjects} />
-          ) : (
-            <EmptyProjects onReset={handleResetFilters} />
-          )}
-        </motion.div>
+        {loading ? (
+          <div className="py-24 flex flex-col items-center justify-center text-cyan-400 gap-3">
+            <Loader2 className="w-8 h-8 animate-spin" />
+            <span className="text-sm font-medium text-slate-400">
+              Synchronizing Active Projects...
+            </span>
+          </div>
+        ) : (
+          <motion.div variants={itemVariants}>
+            {filteredProjects.length > 0 ? (
+              <ProjectGrid projects={filteredProjects} />
+            ) : (
+              <EmptyProjects onReset={handleResetFilters} />
+            )}
+          </motion.div>
+        )}
       </motion.div>
     </DashboardLayout>
   );

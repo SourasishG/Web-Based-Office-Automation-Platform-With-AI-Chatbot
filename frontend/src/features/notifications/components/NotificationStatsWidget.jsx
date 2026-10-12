@@ -6,16 +6,31 @@ import { GlassCard } from "../../../components/ui/GlassCard";
  * NotificationStatsWidget - Summary metric cards for Notification Center
  * 
  * @param {Array} notifications - Array of notification records
+ * @param {object} statsData - Live statistics from backend stats endpoint
  */
-export const NotificationStatsWidget = ({ notifications = [] }) => {
+export const NotificationStatsWidget = ({ notifications = [], statsData }) => {
   const stats = useMemo(() => {
+    if (statsData) {
+      return {
+        total: statsData.total !== undefined ? statsData.total : notifications.length,
+        unread: statsData.unreadCount !== undefined ? statsData.unreadCount : 0,
+        urgent: statsData.urgentCount !== undefined ? statsData.urgentCount : 0,
+        read: statsData.readCount !== undefined ? statsData.readCount : 0,
+      };
+    }
+
     const total = notifications.length;
     const unread = notifications.filter((n) => !n.isRead).length;
-    const urgent = notifications.filter((n) => (n.priority === "urgent" || n.priority === "high") && !n.isRead).length;
+    const urgent = notifications.filter(
+      (n) => {
+        const p = (n.priority || "").toLowerCase();
+        return (p === "urgent" || p === "high" || p === "critical") && !n.isRead;
+      }
+    ).length;
     const read = notifications.filter((n) => n.isRead).length;
 
     return { total, unread, urgent, read };
-  }, [notifications]);
+  }, [notifications, statsData]);
 
   const cards = [
     {
