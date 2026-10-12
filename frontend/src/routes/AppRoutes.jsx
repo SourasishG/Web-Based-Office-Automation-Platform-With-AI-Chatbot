@@ -1,5 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 
+import Login from "../features/auth/Login";
+import ProtectedRoute from "../components/common/ProtectedRoute";
+
 import Dashboard from "../features/dashboard/Dashboard";
 import Projects from "../features/projects/Projects";
 import Tasks from "../features/tasks/Tasks";
@@ -14,56 +17,93 @@ import NotFound from "../features/error/NotFound";
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Authentication Route */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Protected Workplace Routes */}
       <Route
         path="/"
-        element={<Dashboard />}
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/projects"
-        element={<Projects />}
+        element={
+          <ProtectedRoute>
+            <Projects />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/tasks"
-        element={<Tasks />}
+        element={
+          <ProtectedRoute>
+            <Tasks />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/meetings"
-        element={<Meetings />}
+        element={
+          <ProtectedRoute>
+            <Meetings />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/employees"
-        element={<Employees />}
+        element={
+          <ProtectedRoute>
+            <Employees />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/emails"
-        element={<Emails />}
+        element={
+          <ProtectedRoute>
+            <Emails />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/tickets"
-        element={<Tickets />}
+        element={
+          <ProtectedRoute>
+            <Tickets />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/notifications"
-        element={<Notifications />}
+        element={
+          <ProtectedRoute>
+            <Notifications />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/profile"
-        element={<Profile />}
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
       />
 
-      {/* Render 404 Error Page for any unhandled/invalid endpoints */}
-      <Route
-        path="*"
-        element={<NotFound />}
-      />
+      {/* Catch-all 404 Route */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

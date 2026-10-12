@@ -1,10 +1,18 @@
-import { Menu, Bell } from "lucide-react";
+import { Menu, Bell, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "../common/ThemeToggle";
+import useAuth from "../../hooks/useAuth";
 
 const Navbar = ({ setMobileOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const initials = user
+    ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()
+    : "OA";
+  const fullName = user ? `${user.firstName} ${user.lastName}` : "Team Member";
+  const roleName = user?.role || "Employee";
 
   const pageTitles = {
     "/": "Dashboard",
@@ -49,7 +57,7 @@ const Navbar = ({ setMobileOpen }) => {
         </h2>
       </div>
 
-      <div className="flex items-center gap-4 sm:gap-5">
+      <div className="flex items-center gap-3 sm:gap-4">
         <ThemeToggle />
 
         {/* Notification Center Bell Button */}
@@ -108,24 +116,43 @@ const Navbar = ({ setMobileOpen }) => {
               items-center
               justify-center
               rounded-full
-              bg-linear-to-br
+              bg-gradient-to-br
               from-cyan-500
               to-blue-600
               font-bold
+              text-xs
             "
           >
-            SG
+            {initials}
           </div>
 
           <div className="hidden text-left md:block">
-            <p className="text-sm font-semibold">
-              Sourasish Ghosh
+            <p className="text-sm font-semibold truncate max-w-[140px]">
+              {fullName}
             </p>
 
-            <p className="text-xs text-slate-400">
-              Admin
+            <p className="text-xs text-slate-400 capitalize">
+              {roleName.toLowerCase()}
             </p>
           </div>
+        </button>
+
+        {/* Sign Out Button */}
+        <button
+          type="button"
+          onClick={logout}
+          title="Sign Out"
+          className="
+            p-2
+            rounded-xl
+            text-slate-400
+            hover:text-rose-400
+            hover:bg-rose-500/10
+            transition-colors
+            cursor-pointer
+          "
+        >
+          <LogOut size={20} />
         </button>
       </div>
     </header>

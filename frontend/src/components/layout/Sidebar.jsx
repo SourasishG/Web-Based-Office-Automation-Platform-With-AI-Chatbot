@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import useAuth from "../../hooks/useAuth";
 
 const menuItems = [
   {
@@ -69,6 +70,13 @@ const Sidebar = ({
   mobileOpen,
   setMobileOpen,
 }) => {
+  const { user } = useAuth();
+  const initials = user
+    ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()
+    : "OA";
+  const fullName = user ? `${user.firstName} ${user.lastName}` : "Team Member";
+  const roleName = user?.jobTitle || user?.role || "Employee";
+
   return (
     <>
       {/* Mobile Backdrop Overlay */}
@@ -173,17 +181,17 @@ const Sidebar = ({
             `}
           >
             <div className="flex items-center gap-3 min-w-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-cyan-500 to-blue-600 font-bold text-white shadow-md">
-                SG
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 font-bold text-xs text-white shadow-md">
+                {initials}
               </div>
 
               {!collapsed && (
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-white truncate">
-                    Sourasish Ghosh
+                    {fullName}
                   </p>
                   <p className="text-[11px] text-slate-400 truncate">
-                    Administrator
+                    {roleName}
                   </p>
                 </div>
               )}
