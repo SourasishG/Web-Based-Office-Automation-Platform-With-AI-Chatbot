@@ -1,4 +1,5 @@
-import { Megaphone, Pin, Calendar, ArrowRight } from "lucide-react";
+import { Megaphone, Pin, Calendar, ArrowRight, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";
@@ -10,58 +11,76 @@ import { GlassButton } from "../../../components/ui/GlassButton";
  * @param {Array<object>} announcements - Array of announcement notice objects
  */
 export const Announcements = ({ announcements }) => {
-  // Fallback Notice Board Items
+  const navigate = useNavigate();
+
   const defaultAnnouncements = [
     {
       id: "ann-1",
-      title: "Q3 All-Hands Townhall & Product AI Showcase",
-      author: "Executive Team",
-      date: "05 Aug 2026",
-      category: "Company Event",
+      title: "Q4 Roadmap & AI Platform Showcase",
+      authorName: "Executive Leadership",
+      date: "Oct 12, 2026",
+      category: "Company",
       isPinned: true,
-      snippet: "Join us this Wednesday for our quarterly company townhall showcasing our new AI platform features.",
+      snippet: "Join us this Friday for our quarterly company roadmap showcase with live Herric AI demonstrations.",
     },
     {
       id: "ann-2",
       title: "Liquid Glass UI System Upgrade Deployment",
-      author: "Engineering Core",
-      date: "03 Aug 2026",
+      authorName: "Engineering Core",
+      date: "Oct 10, 2026",
       category: "Engineering",
       isPinned: true,
       snippet: "The new Apple visionOS-inspired Liquid Glass Design System is now live across Office Aid.",
     },
-    {
-      id: "ann-3",
-      title: "Updated Workplace Security & Data Policy",
-      author: "InfoSec Group",
-      date: "28 Jul 2026",
-      category: "Policy",
-      isPinned: false,
-      snippet: "Please review the updated 2026 data compliance guidelines for internal document handling.",
-    },
   ];
 
-  const notices = announcements && announcements.length > 0 ? announcements : defaultAnnouncements;
+  const notices = Array.isArray(announcements) && announcements.length > 0
+    ? announcements.map((n) => {
+        const authorName = n.author
+          ? `${n.author.firstName} ${n.author.lastName}`
+          : (n.authorName || "Executive Team");
+        const formattedDate = n.createdAt
+          ? new Date(n.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : (n.date || "Recent");
+
+        return {
+          id: n.id,
+          title: n.title,
+          snippet: n.content || n.snippet,
+          category: n.category || "Company",
+          isPinned: !!n.isPinned,
+          authorName,
+          date: formattedDate,
+        };
+      })
+    : defaultAnnouncements;
 
   // Category Tag Variant
   const getCategoryBadge = (category) => {
-    switch (category) {
-      case "Engineering":
+    switch (category?.toLowerCase()) {
+      case "engineering":
         return <GlassBadge variant="cyan" size="sm">Engineering</GlassBadge>;
-      case "Company Event":
-        return <GlassBadge variant="purple" size="sm">Event</GlassBadge>;
+      case "company":
+      case "company event":
+        return <GlassBadge variant="purple" size="sm">Company</GlassBadge>;
+      case "policy":
+        return <GlassBadge variant="warning" size="sm">Policy</GlassBadge>;
       default:
-        return <GlassBadge variant="default" size="sm">Policy</GlassBadge>;
+        return <GlassBadge variant="default" size="sm">{category || "General"}</GlassBadge>;
     }
   };
 
   return (
     <GlassPanel
       title="Announcements"
-      subtitle="Company updates & notice board"
+      subtitle="Company updates & broadcast notices"
       icon={Megaphone}
       action={
-        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight}>
+        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight} onClick={() => navigate("/notifications")}>
           Notice Board
         </GlassButton>
       }
@@ -94,7 +113,15 @@ export const Announcements = ({ announcements }) => {
               {notice.title}
             </h4>
 
-            {/* Snippet */}
+            {/* Author info */}
+            {notice.authorName && (
+              <p className="text-[10px] text-slate-400 flex items-center gap-1">
+                <User className="w-2.5 h-2.5 text-slate-500" />
+                <span>By {notice.authorName}</span>
+              </p>
+            )}
+
+            {/* Snippet / Content */}
             {notice.snippet && (
               <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
                 {notice.snippet}

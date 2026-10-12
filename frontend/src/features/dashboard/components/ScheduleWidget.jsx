@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, Video, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, Video, ArrowRight, CheckCircle2, ExternalLink } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";
@@ -13,54 +13,45 @@ import { GlassAvatarGroup } from "../../../components/ui/GlassAvatar";
  */
 export const ScheduleWidget = ({ schedule }) => {
   const navigate = useNavigate();
-  // Fallback Schedule Items
+
   const defaultSchedule = [
     {
       id: "sch-1",
-      title: "Daily Engineering Stand-up",
-      time: "10:00 AM - 10:30 AM",
-      status: "in-progress",
-      location: "Google Meet",
+      title: "Backend Architecture & Database Review",
+      time: "02:30 PM - 03:30 PM",
+      status: "upcoming",
+      location: "Zoom",
       type: "video",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Ananya Roy" },
-        { name: "Rahul Sharma" },
-      ],
+      attendees: [{ name: "Aarav Sharma" }, { name: "Sourasish Ghosh" }],
     },
     {
       id: "sch-2",
-      title: "AI Chatbot Architecture Review",
-      time: "11:30 AM - 12:30 PM",
-      status: "upcoming",
-      location: "Conference Room B",
-      type: "room",
-      attendees: [
-        { name: "Sourasish Ghosh" },
-        { name: "Priya Patel" },
-      ],
-    },
-    {
-      id: "sch-3",
-      title: "Product Roadmap & Design Sync",
-      time: "03:00 PM - 04:00 PM",
-      status: "upcoming",
+      title: "Weekly Executive Leadership Sync",
+      time: "10:00 AM - 11:00 AM",
+      status: "completed",
       location: "Google Meet",
       type: "video",
-      attendees: [
-        { name: "Vikram Das" },
-        { name: "Sourasish Ghosh" },
-        { name: "Neha Sen" },
-        { name: "Amit Kumar" },
-      ],
+      attendees: [{ name: "Sourasish Ghosh" }, { name: "Elena Rostova" }],
     },
   ];
 
-  const items = schedule && schedule.length > 0 ? schedule : defaultSchedule;
+  const items = Array.isArray(schedule) && schedule.length > 0
+    ? schedule.map((m) => ({
+        id: m.id,
+        title: m.title,
+        time: m.time || `${m.startTime || ""} - ${m.endTime || ""}`,
+        status: (m.status || "scheduled").toLowerCase(),
+        location: m.location || m.platform || "Video Call",
+        meetingLink: m.meetingLink,
+        attendees: Array.isArray(m.attendees)
+          ? m.attendees.map((a) => ({ name: a.user ? `${a.user.firstName} ${a.user.lastName}` : (a.name || "Member") }))
+          : [{ name: m.host ? `${m.host.firstName} ${m.host.lastName}` : "Host" }],
+      }))
+    : defaultSchedule;
 
   // Status Badge Helper
   const getStatusBadge = (status) => {
-    if (status === "in-progress") {
+    if (status === "in-progress" || status === "in_progress") {
       return (
         <GlassBadge variant="cyan" size="sm" dot glow>
           In Progress
@@ -76,7 +67,7 @@ export const ScheduleWidget = ({ schedule }) => {
     }
     return (
       <GlassBadge variant="default" size="sm">
-        Upcoming
+        Scheduled
       </GlassBadge>
     );
   };
@@ -84,7 +75,7 @@ export const ScheduleWidget = ({ schedule }) => {
   return (
     <GlassPanel
       title="Today's Schedule"
-      subtitle="3 meetings scheduled for today"
+      subtitle={`${items.length} meeting${items.length !== 1 ? "s" : ""} on your radar`}
       icon={Calendar}
       action={
         <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight} onClick={() => navigate("/meetings")}>
@@ -119,21 +110,34 @@ export const ScheduleWidget = ({ schedule }) => {
               {item.title}
             </h4>
 
-            {/* Event Footer: Location & Attendee Avatars */}
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-400 truncate">
-                {item.type === "video" ? (
-                  <Video className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                ) : (
-                  <span className="w-2 h-2 rounded-full bg-slate-500 shrink-0" />
-                )}
-                <span className="truncate">{item.location}</span>
+            {/* Bottom Meta & Attendees */}
+            <div className="flex items-center justify-between mt-2.5">
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <Video className="w-3.5 h-3.5 text-slate-400" />
+                <span>{item.location}</span>
               </div>
 
-              {/* Attendee Avatar Group */}
-              {item.attendees && item.attendees.length > 0 && (
-                <GlassAvatarGroup avatars={item.attendees} max={3} size="xs" />
-              )}
+              <div className="flex items-center gap-3">
+                {item.attendees && item.attendees.length > 0 && (
+                  <GlassAvatarGroup
+                    users={item.attendees}
+                    max={3}
+                    size="xs"
+                  />
+                )}
+
+                {item.meetingLink && (
+                  <a
+                    href={item.meetingLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 border border-cyan-500/30 transition-colors"
+                  >
+                    <span>Join</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         ))}

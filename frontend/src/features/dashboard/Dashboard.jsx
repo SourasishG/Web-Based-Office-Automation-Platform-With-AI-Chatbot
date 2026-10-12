@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -14,17 +15,83 @@ import Announcements from "./components/Announcements";
 import QuickActions from "./components/QuickActions";
 
 import { dashboardData } from "./data/dashboardData";
+import useAuth from "../../hooks/useAuth";
+import dashboardService from "../../services/dashboardService";
 
 /**
  * Dashboard - Flagship Executive Workspace View
- * Apple Liquid Glass Executive Workspace
+ * Live integration with Supabase PostgreSQL, Prisma ORM, and Herric AI
  */
-
 const Dashboard = () => {
+  const { user } = useAuth();
+
+  const [metrics, setMetrics] = useState(null);
+  const [departmentDist, setDepartmentDist] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+  const [deadlines, setDeadlines] = useState([]);
+  const [team, setTeam] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDashboardData = async () => {
+      try {
+        const [
+          metricsRes,
+          deptRes,
+          announcementsRes,
+          scheduleRes,
+          projectsRes,
+          teamRes,
+        ] = await Promise.allSettled([
+          dashboardService.getMetrics(),
+          dashboardService.getDepartmentDistribution(),
+          dashboardService.getAnnouncements(),
+          dashboardService.getUpcomingMeetings(),
+          dashboardService.getActiveProjects(),
+          dashboardService.getTeamPresence(),
+        ]);
+
+        if (isMounted) {
+          if (metricsRes.status === "fulfilled" && metricsRes.value) {
+            setMetrics(metricsRes.value);
+          }
+          if (deptRes.status === "fulfilled" && deptRes.value) {
+            setDepartmentDist(deptRes.value);
+          }
+          if (announcementsRes.status === "fulfilled" && announcementsRes.value) {
+            setAnnouncements(announcementsRes.value);
+          }
+          if (scheduleRes.status === "fulfilled" && scheduleRes.value) {
+            setSchedule(scheduleRes.value);
+          }
+          if (projectsRes.status === "fulfilled" && projectsRes.value) {
+            const rawProj = projectsRes.value;
+            setDeadlines(rawProj?.projects || (Array.isArray(rawProj) ? rawProj : []));
+          }
+          if (teamRes.status === "fulfilled" && teamRes.value) {
+            const rawTeam = teamRes.value;
+            setTeam(rawTeam?.employees || (Array.isArray(rawTeam) ? rawTeam : []));
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load live dashboard feeds, falling back to cache:", err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const containerVariants = {
-    hidden: {
-      opacity: 0,
-    },
+    hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
@@ -35,10 +102,7 @@ const Dashboard = () => {
   };
 
   const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 16,
-    },
+    hidden: { opacity: 0, y: 16 },
     show: {
       opacity: 1,
       y: 0,
@@ -58,13 +122,13 @@ const Dashboard = () => {
         animate="show"
         className="mx-auto w-full max-w-[1600px] space-y-6 select-none"
       >
-        {/* Hero */}
+        {/* Hero Banner & Live Weather */}
         <motion.div
           variants={itemVariants}
           className="grid grid-cols-1 gap-6 lg:grid-cols-3"
         >
           <div className="lg:col-span-2">
-            <Greeting user={dashboardData.user} />
+            <Greeting user={user || dashboardData.user} />
           </div>
 
           <div>
@@ -72,65 +136,52 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {/* Statistics */}
+        {/* Live Executive KPI Metric Cards */}
         <motion.div variants={itemVariants}>
-          <StatsGrid stats={dashboardData.stats} />
+          <StatsGrid stats={metrics || dashboardData.stats} />
         </motion.div>
 
-        {/* Schedule / Deadlines — 2 balanced columns now that AI is a floating widget */}
+        {/* Schedule & Upcoming Milestones */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <motion.div variants={itemVariants}>
-            <ScheduleWidget schedule={dashboardData.schedule} />
+            <ScheduleWidget schedule={schedule.length > 0 ? schedule : dashboardData.schedule} />
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <UpcomingDeadlines
-              deadlines={dashboardData.deadlines}
-            />
+            <UpcomingDeadlines deadlines={deadlines.length > 0 ? deadlines : dashboardData.deadlines} />
           </motion.div>
         </div>
 
-        {/* Bottom Section */}
+        {/* Tri-Column Intelligence & Operational Feeds */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Left */}
+          {/* Left Column: Team Directory Pulse & Quick Actions */}
           <div className="space-y-6">
             <motion.div variants={itemVariants}>
-              <TeamAvailability
-                team={dashboardData.teamAvailability}
-              />
+              <TeamAvailability team={team.length > 0 ? team : dashboardData.teamAvailability} />
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <QuickActions
-                actions={dashboardData.quickActions}
-              />
+              <QuickActions actions={dashboardData.quickActions} />
             </motion.div>
           </div>
 
-          {/* Middle */}
+          {/* Middle Column: Department Distribution & Notice Board */}
           <div className="space-y-6">
             <motion.div variants={itemVariants}>
-              <DepartmentChart
-                departmentData={dashboardData.departmentStats}
-              />
+              <DepartmentChart departmentData={departmentDist || dashboardData.departmentStats} />
             </motion.div>
 
             <motion.div variants={itemVariants}>
               <Announcements
-                announcements={dashboardData.announcements}
+                announcements={announcements.length > 0 ? announcements : dashboardData.announcements}
               />
             </motion.div>
           </div>
 
-          {/* Right */}
+          {/* Right Column: Verified Audit Timeline */}
           <div>
-            <motion.div
-              variants={itemVariants}
-              className="h-full"
-            >
-              <RecentActivity
-                activities={dashboardData.recentActivities}
-              />
+            <motion.div variants={itemVariants} className="h-full">
+              <RecentActivity activities={dashboardData.recentActivities} />
             </motion.div>
           </div>
         </div>

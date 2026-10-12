@@ -1,34 +1,75 @@
+import { useMemo } from "react";
 import { PieChart, Users, Layers } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassBadge } from "../../../components/ui/GlassBadge";
+
+const COLOR_PALETTE = [
+  "from-cyan-500 to-blue-600",
+  "from-purple-500 to-pink-600",
+  "from-blue-500 to-indigo-600",
+  "from-emerald-500 to-teal-600",
+  "from-amber-500 to-orange-600",
+];
 
 /**
  * DepartmentChart - Apple Liquid Glass Workforce Distribution Analytics
  * Displays department headcounts and proportional percentage breakdown bars.
  * 
- * @param {Array<object>} departmentData - Array of department metric objects
+ * @param {Array<object>|object} departmentData - Array or object with departments distribution
  */
 export const DepartmentChart = ({ departmentData }) => {
-  // Fallback Department Distribution Data
   const defaultDepartments = [
-    { name: "Engineering", count: 112, percentage: 45, color: "from-cyan-500 to-blue-600" },
-    { name: "Product & Design", count: 48, percentage: 19, color: "from-blue-500 to-indigo-600" },
-    { name: "Operations & HR", count: 38, percentage: 15, color: "from-purple-500 to-pink-600" },
-    { name: "Sales & Marketing", count: 32, percentage: 13, color: "from-emerald-500 to-teal-600" },
-    { name: "R&D & Security", count: 18, percentage: 8, color: "from-amber-500 to-orange-600" },
+    { name: "Engineering", count: 2, percentage: 40, color: "from-cyan-500 to-blue-600" },
+    { name: "Executive", count: 1, percentage: 20, color: "from-purple-500 to-pink-600" },
+    { name: "Product & Design", count: 1, percentage: 20, color: "from-blue-500 to-indigo-600" },
+    { name: "HR & Operations", count: 1, percentage: 20, color: "from-emerald-500 to-teal-600" },
   ];
 
-  const departments = departmentData && departmentData.length > 0 ? departmentData : defaultDepartments;
-  const totalEmployees = departments.reduce((acc, curr) => acc + curr.count, 0);
+  const { departments, totalEmployees } = useMemo(() => {
+    let rawList = [];
+    let total = 0;
+
+    if (departmentData && typeof departmentData === "object") {
+      if (Array.isArray(departmentData)) {
+        rawList = departmentData;
+      } else if (Array.isArray(departmentData.departments)) {
+        rawList = departmentData.departments;
+        total = departmentData.totalStaff;
+      }
+    }
+
+    if (rawList.length === 0) {
+      return {
+        departments: defaultDepartments,
+        totalEmployees: 5,
+      };
+    }
+
+    const formatted = rawList.map((item, idx) => ({
+      name: item.name || item.department || "General",
+      count: item.count || 1,
+      percentage: item.percentage || Math.round((item.count / (total || rawList.length)) * 100),
+      color: item.color || COLOR_PALETTE[idx % COLOR_PALETTE.length],
+    }));
+
+    if (!total) {
+      total = formatted.reduce((acc, curr) => acc + curr.count, 0);
+    }
+
+    return {
+      departments: formatted,
+      totalEmployees: total,
+    };
+  }, [departmentData]);
 
   return (
     <GlassPanel
       title="Department Analytics"
-      subtitle={`${totalEmployees} total workforce members`}
+      subtitle={`${totalEmployees} total workforce team members`}
       icon={PieChart}
       action={
         <GlassBadge variant="cyan" size="sm" icon={Users}>
-          248 Active
+          {totalEmployees} Active Staff
         </GlassBadge>
       }
       variant="default"
@@ -45,7 +86,7 @@ export const DepartmentChart = ({ departmentData }) => {
                 {dept.name}
               </span>
               <div className="flex items-center gap-2">
-                <span className="text-slate-400 font-mono text-[11px]">{dept.count} members</span>
+                <span className="text-slate-400 font-mono text-[11px]">{dept.count} member{dept.count !== 1 ? "s" : ""}</span>
                 <span className="font-semibold text-cyan-300 font-mono">{dept.percentage}%</span>
               </div>
             </div>
@@ -54,7 +95,7 @@ export const DepartmentChart = ({ departmentData }) => {
             <div className="w-full h-2 rounded-full bg-slate-950/60 overflow-hidden border border-white/5 p-0.5">
               <div
                 style={{ width: `${dept.percentage}%` }}
-                className={`h-full rounded-full bg-gradient-to-r ${dept.color || "from-cyan-500 to-blue-600"} shadow-[0_0_12px_rgba(6,182,212,0.4)] transition-all duration-500`}
+                className={`h-full rounded-full bg-gradient-to-r ${dept.color} shadow-[0_0_12px_rgba(6,182,212,0.4)] transition-all duration-500`}
               />
             </div>
           </div>

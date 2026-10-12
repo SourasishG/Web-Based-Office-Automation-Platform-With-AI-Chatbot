@@ -23,18 +23,26 @@ export const TaskStats = ({ tasks = [], statsData }) => {
     }).length;
   };
 
-  const totalCount = tasks.length || 8;
-  const todoCount = getCountByStatus(["todo", "to-do", "to_do"]) || 2;
-  const inProgressCount = getCountByStatus(["in-progress", "in_progress", "inprogress"]) || 2;
-  const reviewCount = getCountByStatus(["review", "in-review"]) || 2;
-  const completedCount = getCountByStatus(["completed", "done"]) || 2;
+  const totalCount = statsData?.total !== undefined ? statsData.total : tasks.length;
+  const todoCount = statsData?.todoCount !== undefined
+    ? statsData.todoCount
+    : getCountByStatus(["todo", "to-do", "to_do"]);
+  const inProgressCount = statsData?.inProgressCount !== undefined
+    ? statsData.inProgressCount
+    : getCountByStatus(["in-progress", "in_progress", "inprogress"]);
+  const reviewCount = statsData?.reviewCount !== undefined
+    ? statsData.reviewCount
+    : getCountByStatus(["review", "in-review"]);
+  const completedCount = statsData?.completedCount !== undefined
+    ? statsData.completedCount
+    : getCountByStatus(["completed", "done"]);
 
   // Fallback / Dynamic KPI Cards Configuration
   const defaultStats = [
     {
       id: "total",
       title: "Total Tasks",
-      value: totalCount.toString(),
+      value: String(totalCount),
       badge: "Tracked",
       badgeVariant: "cyan",
       icon: CheckSquare,
@@ -43,7 +51,7 @@ export const TaskStats = ({ tasks = [], statsData }) => {
     {
       id: "todo",
       title: "To Do",
-      value: todoCount.toString(),
+      value: String(todoCount),
       badge: "Pending",
       badgeVariant: "default",
       icon: Circle,
@@ -52,7 +60,7 @@ export const TaskStats = ({ tasks = [], statsData }) => {
     {
       id: "in-progress",
       title: "In Progress",
-      value: inProgressCount.toString(),
+      value: String(inProgressCount),
       badge: "Active",
       badgeVariant: "primary",
       icon: Clock,
@@ -61,7 +69,7 @@ export const TaskStats = ({ tasks = [], statsData }) => {
     {
       id: "review",
       title: "Under Review",
-      value: reviewCount.toString(),
+      value: String(reviewCount),
       badge: "Verification",
       badgeVariant: "purple",
       icon: Eye,
@@ -70,7 +78,7 @@ export const TaskStats = ({ tasks = [], statsData }) => {
     {
       id: "completed",
       title: "Completed",
-      value: completedCount.toString(),
+      value: String(completedCount),
       badge: "Done",
       badgeVariant: "success",
       icon: CheckCircle2,
