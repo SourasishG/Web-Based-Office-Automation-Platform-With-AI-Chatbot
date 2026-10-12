@@ -620,6 +620,153 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "7. Internal Mail & Communications",
+      "item": [
+        {
+          "name": "Get Emails (Inbox Folder)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emails?folder=INBOX&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["emails"],
+              "query": [
+                { "key": "folder", "value": "INBOX" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Lists emails for the specified folder (INBOX, STARRED, SENT, DRAFTS, TRASH)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Email Folder Counters (Sidebar)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emails/counts",
+              "host": ["{{baseUrl}}"],
+              "path": ["emails", "counts"]
+            },
+            "description": "Returns counts for Inbox (total & unread), Starred, Sent, Drafts, and Trash."
+          },
+          "response": []
+        },
+        {
+          "name": "Compose & Send Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientEmail\": \"aarav.sharma@officeaid.com\",\n  \"subject\": \"Q4 Performance Review Timeline\",\n  \"body\": \"Hi Aarav,\\n\\nPlease compile engineering performance ratings for your department by next Monday.\\n\\nRegards,\\nSourasish\",\n  \"category\": \"HR Memos\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emails",
+              "host": ["{{baseUrl}}"],
+              "path": ["emails"]
+            },
+            "description": "Composes and sends internal workplace email."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Workplace Notifications",
+      "item": [
+        {
+          "name": "Get Notifications List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications?category=all&isRead=all",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"],
+              "query": [
+                { "key": "category", "value": "all" },
+                { "key": "isRead", "value": "all" }
+              ]
+            },
+            "description": "Lists workplace alerts filtered by category or read status."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "stats"]
+            },
+            "description": "Calculates total, unread, and urgent/critical priority counters."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "read-all"]
+            },
+            "description": "Marks all active notifications for the current user as read."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
