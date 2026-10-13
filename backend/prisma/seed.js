@@ -271,7 +271,7 @@ async function main() {
 
   // 6. Create Meetings
   console.log("📅 Creating scheduled meetings...");
-  const meeting1 = await prisma.meeting.create({
+  await prisma.meeting.create({
     data: {
       title: "Weekly Executive Leadership Sync",
       description: "Strategic review of Q4 targets, hiring headcount, and platform delivery timelines.",
@@ -318,7 +318,7 @@ async function main() {
 
   // 7. Create IT Support Tickets
   console.log("🎫 Creating IT support tickets...");
-  const ticket1 = await prisma.ticket.create({
+  await prisma.ticket.create({
     data: {
       ticketNumber: "TCK-401",
       title: "🔐 VPN Authentication Timeout & SSL Certificate Handshake Error",
@@ -344,7 +344,7 @@ async function main() {
     },
   });
 
-  const ticket2 = await prisma.ticket.create({
+  await prisma.ticket.create({
     data: {
       ticketNumber: "TCK-402",
       title: "💻 Figma Enterprise License Allocation for Design Interns",
@@ -358,7 +358,7 @@ async function main() {
     },
   });
 
-  const ticket3 = await prisma.ticket.create({
+  await prisma.ticket.create({
     data: {
       ticketNumber: "TCK-403",
       title: "⚡ Conference Room B Projector & Video Call Display Glitch",

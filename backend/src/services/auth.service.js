@@ -16,7 +16,7 @@ const generateToken = (userId) => {
  * Sanitize user object (omit sensitive password field)
  */
 const sanitizeUser = (user) => {
-  const { password, ...sanitized } = user;
+  const { password: _password, ...sanitized } = user;
   return sanitized;
 };
 

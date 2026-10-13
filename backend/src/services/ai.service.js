@@ -204,7 +204,10 @@ const callAiWithFallback = async ({ prompt, systemInstruction, history = [], fal
  */
 export const chatWithHerric = async (userId, { message, history = [], contextMode = "workspace" }) => {
   const context = await getUserWorkspaceContext(userId);
-  const systemInstruction = buildSystemInstruction(context);
+  const systemInstruction =
+    contextMode === "general"
+      ? "You are Herric, an executive AI operations copilot. Provide clear, professional, and concise assistance."
+      : buildSystemInstruction(context);
 
   const fallbackFn = () => {
     const q = message.toLowerCase();
@@ -454,7 +457,6 @@ Return a structured summary with:
 
   const fallbackFn = () => {
     // Intelligent heuristic extraction
-    const lines = emailContent.split("\n").filter((l) => l.trim().length > 0);
     const isUrgent =
       emailSubject.toLowerCase().includes("urgent") ||
       emailContent.toLowerCase().includes("asap") ||
