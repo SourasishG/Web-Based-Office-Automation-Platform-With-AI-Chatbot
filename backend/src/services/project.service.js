@@ -22,7 +22,7 @@ export const getProjects = async (filters = {}) => {
   const where = {};
 
   if (status && status !== "all") {
-    where.status = status;
+    where.status = status.toUpperCase().replace(/-/g, "_");
   }
 
   if (department && department !== "all") {
@@ -42,7 +42,8 @@ export const getProjects = async (filters = {}) => {
     ];
   }
 
-  const orderBy = { [sortBy]: sortOrder };
+  const sortField = sortBy === "name" ? "title" : sortBy;
+  const orderBy = { [sortField]: sortOrder };
 
   const [total, projects] = await Promise.all([
     prisma.project.count({ where }),

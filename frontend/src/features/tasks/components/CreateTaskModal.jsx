@@ -37,27 +37,25 @@ export const CreateTaskModal = ({
   const [projects, setProjects] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingOptions, setLoadingOptions] = useState(false);
   const [error, setError] = useState("");
 
   const loadDropdownData = useCallback(async () => {
     try {
-      setLoadingOptions(true);
       const [projRes, empRes] = await Promise.allSettled([
         projectService.getAllProjects(),
         employeeService.getAllEmployees(),
       ]);
 
-      if (projRes.status === "fulfilled" && projRes.value?.data) {
-        setProjects(projRes.value.data.projects || projRes.value.data || []);
+      if (projRes.status === "fulfilled" && projRes.value) {
+        const pData = projRes.value.data ?? projRes.value;
+        setProjects(pData.projects || (Array.isArray(pData) ? pData : []));
       }
-      if (empRes.status === "fulfilled" && empRes.value?.data) {
-        setEmployees(empRes.value.data.employees || empRes.value.data || []);
+      if (empRes.status === "fulfilled" && empRes.value) {
+        const eData = empRes.value.data ?? empRes.value;
+        setEmployees(eData.employees || (Array.isArray(eData) ? eData : []));
       }
     } catch (err) {
       console.error("Failed to load options for task modal:", err);
-    } finally {
-      setLoadingOptions(false);
     }
   }, []);
 

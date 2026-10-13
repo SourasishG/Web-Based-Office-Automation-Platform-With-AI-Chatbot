@@ -44,17 +44,18 @@ export const Tickets = () => {
         ticketService.getTicketStats(),
       ]);
 
-      if (ticketsRes.status === "fulfilled" && ticketsRes.value?.data) {
+      if (ticketsRes.status === "fulfilled" && ticketsRes.value) {
+        const resData = ticketsRes.value.data ?? ticketsRes.value;
         const liveTickets =
-          ticketsRes.value.data.tickets ||
-          (Array.isArray(ticketsRes.value.data) ? ticketsRes.value.data : []);
+          resData.tickets ||
+          (Array.isArray(resData) ? resData : []);
         setTickets(liveTickets.length > 0 ? liveTickets : initialTickets);
       } else {
         setTickets(initialTickets);
       }
 
-      if (statsRes.status === "fulfilled" && statsRes.value?.data) {
-        setStatsData(statsRes.value.data);
+      if (statsRes.status === "fulfilled" && statsRes.value) {
+        setStatsData(statsRes.value.data ?? statsRes.value);
       }
     } catch (err) {
       console.error("Failed to load tickets workspace data:", err);

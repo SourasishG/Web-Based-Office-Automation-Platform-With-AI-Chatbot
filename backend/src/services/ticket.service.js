@@ -34,11 +34,11 @@ export const getTickets = async (filters = {}) => {
   }
 
   if (status && status !== "all") {
-    where.status = status;
+    where.status = status.toUpperCase();
   }
 
   if (priority && priority !== "all") {
-    where.priority = priority;
+    where.priority = priority.toUpperCase();
   }
 
   if (search && search.trim()) {

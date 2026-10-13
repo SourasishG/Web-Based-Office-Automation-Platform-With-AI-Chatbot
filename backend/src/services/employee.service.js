@@ -16,7 +16,7 @@ export const getEmployees = async (filters = {}) => {
   }
 
   if (status && status !== "all") {
-    where.presenceStatus = status;
+    where.presenceStatus = status.toUpperCase();
   }
 
   if (search && search.trim()) {

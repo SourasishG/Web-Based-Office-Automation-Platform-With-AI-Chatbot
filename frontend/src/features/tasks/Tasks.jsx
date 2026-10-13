@@ -18,7 +18,6 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [taskStats, setTaskStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Filters & Sorting
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,29 +33,28 @@ const Tasks = () => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      setError(null);
 
       const [tasksRes, statsRes] = await Promise.allSettled([
         taskService.getAllTasks(),
         taskService.getTaskStats(),
       ]);
 
-      if (tasksRes.status === "fulfilled" && tasksRes.value?.data) {
-        const liveTasks = Array.isArray(tasksRes.value.data)
-          ? tasksRes.value.data
-          : tasksRes.value.data.tasks || [];
+      if (tasksRes.status === "fulfilled" && tasksRes.value) {
+        const resData = tasksRes.value.data ?? tasksRes.value;
+        const liveTasks = Array.isArray(resData)
+          ? resData
+          : resData.tasks || [];
         setTasks(liveTasks.length > 0 ? liveTasks : TaskData);
       } else {
         // Fallback to initial mock if backend unreachable
         setTasks(Array.isArray(TaskData) ? TaskData : []);
       }
 
-      if (statsRes.status === "fulfilled" && statsRes.value?.data) {
-        setTaskStats(statsRes.value.data);
+      if (statsRes.status === "fulfilled" && statsRes.value) {
+        setTaskStats(statsRes.value.data ?? statsRes.value);
       }
     } catch (err) {
       console.error("Failed to fetch task workspace data:", err);
-      setError("Unable to load tasks from server. Using local cache.");
       setTasks(Array.isArray(TaskData) ? TaskData : []);
     } finally {
       setLoading(false);

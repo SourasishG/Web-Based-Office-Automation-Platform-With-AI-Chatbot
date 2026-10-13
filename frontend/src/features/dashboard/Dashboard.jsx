@@ -31,7 +31,6 @@ const Dashboard = () => {
   const [schedule, setSchedule] = useState([]);
   const [deadlines, setDeadlines] = useState([]);
   const [team, setTeam] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,8 +77,6 @@ const Dashboard = () => {
         }
       } catch (err) {
         console.warn("Failed to load live dashboard feeds, falling back to cache:", err);
-      } finally {
-        if (isMounted) setIsLoading(false);
       }
     };
 

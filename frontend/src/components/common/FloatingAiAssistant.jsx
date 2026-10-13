@@ -9,9 +9,6 @@ import {
   Loader2,
   ChevronDown,
   RotateCcw,
-  SunMedium,
-  CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
 import useAiAssistant from "../../hooks/useAiAssistant";
 import useAuth from "../../hooks/useAuth";

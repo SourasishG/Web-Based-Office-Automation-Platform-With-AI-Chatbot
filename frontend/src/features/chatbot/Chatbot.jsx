@@ -7,9 +7,7 @@ import {
   User,
   RotateCcw,
   SunMedium,
-  CheckCircle2,
   Calendar,
-  AlertCircle,
   Copy,
   Check,
   Loader2,
@@ -25,7 +23,6 @@ import {
   GlassBadge,
   GlassButton,
   GlassCard,
-  GlassAvatar,
 } from "../../components/ui";
 import HerricMarkdown from "../../components/common/HerricMarkdown";
 import aiService from "../../services/aiService";
@@ -99,7 +96,6 @@ How can I assist your operations today? You can select a quick action below or a
   const [contextMode, setContextMode] = useState("workspace"); // 'workspace', 'general'
   const [copiedId, setCopiedId] = useState(null);
   const [briefingData, setBriefingData] = useState(null);
-  const [loadingBriefing, setLoadingBriefing] = useState(false);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -114,15 +110,12 @@ How can I assist your operations today? You can select a quick action below or a
 
   const loadBriefing = useCallback(async () => {
     try {
-      setLoadingBriefing(true);
       const res = await aiService.getBriefing();
       if (res?.data) {
         setBriefingData(res.data);
       }
     } catch (err) {
       console.warn("Could not load executive briefing summary:", err);
-    } finally {
-      setLoadingBriefing(false);
     }
   }, []);
 

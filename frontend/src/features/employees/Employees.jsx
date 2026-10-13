@@ -48,10 +48,11 @@ export const Employees = () => {
         employeeService.getStats(),
       ]);
 
-      if (empRes.status === "fulfilled" && empRes.value?.data) {
+      if (empRes.status === "fulfilled" && empRes.value) {
+        const resData = empRes.value.data ?? empRes.value;
         const liveList =
-          empRes.value.data.employees ||
-          (Array.isArray(empRes.value.data) ? empRes.value.data : []);
+          resData.employees ||
+          (Array.isArray(resData) ? resData : []);
 
         const normalized = liveList.map((emp) => ({
           ...emp,
@@ -84,8 +85,8 @@ export const Employees = () => {
         setEmployees(initialEmployees);
       }
 
-      if (statsRes.status === "fulfilled" && statsRes.value?.data) {
-        setStatsData(statsRes.value.data);
+      if (statsRes.status === "fulfilled" && statsRes.value) {
+        setStatsData(statsRes.value.data ?? statsRes.value);
       }
     } catch (err) {
       console.error("Failed to load employee directory data:", err);
@@ -205,7 +206,7 @@ export const Employees = () => {
         </AnimatePresence>
 
         {/* Top Summary Metric Cards */}
-        <EmployeeStatsWidget employees={employees} />
+        <EmployeeStatsWidget employees={employees} statsData={statsData} />
 
         {/* Header & Control Bar */}
         <EmployeesHeader

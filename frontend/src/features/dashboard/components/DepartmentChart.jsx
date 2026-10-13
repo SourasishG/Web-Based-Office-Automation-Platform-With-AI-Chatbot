@@ -11,6 +11,13 @@ const COLOR_PALETTE = [
   "from-amber-500 to-orange-600",
 ];
 
+const DEFAULT_DEPARTMENTS = [
+  { name: "Engineering", count: 2, percentage: 40, color: "from-cyan-500 to-blue-600" },
+  { name: "Executive", count: 1, percentage: 20, color: "from-purple-500 to-pink-600" },
+  { name: "Product & Design", count: 1, percentage: 20, color: "from-blue-500 to-indigo-600" },
+  { name: "HR & Operations", count: 1, percentage: 20, color: "from-emerald-500 to-teal-600" },
+];
+
 /**
  * DepartmentChart - Apple Liquid Glass Workforce Distribution Analytics
  * Displays department headcounts and proportional percentage breakdown bars.
@@ -18,13 +25,6 @@ const COLOR_PALETTE = [
  * @param {Array<object>|object} departmentData - Array or object with departments distribution
  */
 export const DepartmentChart = ({ departmentData }) => {
-  const defaultDepartments = [
-    { name: "Engineering", count: 2, percentage: 40, color: "from-cyan-500 to-blue-600" },
-    { name: "Executive", count: 1, percentage: 20, color: "from-purple-500 to-pink-600" },
-    { name: "Product & Design", count: 1, percentage: 20, color: "from-blue-500 to-indigo-600" },
-    { name: "HR & Operations", count: 1, percentage: 20, color: "from-emerald-500 to-teal-600" },
-  ];
-
   const { departments, totalEmployees } = useMemo(() => {
     let rawList = [];
     let total = 0;
@@ -40,7 +40,7 @@ export const DepartmentChart = ({ departmentData }) => {
 
     if (rawList.length === 0) {
       return {
-        departments: defaultDepartments,
+        departments: DEFAULT_DEPARTMENTS,
         totalEmployees: 5,
       };
     }

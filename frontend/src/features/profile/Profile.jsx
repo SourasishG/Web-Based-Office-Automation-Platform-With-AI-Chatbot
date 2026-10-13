@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import ProfileHeader from "./components/ProfileHeader";
@@ -23,7 +22,6 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const [profileData, setProfileData] = useState(authUser || {});
-  const [isLoading, setIsLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Fetch full live profile with counts, manager, and skills from backend
@@ -31,7 +29,6 @@ const Profile = () => {
     let isMounted = true;
 
     const fetchLiveProfile = async () => {
-      setIsLoading(true);
       try {
         const liveUser = await authService.getCurrentUser();
         if (isMounted && liveUser) {
@@ -40,8 +37,6 @@ const Profile = () => {
         }
       } catch (err) {
         console.warn("Could not fetch fresh profile, using session data:", err.message);
-      } finally {
-        if (isMounted) setIsLoading(false);
       }
     };
 

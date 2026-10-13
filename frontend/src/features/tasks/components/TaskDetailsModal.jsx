@@ -10,19 +10,16 @@ import {
   Sparkles,
   Loader2,
   FolderKanban,
-  User,
   AlertCircle,
   Check,
 } from "lucide-react";
 import {
   GlassModal,
   GlassButton,
-  GlassBadge,
   GlassAvatar,
   GlassInput,
 } from "../../../components/ui";
 import TaskPriorityBadge from "./TaskPriorityBadge";
-import TaskStatusBadge from "./TaskStatusBadge";
 import TaskProgress from "./TaskProgress";
 import { taskService } from "../../../services/taskService";
 import { aiService } from "../../../services/aiService";
@@ -38,7 +35,6 @@ export const TaskDetailsModal = ({
   const [subtasks, setSubtasks] = useState([]);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
   const [status, setStatus] = useState("TODO");
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [loadingAi, setLoadingAi] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [error, setError] = useState("");
@@ -72,7 +68,6 @@ export const TaskDetailsModal = ({
   const handleStatusChange = async (newStatus) => {
     if (newStatus === status) return;
     try {
-      setLoadingUpdate(true);
       setStatus(newStatus);
       const res = await taskService.updateTask(currentTask.id, { status: newStatus });
       const updated = res?.data || { ...currentTask, status: newStatus };
@@ -82,8 +77,6 @@ export const TaskDetailsModal = ({
       console.error("Failed to update status:", err);
       setStatus(currentTask.status);
       setError("Failed to update status");
-    } finally {
-      setLoadingUpdate(false);
     }
   };
 
@@ -172,7 +165,7 @@ Do not include explanations or markdown fences.`;
       try {
         const cleaned = reply.replace(/```json|```/g, "").trim();
         parsed = JSON.parse(cleaned);
-      } catch (_e) {
+      } catch {
         // Fallback: split by lines
         parsed = reply
           .split("\n")

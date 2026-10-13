@@ -34,17 +34,18 @@ const Projects = () => {
         projectService.getProjectStats(),
       ]);
 
-      if (projectsRes.status === "fulfilled" && projectsRes.value?.data) {
+      if (projectsRes.status === "fulfilled" && projectsRes.value) {
+        const resData = projectsRes.value.data ?? projectsRes.value;
         const liveList =
-          projectsRes.value.data.projects ||
-          (Array.isArray(projectsRes.value.data) ? projectsRes.value.data : []);
+          resData.projects ||
+          (Array.isArray(resData) ? resData : []);
         setProjects(liveList.length > 0 ? liveList : (ProjectData?.projects || ProjectData || []));
       } else {
         setProjects(ProjectData?.projects || ProjectData || []);
       }
 
-      if (statsRes.status === "fulfilled" && statsRes.value?.data) {
-        setStatsData(statsRes.value.data);
+      if (statsRes.status === "fulfilled" && statsRes.value) {
+        setStatsData(statsRes.value.data ?? statsRes.value);
       }
     } catch (err) {
       console.error("Failed to load projects workspace data:", err);

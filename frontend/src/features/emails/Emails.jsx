@@ -46,24 +46,21 @@ export const Emails = () => {
         emailService.getFolderCounts(),
       ]);
 
-      if (emailsRes.status === "fulfilled" && emailsRes.value?.data) {
+      if (emailsRes.status === "fulfilled" && emailsRes.value) {
+        const resData = emailsRes.value.data ?? emailsRes.value;
         const liveEmails =
-          emailsRes.value.data.emails ||
-          (Array.isArray(emailsRes.value.data) ? emailsRes.value.data : []);
+          resData.emails ||
+          (Array.isArray(resData) ? resData : []);
         const list = liveEmails.length > 0 ? liveEmails : initialEmails;
         setEmails(list);
-        if (!selectedEmailId && list.length > 0) {
-          setSelectedEmailId(list[0].id);
-        }
+        setSelectedEmailId((prevId) => prevId || (list.length > 0 ? list[0].id : null));
       } else {
         setEmails(initialEmails);
-        if (!selectedEmailId && initialEmails.length > 0) {
-          setSelectedEmailId(initialEmails[0].id);
-        }
+        setSelectedEmailId((prevId) => prevId || (initialEmails.length > 0 ? initialEmails[0].id : null));
       }
 
-      if (countsRes.status === "fulfilled" && countsRes.value?.data) {
-        setFolderCounts(countsRes.value.data);
+      if (countsRes.status === "fulfilled" && countsRes.value) {
+        setFolderCounts(countsRes.value.data ?? countsRes.value);
       }
     } catch (err) {
       console.error("Failed to load email hub data:", err);

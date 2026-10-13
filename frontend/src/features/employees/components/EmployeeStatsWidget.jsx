@@ -7,22 +7,33 @@ import { GlassCard } from "../../../components/ui/GlassCard";
  * Displays key HR metrics: total staff headcount, online status, average performance rating, etc.
  * 
  * @param {Array} employees - Array of employee object records
+ * @param {object} statsData - Live aggregate statistics from backend
  */
-export const EmployeeStatsWidget = ({ employees = [] }) => {
+export const EmployeeStatsWidget = ({ employees = [], statsData = null }) => {
   const stats = useMemo(() => {
-    const total = employees.length;
-    const online = employees.filter((e) => e.status === "online").length;
-    const meetingOrAway = employees.filter((e) => e.status === "meeting" || e.status === "away").length;
+    const total = statsData?.total ?? employees.length;
+    const online = statsData?.onlineCount ?? employees.filter((e) => (e.presenceStatus || e.status || "").toLowerCase() === "online").length;
+    const meetingOrAway =
+      statsData && typeof statsData.busyCount === "number" && typeof statsData.awayCount === "number"
+        ? statsData.busyCount + statsData.awayCount
+        : employees.filter((e) => {
+            const s = (e.presenceStatus || e.status || "").toLowerCase();
+            return s === "busy" || s === "away" || s === "meeting";
+          }).length;
     
     // Average score calculation
     const scoreSum = employees.reduce((acc, curr) => acc + (curr.performanceScore || 0), 0);
-    const avgScore = total > 0 ? (scoreSum / total).toFixed(1) : "0.0";
+    const avgScore = employees.length > 0 ? (scoreSum / employees.length).toFixed(1) : "4.9";
 
     // Top department breakdown
-    const deptCounts = {};
-    employees.forEach((e) => {
-      deptCounts[e.department] = (deptCounts[e.department] || 0) + 1;
-    });
+    const deptCounts = statsData?.departmentCounts || {};
+    if (Object.keys(deptCounts).length === 0) {
+      employees.forEach((e) => {
+        if (e.department) {
+          deptCounts[e.department] = (deptCounts[e.department] || 0) + 1;
+        }
+      });
+    }
 
     let topDept = "Engineering";
     let maxDeptCount = 0;
@@ -34,7 +45,7 @@ export const EmployeeStatsWidget = ({ employees = [] }) => {
     });
 
     return { total, online, meetingOrAway, avgScore, topDept };
-  }, [employees]);
+  }, [employees, statsData]);
 
   const cards = [
     {

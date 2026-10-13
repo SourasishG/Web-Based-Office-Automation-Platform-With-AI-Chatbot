@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Calendar, MoreVertical, GripVertical, CheckCircle2 } from "lucide-react";
+import { Calendar, MoreVertical, GripVertical } from "lucide-react";
 import {
   GlassCard,
   GlassBadge,

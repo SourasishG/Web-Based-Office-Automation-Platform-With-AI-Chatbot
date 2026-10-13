@@ -10,10 +10,10 @@ const subtaskItemSchema = z.object({
 export const getTasksQuerySchema = z.object({
   query: z.object({
     search: z.string().optional(),
-    status: z.nativeEnum(TaskStatus).or(z.literal("all")).optional(),
-    priority: z.nativeEnum(Priority).or(z.literal("all")).optional(),
-    projectId: z.string().uuid().optional(),
-    assigneeId: z.string().uuid().optional(),
+    status: z.nativeEnum(TaskStatus).or(z.literal("all")).or(z.enum(["todo", "in_progress", "review", "completed"])).optional(),
+    priority: z.nativeEnum(Priority).or(z.literal("all")).or(z.enum(["low", "medium", "high", "critical"])).optional(),
+    projectId: z.string().uuid().or(z.literal("all")).or(z.literal("")).optional(),
+    assigneeId: z.string().uuid().or(z.literal("all")).or(z.literal("")).optional(),
   }),
 });
 

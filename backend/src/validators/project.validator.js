@@ -4,10 +4,10 @@ import { ProjectStatus, Priority } from "@prisma/client";
 export const getProjectsQuerySchema = z.object({
   query: z.object({
     search: z.string().optional(),
-    status: z.nativeEnum(ProjectStatus).or(z.literal("all")).optional(),
+    status: z.nativeEnum(ProjectStatus).or(z.literal("all")).or(z.enum(["active", "completed", "on-hold", "planning"])).optional(),
     department: z.string().optional(),
-    priority: z.nativeEnum(Priority).optional(),
-    sortBy: z.enum(["title", "dueDate", "progress", "createdAt"]).default("createdAt").optional(),
+    priority: z.nativeEnum(Priority).or(z.literal("all")).optional(),
+    sortBy: z.enum(["title", "dueDate", "progress", "createdAt", "name"]).default("createdAt").optional(),
     sortOrder: z.enum(["asc", "desc"]).default("desc").optional(),
     page: z.coerce.number().min(1).default(1).optional(),
     limit: z.coerce.number().min(1).max(100).default(20).optional(),

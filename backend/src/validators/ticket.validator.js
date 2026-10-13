@@ -5,8 +5,8 @@ export const getTicketsQuerySchema = z.object({
   query: z.object({
     search: z.string().optional(),
     category: z.nativeEnum(TicketCategory).or(z.literal("all")).optional(),
-    status: z.nativeEnum(TicketStatus).or(z.literal("all")).optional(),
-    priority: z.nativeEnum(Priority).or(z.literal("all")).optional(),
+    status: z.nativeEnum(TicketStatus).or(z.literal("all")).or(z.enum(["open", "in_progress", "review", "resolved"])).optional(),
+    priority: z.nativeEnum(Priority).or(z.literal("all")).or(z.enum(["low", "medium", "high", "critical"])).optional(),
     page: z.coerce.number().min(1).default(1).optional(),
     limit: z.coerce.number().min(1).max(100).default(20).optional(),
   }),

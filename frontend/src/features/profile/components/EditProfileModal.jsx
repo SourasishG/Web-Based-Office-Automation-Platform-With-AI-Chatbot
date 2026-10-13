@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import {
   User,
-  Mail,
   Briefcase,
   Building2,
   Phone,
   MapPin,
-  Sparkles,
   Plus,
   X,
   Loader2,

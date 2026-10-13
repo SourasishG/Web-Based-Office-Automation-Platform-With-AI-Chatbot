@@ -5,7 +5,7 @@ export const getEmployeesQuerySchema = z.object({
   query: z.object({
     search: z.string().optional(),
     department: z.string().optional(),
-    status: z.nativeEnum(PresenceStatus).optional(),
+    status: z.nativeEnum(PresenceStatus).or(z.literal("all")).or(z.enum(["online", "offline", "away", "busy"])).optional(),
     page: z.coerce.number().min(1).default(1).optional(),
     limit: z.coerce.number().min(1).max(100).default(20).optional(),
   }),
@@ -25,7 +25,7 @@ export const updateEmployeeSchema = z.object({
     location: z.string().optional(),
     presenceStatus: z.nativeEnum(PresenceStatus).optional(),
     skills: z.array(z.string()).optional(),
-    avatarUrl: z.string().url().optional(),
+    avatarUrl: z.string().optional(),
     managerId: z.string().uuid().nullable().optional(),
   }),
 });

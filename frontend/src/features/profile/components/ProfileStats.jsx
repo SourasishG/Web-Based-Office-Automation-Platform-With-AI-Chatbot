@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   Briefcase,
   CheckSquare,
@@ -9,6 +9,75 @@ import {
 } from "lucide-react";
 import { GlassCard, GlassBadge } from "../../../components/ui";
 
+const DEFAULT_STATS = [
+  {
+    id: "projects",
+    title: "Projects Managed",
+    value: "8",
+    description: "Active & Delivered",
+    trend: "+2 this quarter",
+    badge: "High Output",
+    badgeVariant: "cyan",
+    icon: Briefcase,
+    glow: "cyan",
+  },
+  {
+    id: "tasks",
+    title: "Completed Tasks",
+    value: "42",
+    description: "Tasks closed this month",
+    trend: "98% on-time",
+    badge: "Top Execution",
+    badgeVariant: "success",
+    icon: CheckSquare,
+    glow: "none",
+  },
+  {
+    id: "meetings",
+    title: "Meetings Attended",
+    value: "16",
+    description: "Syncs & architecture reviews",
+    trend: "100% attendance",
+    badge: "Engaged",
+    badgeVariant: "primary",
+    icon: Calendar,
+    glow: "none",
+  },
+  {
+    id: "tickets",
+    title: "Tickets Resolved",
+    value: "5",
+    description: "HR & IT helpdesk resolutions",
+    trend: "Avg 12m response",
+    badge: "Fast Response",
+    badgeVariant: "purple",
+    icon: Ticket,
+    glow: "purple",
+  },
+  {
+    id: "performance",
+    title: "Performance Rating",
+    value: "98%",
+    description: "Executive review score",
+    trend: "+3% vs Q2",
+    badge: "Exceeds Expectations",
+    badgeVariant: "success",
+    icon: TrendingUp,
+    glow: "none",
+  },
+  {
+    id: "recognition",
+    title: "Team Recognition",
+    value: "12",
+    description: "Peer commendations",
+    trend: "3 this month",
+    badge: "Key Contributor",
+    badgeVariant: "warning",
+    icon: Award,
+    glow: "none",
+  },
+];
+
 /**
  * ProfileStats - Apple Liquid Glass Executive Performance Metrics Deck
  * Renders employee KPI statistics, task accomplishments, and attendance ratings.
@@ -16,77 +85,7 @@ import { GlassCard, GlassBadge } from "../../../components/ui";
  * @param {Array<object>|object} stats - Array or object of user performance metrics
  */
 export const ProfileStats = ({ stats }) => {
-  // Fallback Executive Performance Metrics
-  const defaultStats = [
-    {
-      id: "projects",
-      title: "Projects Managed",
-      value: "8",
-      description: "Active & Delivered",
-      trend: "+2 this quarter",
-      badge: "High Output",
-      badgeVariant: "cyan",
-      icon: Briefcase,
-      glow: "cyan",
-    },
-    {
-      id: "tasks",
-      title: "Completed Tasks",
-      value: "42",
-      description: "Tasks closed this month",
-      trend: "98% on-time",
-      badge: "Top Execution",
-      badgeVariant: "success",
-      icon: CheckSquare,
-      glow: "none",
-    },
-    {
-      id: "meetings",
-      title: "Meetings Attended",
-      value: "16",
-      description: "Syncs & architecture reviews",
-      trend: "100% attendance",
-      badge: "Engaged",
-      badgeVariant: "primary",
-      icon: Calendar,
-      glow: "none",
-    },
-    {
-      id: "tickets",
-      title: "Tickets Resolved",
-      value: "5",
-      description: "HR & IT helpdesk resolutions",
-      trend: "Avg 12m response",
-      badge: "Fast Response",
-      badgeVariant: "purple",
-      icon: Ticket,
-      glow: "purple",
-    },
-    {
-      id: "performance",
-      title: "Performance Rating",
-      value: "98%",
-      description: "Executive review score",
-      trend: "+3% vs Q2",
-      badge: "Exceeds Expectations",
-      badgeVariant: "success",
-      icon: TrendingUp,
-      glow: "none",
-    },
-    {
-      id: "recognition",
-      title: "Team Recognition",
-      value: "12",
-      description: "Peer commendations",
-      trend: "3 this month",
-      badge: "Key Contributor",
-      badgeVariant: "warning",
-      icon: Award,
-      glow: "none",
-    },
-  ];
-
-  const items = React.useMemo(() => {
+  const items = useMemo(() => {
     if (Array.isArray(stats) && stats.length > 0) return stats;
 
     const projectsVal = stats?.projects ?? stats?._count?.projectMemberships ?? 4;
@@ -96,23 +95,23 @@ export const ProfileStats = ({ stats }) => {
 
     return [
       {
-        ...defaultStats[0],
+        ...DEFAULT_STATS[0],
         value: String(projectsVal),
       },
       {
-        ...defaultStats[1],
+        ...DEFAULT_STATS[1],
         value: String(tasksVal),
       },
       {
-        ...defaultStats[2],
+        ...DEFAULT_STATS[2],
         value: String(meetingsVal),
       },
       {
-        ...defaultStats[3],
+        ...DEFAULT_STATS[3],
         value: String(ticketsVal),
       },
-      defaultStats[4],
-      defaultStats[5],
+      DEFAULT_STATS[4],
+      DEFAULT_STATS[5],
     ];
   }, [stats]);
 

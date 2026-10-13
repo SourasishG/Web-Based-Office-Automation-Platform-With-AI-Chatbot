@@ -10,18 +10,18 @@ export const getTasks = async (filters = {}) => {
   const where = {};
 
   if (status && status !== "all") {
-    where.status = status;
+    where.status = status.toUpperCase();
   }
 
   if (priority && priority !== "all") {
-    where.priority = priority;
+    where.priority = priority.toUpperCase();
   }
 
-  if (projectId) {
+  if (projectId && projectId !== "all") {
     where.projectId = projectId;
   }
 
-  if (assigneeId) {
+  if (assigneeId && assigneeId !== "all") {
     where.assigneeId = assigneeId;
   }
 

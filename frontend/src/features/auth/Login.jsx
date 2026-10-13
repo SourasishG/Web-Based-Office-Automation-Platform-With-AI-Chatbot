@@ -8,11 +8,9 @@ import {
   EyeOff,
   ArrowRight,
   Sparkles,
-  Bot,
   Loader2,
   ShieldAlert,
   Building2,
-  CheckCircle2,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 
