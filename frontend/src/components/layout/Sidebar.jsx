@@ -194,8 +194,16 @@ const Sidebar = ({
             `}
           >
             <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} min-w-0`}>
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-cyan-500 to-blue-600 font-bold text-xs text-white shadow-md">
-                {initials}
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-linear-to-br from-cyan-500 to-blue-600 font-bold text-xs text-white shadow-md border border-white/10">
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  initials
+                )}
               </div>
 
               {!collapsed && (

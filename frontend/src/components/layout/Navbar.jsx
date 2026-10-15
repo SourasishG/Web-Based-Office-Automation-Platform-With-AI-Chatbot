@@ -118,14 +118,25 @@ const Navbar = ({ setMobileOpen }) => {
               items-center
               justify-center
               rounded-full
+              overflow-hidden
               bg-gradient-to-br
               from-cyan-500
               to-blue-600
               font-bold
               text-xs
+              border
+              border-white/10
             "
           >
-            {initials}
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={fullName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              initials
+            )}
           </div>
 
           <div className="hidden text-left md:block">

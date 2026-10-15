@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   User,
   Briefcase,
@@ -11,9 +11,12 @@ import {
   Save,
   CheckCircle2,
   AlertCircle,
+  Camera,
+  Trash2,
 } from "lucide-react";
 import { GlassModal } from "../../../components/ui/GlassModal";
 import { GlassButton } from "../../../components/ui/GlassButton";
+import { GlassAvatar } from "../../../components/ui/GlassAvatar";
 import employeeService from "../../../services/employeeService";
 import useAuth from "../../../hooks/useAuth";
 
@@ -26,9 +29,11 @@ const STATUS_OPTIONS = [
 
 export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
   const { updateUser } = useAuth();
+  const fileInputRef = useRef(null);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [department, setDepartment] = useState("");
   const [phone, setPhone] = useState("");
@@ -46,6 +51,7 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
     if (user) {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
+      setAvatarUrl(user.avatarUrl || user.avatar || "");
       setJobTitle(user.jobTitle || user.designation || "");
       setDepartment(user.department || "");
       setPhone(user.phone || "");
@@ -70,6 +76,67 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
     setSkills(skills.filter((s) => s !== skillToRemove));
   };
 
+  // Convert uploaded image file to lightweight compressed data URL
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file (PNG, JPG, WEBP).");
+      return;
+    }
+
+    // Limit original file size to 10MB
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Image file is too large. Please select an image under 10MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const img = new Image();
+      img.onload = () => {
+        // High-quality downscale to max 400x400 for optimal fast avatars
+        const maxDimension = 400;
+        let { width, height } = img;
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.88);
+        setAvatarUrl(compressedDataUrl);
+        setError("");
+      };
+      img.onerror = () => {
+        setError("Unable to process the selected image.");
+      };
+      img.src = loadEvent.target.result;
+    };
+    reader.onerror = () => {
+      setError("Failed to read image file.");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarUrl("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSave = async (e) => {
     e?.preventDefault();
     if (!firstName.trim() || !lastName.trim()) {
@@ -84,6 +151,7 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
       const payload = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
+        avatarUrl: avatarUrl || null,
         jobTitle: jobTitle.trim(),
         department: department.trim(),
         phone: phone.trim(),
@@ -149,6 +217,64 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
             <span>{error}</span>
           </div>
         )}
+
+        {/* Profile Picture Uploader */}
+        <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
+          <div className="relative group shrink-0">
+            <GlassAvatar
+              src={avatarUrl}
+              name={`${firstName} ${lastName}`}
+              size="lg"
+              glow
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload new picture"
+              className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-[18px] opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-cyan-300"
+            >
+              <Camera className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-white">Profile Picture</p>
+            <p className="text-[11px] text-slate-400 truncate">
+              Upload your custom photo (PNG, JPG, or WEBP up to 10MB)
+            </p>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+
+            <div className="flex items-center gap-2 mt-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>{avatarUrl ? "Change Photo" : "Upload Photo"}</span>
+              </button>
+
+              {avatarUrl && (
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  className="px-2.5 py-1 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Remove profile picture"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Remove</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Name Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
