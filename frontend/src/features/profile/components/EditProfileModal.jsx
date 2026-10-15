@@ -219,7 +219,7 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
         )}
 
         {/* Profile Picture Uploader */}
-        <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/10">
+        <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-white/3 border border-white/10">
           <div className="relative group shrink-0">
             <GlassAvatar
               src={avatarUrl}
@@ -390,7 +390,7 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
                   className={`flex items-center gap-2 p-2 rounded-xl border text-[11px] font-medium transition-all cursor-pointer ${
                     isSelected
                       ? "bg-white/10 border-cyan-400/50 shadow-[0_0_15px_rgba(6,182,212,0.2)] text-white"
-                      : "bg-white/[0.03] border-white/5 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
+                      : "bg-white/3 border-white/5 text-slate-400 hover:bg-white/6 hover:text-slate-200"
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full ${opt.color} shrink-0`} />
@@ -430,14 +430,14 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSaveSuccess }) => {
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 rounded-xl bg-white/[0.02] border border-white/5">
+          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 rounded-xl bg-white/2 border border-white/5">
             {skills.length === 0 ? (
               <span className="text-[11px] text-slate-500 italic">No skills listed yet.</span>
             ) : (
               skills.map((skill) => (
                 <span
                   key={skill}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-gradient-to-r from-purple-500/15 to-cyan-500/15 border border-purple-500/30 text-slate-200"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-linear-to-r from-purple-500/15 to-cyan-500/15 border border-purple-500/30 text-slate-200"
                 >
                   <span>{skill}</span>
                   <button
