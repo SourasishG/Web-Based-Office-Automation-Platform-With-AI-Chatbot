@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import TasksHeader from "./components/TasksHeader";
@@ -15,6 +16,7 @@ import { Loader2 } from "lucide-react";
  * Connected to live Node.js / Supabase PostgreSQL backend with optimistic reordering and Herric Copilot.
  */
 const Tasks = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tasks, setTasks] = useState([]);
   const [taskStats, setTaskStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,6 +31,18 @@ const Tasks = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [createModalStatus, setCreateModalStatus] = useState("TODO");
   const [selectedTask, setSelectedTask] = useState(null);
+
+  // Auto-trigger create modal if URL includes ?new=true
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setIsCreateModalOpen(true);
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("new");
+        return next;
+      }, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const fetchData = useCallback(async () => {
     try {

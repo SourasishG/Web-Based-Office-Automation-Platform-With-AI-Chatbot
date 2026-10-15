@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import TicketStatsWidget from "./components/TicketStatsWidget";
@@ -16,6 +17,7 @@ import { Loader2 } from "lucide-react";
  * Connected to live Express 5 backend with Herric AI Copilot diagnostics and live conversation streams.
  */
 export const Tickets = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tickets, setTickets] = useState([]);
   const [statsData, setStatsData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,18 @@ export const Tickets = () => {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  // Auto-trigger create modal if URL includes ?new=true
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setIsCreateOpen(true);
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("new");
+        return next;
+      }, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const showToast = (msg) => {
     setToastMessage(msg);

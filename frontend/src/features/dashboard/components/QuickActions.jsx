@@ -12,7 +12,7 @@ import QuickActionCard from "./QuickActionCard";
 export const QuickActions = ({ actions }) => {
   const navigate = useNavigate();
 
-  // Fallback Action Cards with functional routing
+  // Action Cards with direct, functional routing to create/compose workflows
   const defaultActions = [
     {
       id: "qa-1",
@@ -20,7 +20,7 @@ export const QuickActions = ({ actions }) => {
       description: "Assign task to project team",
       icon: CheckSquare,
       glow: "cyan",
-      onClick: () => navigate("/tasks"),
+      path: "/tasks?new=true",
     },
     {
       id: "qa-2",
@@ -28,7 +28,7 @@ export const QuickActions = ({ actions }) => {
       description: "Calendar & video meeting",
       icon: Calendar,
       glow: "none",
-      onClick: () => navigate("/meetings"),
+      path: "/meetings?new=true",
     },
     {
       id: "qa-3",
@@ -36,7 +36,7 @@ export const QuickActions = ({ actions }) => {
       description: "Internal message dispatch",
       icon: Mail,
       glow: "none",
-      onClick: () => navigate("/profile"),
+      path: "/emails?new=true",
     },
     {
       id: "qa-4",
@@ -44,11 +44,22 @@ export const QuickActions = ({ actions }) => {
       description: "IT & HR desk request",
       icon: Ticket,
       glow: "purple",
-      onClick: () => navigate("/projects"),
+      path: "/tickets?new=true",
     },
   ];
 
-  const actionList = actions && actions.length > 0 ? actions : defaultActions;
+  // Resolve actions list ensuring each card has a working onClick handler
+  const actionList = (actions && actions.length > 0 ? actions : defaultActions).map((action, idx) => {
+    const fallback = defaultActions[idx] || defaultActions[0];
+    const path = action.path || fallback.path;
+    const clickHandler = action.onClick || (() => navigate(path));
+    return {
+      ...fallback,
+      ...action,
+      icon: action.icon || fallback.icon,
+      onClick: clickHandler,
+    };
+  });
 
   return (
     <GlassPanel

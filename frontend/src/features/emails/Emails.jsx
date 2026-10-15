@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import EmailsHeader from "./components/EmailsHeader";
@@ -15,6 +16,7 @@ import { Loader2 } from "lucide-react";
  * Connected to live Express 5 backend with Herric AI summarization and auto-draft reply.
  */
 export const Emails = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [emails, setEmails] = useState([]);
   const [folderCounts, setFolderCounts] = useState({ inboxUnread: 0, starred: 0, drafts: 0 });
   const [activeFolder, setActiveFolder] = useState("inbox"); // 'inbox', 'sent', 'starred', 'drafts', 'trash'
@@ -26,6 +28,18 @@ export const Emails = () => {
   // Modal & Toast state
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  // Auto-trigger compose modal if URL includes ?new=true
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setIsComposeOpen(true);
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("new");
+        return next;
+      }, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const showToast = (msg) => {
     setToastMessage(msg);

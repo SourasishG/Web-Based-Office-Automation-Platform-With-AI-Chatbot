@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Activity, Clock, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassAvatar } from "../../../components/ui/GlassAvatar";
@@ -11,6 +12,8 @@ import { GlassButton } from "../../../components/ui/GlassButton";
  * @param {Array<object>} activities - Array of activity log items
  */
 export const RecentActivity = ({ activities }) => {
+  const navigate = useNavigate();
+
   // Fallback Activity Log Feed
   const defaultActivities = [
     {
@@ -79,7 +82,13 @@ export const RecentActivity = ({ activities }) => {
       subtitle="Real-time workplace operation log"
       icon={Activity}
       action={
-        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight}>
+        <GlassButton
+          variant="ghost"
+          size="sm"
+          rightIcon={ArrowRight}
+          onClick={() => navigate("/notifications")}
+          title="View Audit Log & Notification Center"
+        >
           Audit Log
         </GlassButton>
       }

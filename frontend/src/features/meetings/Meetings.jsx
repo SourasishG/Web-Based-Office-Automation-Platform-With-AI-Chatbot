@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -18,6 +19,7 @@ import { Loader2 } from "lucide-react";
  * Connected to live Express 5 backend with real-time video sync, timeline, and stats.
  */
 const Meetings = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
@@ -28,6 +30,18 @@ const Meetings = () => {
 
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  // Auto-trigger schedule modal if URL includes ?new=true
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setIsScheduleModalOpen(true);
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("new");
+        return next;
+      }, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const showToast = (msg) => {
     setToastMessage(msg);
