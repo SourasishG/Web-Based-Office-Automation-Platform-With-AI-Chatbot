@@ -102,8 +102,8 @@ const Sidebar = ({
         }`}
       >
         {/* Top Header: Brand Logo & Title */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className={`mb-6 flex items-center ${collapsed ? "justify-center" : "justify-between"}`}>
+          <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} min-w-0`}>
             <motion.div
               whileHover={{ rotate: 8, scale: 1.08 }}
               transition={{ type: "spring", stiffness: 300 }}
@@ -133,7 +133,7 @@ const Sidebar = ({
         </div>
 
         {/* Navigation Menu Links */}
-        <nav className="flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden pr-1">
+        <nav className={`flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden ${collapsed ? "" : "pr-1"}`}>
           {menuItems.map((item, index) => {
             const Icon = item.icon;
 
@@ -152,7 +152,7 @@ const Sidebar = ({
                   title={collapsed ? item.name : undefined}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-2xl px-3 py-2.5 font-medium transition-all duration-200 select-none ${
-                      collapsed ? "justify-center" : ""
+                      collapsed ? "justify-center px-0" : ""
                     } ${
                       isActive
                         ? "bg-cyan-500/15 text-cyan-400 border border-cyan-400/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]"
@@ -190,11 +190,11 @@ const Sidebar = ({
           <div
             className={`
               flex items-center rounded-2xl border border-white/10 bg-white/5 p-2.5 backdrop-blur-xl transition-all
-              ${collapsed ? "justify-center" : "justify-between gap-3"}
+              ${collapsed ? "justify-center p-2" : "justify-between gap-3"}
             `}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 font-bold text-xs text-white shadow-md">
+            <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} min-w-0`}>
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-cyan-500 to-blue-600 font-bold text-xs text-white shadow-md">
                 {initials}
               </div>
 
