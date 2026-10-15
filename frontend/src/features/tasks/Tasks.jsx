@@ -8,7 +8,6 @@ import TaskBoard from "./components/TaskBoard";
 import CreateTaskModal from "./components/CreateTaskModal";
 import TaskDetailsModal from "./components/TaskDetailsModal";
 import { taskService } from "../../services/taskService";
-import TaskData from "./data/TaskData";
 import { Loader2 } from "lucide-react";
 
 /**
@@ -58,10 +57,9 @@ const Tasks = () => {
         const liveTasks = Array.isArray(resData)
           ? resData
           : resData.tasks || [];
-        setTasks(liveTasks.length > 0 ? liveTasks : TaskData);
+        setTasks(liveTasks);
       } else {
-        // Fallback to initial mock if backend unreachable
-        setTasks(Array.isArray(TaskData) ? TaskData : []);
+        setTasks([]);
       }
 
       if (statsRes.status === "fulfilled" && statsRes.value) {
@@ -69,7 +67,7 @@ const Tasks = () => {
       }
     } catch (err) {
       console.error("Failed to fetch task workspace data:", err);
-      setTasks(Array.isArray(TaskData) ? TaskData : []);
+      setTasks([]);
     } finally {
       setLoading(false);
     }

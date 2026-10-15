@@ -80,9 +80,9 @@ export const Employees = () => {
           performanceScore: emp.performanceScore || 4.9,
         }));
 
-        setEmployees(normalized.length > 0 ? normalized : initialEmployees);
+        setEmployees(normalized);
       } else {
-        setEmployees(initialEmployees);
+        setEmployees([]);
       }
 
       if (statsRes.status === "fulfilled" && statsRes.value) {

@@ -141,11 +141,11 @@ const Dashboard = () => {
         {/* Schedule & Upcoming Milestones */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <motion.div variants={itemVariants}>
-            <ScheduleWidget schedule={schedule.length > 0 ? schedule : dashboardData.schedule} />
+            <ScheduleWidget schedule={schedule} />
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <UpcomingDeadlines deadlines={deadlines.length > 0 ? deadlines : dashboardData.deadlines} />
+            <UpcomingDeadlines deadlines={deadlines} />
           </motion.div>
         </div>
 
@@ -154,7 +154,7 @@ const Dashboard = () => {
           {/* Left Column: Team Directory Pulse & Quick Actions */}
           <div className="space-y-6">
             <motion.div variants={itemVariants}>
-              <TeamAvailability team={team.length > 0 ? team : dashboardData.teamAvailability} />
+              <TeamAvailability team={team} />
             </motion.div>
 
             <motion.div variants={itemVariants}>
@@ -165,12 +165,12 @@ const Dashboard = () => {
           {/* Middle Column: Department Distribution & Notice Board */}
           <div className="space-y-6">
             <motion.div variants={itemVariants}>
-              <DepartmentChart departmentData={departmentDist || dashboardData.departmentStats} />
+              <DepartmentChart departmentData={departmentDist || []} />
             </motion.div>
 
             <motion.div variants={itemVariants}>
               <Announcements
-                announcements={announcements.length > 0 ? announcements : dashboardData.announcements}
+                announcements={announcements}
               />
             </motion.div>
           </div>
@@ -178,7 +178,7 @@ const Dashboard = () => {
           {/* Right Column: Verified Audit Timeline */}
           <div>
             <motion.div variants={itemVariants} className="h-full">
-              <RecentActivity activities={dashboardData.recentActivities} />
+              <RecentActivity activities={[]} />
             </motion.div>
           </div>
         </div>

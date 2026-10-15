@@ -42,9 +42,9 @@ export const Notifications = () => {
         const liveItems =
           notificationsRes.value.data.notifications ||
           (Array.isArray(notificationsRes.value.data) ? notificationsRes.value.data : []);
-        setNotifications(liveItems.length > 0 ? liveItems : initialNotifications);
+        setNotifications(liveItems);
       } else {
-        setNotifications(initialNotifications);
+        setNotifications([]);
       }
 
       if (statsRes.status === "fulfilled" && statsRes.value?.data) {

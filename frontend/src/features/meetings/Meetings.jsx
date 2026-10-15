@@ -62,18 +62,18 @@ const Meetings = () => {
         const liveTimeline = Array.isArray(timelineRes.value.data)
           ? timelineRes.value.data
           : timelineRes.value.data.timeline || [];
-        setTimeline(liveTimeline.length > 0 ? liveTimeline : (MeetingData?.dailyTimeline || []));
+        setTimeline(liveTimeline);
       } else {
-        setTimeline(MeetingData?.dailyTimeline || []);
+        setTimeline([]);
       }
 
       if (upcomingRes.status === "fulfilled" && upcomingRes.value?.data) {
         const liveUpcoming = Array.isArray(upcomingRes.value.data)
           ? upcomingRes.value.data
           : upcomingRes.value.data.upcoming || [];
-        setUpcoming(liveUpcoming.length > 0 ? liveUpcoming : (MeetingData?.upcoming || []));
+        setUpcoming(liveUpcoming);
       } else {
-        setUpcoming(MeetingData?.upcoming || []);
+        setUpcoming([]);
       }
 
       if (statsRes.status === "fulfilled" && statsRes.value?.data) {

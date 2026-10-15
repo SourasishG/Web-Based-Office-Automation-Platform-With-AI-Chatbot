@@ -63,9 +63,9 @@ export const Tickets = () => {
         const liveTickets =
           resData.tickets ||
           (Array.isArray(resData) ? resData : []);
-        setTickets(liveTickets.length > 0 ? liveTickets : initialTickets);
+        setTickets(liveTickets);
       } else {
-        setTickets(initialTickets);
+        setTickets([]);
       }
 
       if (statsRes.status === "fulfilled" && statsRes.value) {

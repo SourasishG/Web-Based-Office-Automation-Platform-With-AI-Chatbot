@@ -65,12 +65,11 @@ export const Emails = () => {
         const liveEmails =
           resData.emails ||
           (Array.isArray(resData) ? resData : []);
-        const list = liveEmails.length > 0 ? liveEmails : initialEmails;
-        setEmails(list);
-        setSelectedEmailId((prevId) => prevId || (list.length > 0 ? list[0].id : null));
+        setEmails(liveEmails);
+        setSelectedEmailId((prevId) => prevId || (liveEmails.length > 0 ? liveEmails[0].id : null));
       } else {
-        setEmails(initialEmails);
-        setSelectedEmailId((prevId) => prevId || (initialEmails.length > 0 ? initialEmails[0].id : null));
+        setEmails([]);
+        setSelectedEmailId(null);
       }
 
       if (countsRes.status === "fulfilled" && countsRes.value) {

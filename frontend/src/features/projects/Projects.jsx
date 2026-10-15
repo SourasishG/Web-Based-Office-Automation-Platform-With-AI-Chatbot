@@ -9,7 +9,6 @@ import ProjectGrid from "./components/ProjectGrid";
 import EmptyProjects from "./components/EmptyProjects";
 
 import { projectService } from "../../services/projectService";
-import ProjectData from "./data/ProjectData";
 import { Loader2 } from "lucide-react";
 
 /**
@@ -39,9 +38,9 @@ const Projects = () => {
         const liveList =
           resData.projects ||
           (Array.isArray(resData) ? resData : []);
-        setProjects(liveList.length > 0 ? liveList : (ProjectData?.projects || ProjectData || []));
+        setProjects(liveList);
       } else {
-        setProjects(ProjectData?.projects || ProjectData || []);
+        setProjects([]);
       }
 
       if (statsRes.status === "fulfilled" && statsRes.value) {
@@ -49,7 +48,7 @@ const Projects = () => {
       }
     } catch (err) {
       console.error("Failed to load projects workspace data:", err);
-      setProjects(ProjectData?.projects || ProjectData || []);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
