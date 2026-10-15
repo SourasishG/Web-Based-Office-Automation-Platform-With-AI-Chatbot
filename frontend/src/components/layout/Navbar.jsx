@@ -1,4 +1,4 @@
-import { Menu, Bell, LogOut, Sparkles } from "lucide-react";
+import { Menu, Bell, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "../common/ThemeToggle";
 import useAuth from "../../hooks/useAuth";
@@ -61,33 +61,6 @@ const Navbar = ({ setMobileOpen }) => {
 
       <div className="flex items-center gap-3 sm:gap-4">
         <ThemeToggle />
-
-        {/* Herric AI Quick Trigger */}
-        <button
-          type="button"
-          onClick={() => navigate("/chatbot")}
-          title="Herric AI Copilot"
-          className="
-            relative
-            flex
-            items-center
-            gap-1.5
-            rounded-xl
-            px-2.5
-            py-1.5
-            text-cyan-300
-            bg-cyan-500/10
-            hover:bg-cyan-500/20
-            border
-            border-cyan-500/30
-            shadow-[0_0_12px_rgba(6,182,212,0.2)]
-            transition-all
-            cursor-pointer
-          "
-        >
-          <Sparkles size={18} className="text-cyan-400 animate-pulse" />
-          <span className="text-xs font-semibold hidden sm:inline">Herric AI</span>
-        </button>
 
         {/* Notification Center Bell Button */}
         <button

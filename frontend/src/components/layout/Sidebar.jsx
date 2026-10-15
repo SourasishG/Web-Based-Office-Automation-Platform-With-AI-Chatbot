@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  Sparkles,
   Users,
   FolderKanban,
   ListTodo,
@@ -22,13 +21,6 @@ const menuItems = [
     name: "Dashboard",
     path: "/",
     icon: LayoutDashboard,
-  },
-  {
-    name: "Herric AI",
-    path: "/chatbot",
-    icon: Sparkles,
-    badge: "AI",
-    highlight: true,
   },
   {
     name: "Projects",
