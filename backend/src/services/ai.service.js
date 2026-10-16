@@ -142,6 +142,29 @@ ${ticketSummary}
 2. When answering workspace questions (meetings, tasks, tickets, emails), reference their real live data when relevant.
 3. For general productivity, drafting, or business questions, provide clear, high-level, actionable solutions.
 4. Keep answers focused, practical, and avoid unnecessary verbosity.
+
+### 📅 MEETING SCHEDULING PROTOCOL:
+When a user asks to schedule, book, or set up a meeting:
+- If key details are missing (such as topic/title, duration, attendees, or platform/meeting link):
+  - Do NOT just say you have no meetings! Warmly acknowledge their request and ask for the missing details:
+    * **Meeting Title / Topic**
+    * **Duration** (e.g. 15, 30, or 60 minutes)
+    * **Attendees** (names or emails)
+    * **Platform & Meeting Link** (e.g. Google Meet, Zoom, Microsoft Teams)
+- When sufficient details are provided (e.g. they specify title, date/time, and at least duration or attendees), or when the user asks to confirm/lock it in:
+  - You can formally schedule the meeting directly into their live database calendar!
+  - At the very end of your response, output a single machine-readable JSON block formatted EXACTLY like this:
+\`\`\`schedule_meeting_action
+{
+  "title": "Meeting Title",
+  "date": "YYYY-MM-DD",
+  "startTime": "02:00 PM",
+  "endTime": "02:30 PM",
+  "platform": "GOOGLE_MEET",
+  "meetingLink": "https://meet.google.com/xyz-abcd-efg"
+}
+\`\`\`
+  (Platform must be one of: GOOGLE_MEET, ZOOM, TEAMS. If meeting link is not provided by user, generate a realistic meeting link like https://meet.google.com/abc-defg-hij).
 `.trim();
 };
 
@@ -152,41 +175,48 @@ const callAiWithFallback = async ({ prompt, systemInstruction, history = [], fal
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (apiKey && apiKey.trim().length > 0) {
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey.trim());
-      // Try gemini-1.5-flash with system instruction
-      const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        systemInstruction: systemInstruction,
-      });
+    // Model fallback chain: 3.6-flash -> 3.5-flash -> flash-lite
+    const modelsToTry = [
+      "gemini-3.6-flash",
+      "gemini-3.5-flash",
+      "gemini-flash-lite-latest",
+      "gemini-3.8-flash",
+    ];
 
-      // Prepare multi-turn history if provided
-      if (history && history.length > 0) {
-        const formattedHistory = history.map((item) => ({
-          role: item.role === "assistant" ? "model" : item.role,
-          parts: [{ text: item.content }],
-        }));
+    const genAI = new GoogleGenerativeAI(apiKey.trim());
 
-        const chat = model.startChat({ history: formattedHistory });
-        const result = await chat.sendMessage(prompt);
-        const replyText = result.response.text();
-        return {
-          reply: replyText,
-          assistant: "Herric",
-          provider: "gemini-1.5-flash",
-        };
-      } else {
-        const result = await model.generateContent(prompt);
-        const replyText = result.response.text();
-        return {
-          reply: replyText,
-          assistant: "Herric",
-          provider: "gemini-1.5-flash",
-        };
+    for (const modelName of modelsToTry) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          systemInstruction: systemInstruction,
+        });
+
+        let replyText = "";
+        if (history && history.length > 0) {
+          const formattedHistory = history.map((item) => ({
+            role: item.role === "assistant" ? "model" : item.role,
+            parts: [{ text: item.content }],
+          }));
+
+          const chat = model.startChat({ history: formattedHistory });
+          const result = await chat.sendMessage(prompt);
+          replyText = result.response.text();
+        } else {
+          const result = await model.generateContent(prompt);
+          replyText = result.response.text();
+        }
+
+        if (replyText) {
+          return {
+            reply: replyText,
+            assistant: "Herric",
+            provider: modelName,
+          };
+        }
+      } catch (err) {
+        console.warn(`Model ${modelName} returned error (${err.message}). Trying next candidate...`);
       }
-    } catch (err) {
-      console.warn("Notice: Gemini API returned error, activating Herric fallback engine:", err.message);
-      // Fall through to fallbackFn
     }
   }
 
@@ -291,11 +321,56 @@ How can I help you accelerate your work right now? You can ask me to summarize a
     fallbackFn,
   });
 
+  let finalReply = aiResult.reply;
+  let scheduledMeeting = null;
+
+  // Check if AI outputted a schedule_meeting_action command block
+  const actionRegex = /```schedule_meeting_action\s*([\s\S]*?)\s*```/;
+  const match = finalReply.match(actionRegex);
+
+  if (match) {
+    try {
+      const meetingData = JSON.parse(match[1]);
+      const targetDate = meetingData.date ? new Date(meetingData.date) : new Date();
+
+      const createdMeeting = await prisma.meeting.create({
+        data: {
+          title: meetingData.title || "Meeting with Team",
+          description: meetingData.description || `Scheduled via Herric AI Copilot on ${new Date().toLocaleDateString()}`,
+          date: targetDate,
+          startTime: meetingData.startTime || "02:00 PM",
+          endTime: meetingData.endTime || "02:30 PM",
+          platform: meetingData.platform || "GOOGLE_MEET",
+          meetingLink: meetingData.meetingLink || "https://meet.google.com/office-aid-sync",
+          status: "SCHEDULED",
+          hostId: userId,
+          attendees: {
+            create: [
+              { userId, status: "ACCEPTED" },
+            ],
+          },
+        },
+      });
+
+      scheduledMeeting = createdMeeting;
+
+      // Clean the technical machine block from the user-facing text
+      finalReply = finalReply.replace(actionRegex, "").trim();
+
+      // Append clear confirmation banner to user
+      finalReply += `\n\n---\n✅ **Meeting Confirmed & Added to Calendar!**\n- 📅 **Title:** ${createdMeeting.title}\n- 🕒 **Time:** ${createdMeeting.startTime} - ${createdMeeting.endTime}\n- 📹 **Platform:** ${createdMeeting.platform}\n- 🔗 **Join Link:** [Join Meeting](${createdMeeting.meetingLink})\n\n*(You can view this anytime in your [Meetings Module](/meetings)).*`;
+    } catch (err) {
+      console.error("Failed to parse/create meeting from AI action block:", err);
+    }
+  }
+
   return {
     ...aiResult,
+    reply: finalReply,
+    scheduledMeeting,
     contextSnapshot: {
       pendingTasksCount: context.pendingTasks.length,
-      todayMeetingsCount: context.todayMeetings.length,
+      todayMeetingsCount: context.todayMeetings.length + (scheduledMeeting ? 1 : 0),
       openTicketsCount: context.openTickets.length,
       unreadEmailsCount: context.unreadEmailsCount,
     },
