@@ -9,6 +9,7 @@ import MeetingStats from "./components/MeetingStats";
 import UpcomingMeetings from "./components/UpcomingMeetings";
 import DailyTimeline from "./components/DailyTimeline";
 import ScheduleMeetingModal from "./components/ScheduleMeetingModal";
+import CalendarModal from "./components/CalendarModal";
 
 import { meetingService } from "../../services/meetingService";
 import MeetingData from "./data/MeetingData";
@@ -23,17 +24,24 @@ const Meetings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [timeline, setTimeline] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
+  const [allMeetings, setAllMeetings] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [scheduleInitialDate, setScheduleInitialDate] = useState("");
   const [toastMessage, setToastMessage] = useState("");
 
   // Auto-trigger schedule modal if URL includes ?new=true
   useEffect(() => {
     if (searchParams.get("new") === "true") {
+      setScheduleInitialDate("");
       setIsScheduleModalOpen(true);
       setSearchParams((prev) => {
         const next = new URLSearchParams(prev);
@@ -48,36 +56,50 @@ const Meetings = () => {
     setTimeout(() => setToastMessage(""), 3500);
   };
 
-  const fetchMeetingData = useCallback(async () => {
+  const fetchMeetingData = useCallback(async (dateToQuery = selectedDate) => {
     try {
       setLoading(true);
 
-      const [timelineRes, upcomingRes, statsRes] = await Promise.allSettled([
-        meetingService.getTimeline(),
+      const [timelineRes, upcomingRes, statsRes, allRes] = await Promise.allSettled([
+        meetingService.getTimeline(dateToQuery),
         meetingService.getUpcoming(),
         meetingService.getMeetingStats(),
+        meetingService.getAllMeetings({ limit: 100 }),
       ]);
 
-      if (timelineRes.status === "fulfilled" && timelineRes.value?.data) {
-        const liveTimeline = Array.isArray(timelineRes.value.data)
-          ? timelineRes.value.data
-          : timelineRes.value.data.timeline || [];
+      if (timelineRes.status === "fulfilled") {
+        const val = timelineRes.value;
+        const liveTimeline = Array.isArray(val)
+          ? val
+          : Array.isArray(val?.data)
+          ? val.data
+          : val?.timeline || [];
         setTimeline(liveTimeline);
       } else {
         setTimeline([]);
       }
 
-      if (upcomingRes.status === "fulfilled" && upcomingRes.value?.data) {
-        const liveUpcoming = Array.isArray(upcomingRes.value.data)
-          ? upcomingRes.value.data
-          : upcomingRes.value.data.upcoming || [];
+      if (upcomingRes.status === "fulfilled") {
+        const val = upcomingRes.value;
+        const liveUpcoming = Array.isArray(val)
+          ? val
+          : Array.isArray(val?.data)
+          ? val.data
+          : val?.upcoming || [];
         setUpcoming(liveUpcoming);
       } else {
         setUpcoming([]);
       }
 
-      if (statsRes.status === "fulfilled" && statsRes.value?.data) {
-        setStats(statsRes.value.data);
+      if (statsRes.status === "fulfilled") {
+        const val = statsRes.value;
+        setStats(val?.data || val);
+      }
+
+      if (allRes.status === "fulfilled") {
+        const val = allRes.value;
+        const list = val?.meetings || val?.data?.meetings || (Array.isArray(val) ? val : []);
+        setAllMeetings(list);
       }
     } catch (err) {
       console.error("Failed to load meetings data:", err);
@@ -86,15 +108,25 @@ const Meetings = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
-    fetchMeetingData();
-  }, [fetchMeetingData]);
+    fetchMeetingData(selectedDate);
+  }, [fetchMeetingData, selectedDate]);
+
+  const handleTimelineDateChange = (newDateStr) => {
+    setSelectedDate(newDateStr);
+    fetchMeetingData(newDateStr);
+  };
+
+  const handleOpenScheduleModal = (dateStr) => {
+    setScheduleInitialDate(dateStr || selectedDate);
+    setIsScheduleModalOpen(true);
+  };
 
   const handleMeetingCreated = (newMeeting) => {
     showToast(`Scheduled "${newMeeting.title}" successfully!`);
-    fetchMeetingData();
+    fetchMeetingData(selectedDate);
   };
 
   const handleJoinMeeting = (meeting) => {
@@ -158,7 +190,8 @@ const Meetings = () => {
             onSearchChange={setSearchTerm}
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            onScheduleClick={() => setIsScheduleModalOpen(true)}
+            onScheduleClick={() => handleOpenScheduleModal()}
+            onCalendarClick={() => setIsCalendarModalOpen(true)}
           />
         </motion.div>
 
@@ -182,6 +215,9 @@ const Meetings = () => {
                 schedule={timeline}
                 searchTerm={searchTerm}
                 activeTab={activeTab}
+                selectedDate={selectedDate}
+                onDateChange={handleTimelineDateChange}
+                onOpenCalendar={() => setIsCalendarModalOpen(true)}
               />
             </motion.div>
 
@@ -190,6 +226,7 @@ const Meetings = () => {
                 meetings={upcoming}
                 searchTerm={searchTerm}
                 onJoinMeeting={handleJoinMeeting}
+                onViewCalendar={() => setIsCalendarModalOpen(true)}
               />
             </motion.div>
           </div>
@@ -201,6 +238,24 @@ const Meetings = () => {
         isOpen={isScheduleModalOpen}
         onClose={() => setIsScheduleModalOpen(false)}
         onMeetingCreated={handleMeetingCreated}
+        initialDate={scheduleInitialDate}
+      />
+
+      {/* Interactive Calendar Modal */}
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        allMeetings={allMeetings.length > 0 ? allMeetings : [...timeline, ...upcoming]}
+        selectedDate={selectedDate}
+        onSelectDate={(d) => {
+          setSelectedDate(d);
+          fetchMeetingData(d);
+        }}
+        onOpenScheduleModal={(d) => handleOpenScheduleModal(d)}
+        onViewDateInTimeline={(d) => {
+          setSelectedDate(d);
+          fetchMeetingData(d);
+        }}
       />
     </DashboardLayout>
   );

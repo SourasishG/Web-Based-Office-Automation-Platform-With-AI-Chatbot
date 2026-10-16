@@ -16,11 +16,13 @@ const weekDays = [
 const MiniCalendar = ({
   title = "Calendar",
   events = [],
+  selectedDate,
+  onSelectDate,
 }) => {
   const today = new Date();
 
   const [currentMonth, setCurrentMonth] = useState(
-    new Date(today.getFullYear(), today.getMonth(), 1)
+    selectedDate ? new Date(selectedDate) : new Date(today.getFullYear(), today.getMonth(), 1)
   );
 
   const month = currentMonth.getMonth();
@@ -41,11 +43,11 @@ const MiniCalendar = ({
 
   const eventDays = events
     .filter((event) => {
-      const date = new Date(event.date);
-
+      if (!event.date) return false;
+      const d = new Date(event.date);
       return (
-        date.getMonth() === month &&
-        date.getFullYear() === year
+        d.getMonth() === month &&
+        d.getFullYear() === year
       );
     })
     .map((event) => new Date(event.date).getDate());
@@ -72,43 +74,79 @@ const MiniCalendar = ({
     );
   };
 
+  const jumpToToday = () => {
+    setCurrentMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+    if (onSelectDate) {
+      onSelectDate(today.toISOString().split("T")[0]);
+    }
+  };
+
+  const isDaySelected = (day) => {
+    if (!day || !selectedDate) return false;
+    const sel = new Date(selectedDate);
+    return (
+      sel.getFullYear() === year &&
+      sel.getMonth() === month &&
+      sel.getDate() === day
+    );
+  };
+
+  const handleDayClick = (day) => {
+    if (!day) return;
+    const dStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    if (onSelectDate) {
+      onSelectDate(dStr);
+    }
+  };
+
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+      <div className="mb-5 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-white">
+          <h2 className="text-lg font-bold text-white tracking-tight">
             {title}
           </h2>
-
-          <p className="text-slate-400">
+          <p className="text-xs text-slate-400 font-medium">
             {monthName}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
-            onClick={previousMonth}
-            className="rounded-xl bg-white/5 p-2 transition hover:bg-white/10"
+            type="button"
+            onClick={jumpToToday}
+            className="px-2.5 py-1 text-xs font-semibold rounded-xl bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 border border-white/10 transition"
           >
-            <ChevronLeft size={18} />
+            Today
           </button>
 
           <button
-            onClick={nextMonth}
-            className="rounded-xl bg-white/5 p-2 transition hover:bg-white/10"
+            type="button"
+            onClick={previousMonth}
+            className="rounded-xl bg-white/5 p-1.5 text-slate-400 hover:text-white transition hover:bg-white/10 border border-white/10"
+            title="Previous Month"
           >
-            <ChevronRight size={18} />
+            <ChevronLeft size={16} />
+          </button>
+
+          <button
+            type="button"
+            onClick={nextMonth}
+            className="rounded-xl bg-white/5 p-1.5 text-slate-400 hover:text-white transition hover:bg-white/10 border border-white/10"
+            title="Next Month"
+          >
+            <ChevronRight size={16} />
           </button>
         </div>
       </div>
 
-      <div className="mb-4 grid grid-cols-7 text-center text-sm font-medium text-slate-400">
+      <div className="mb-3 grid grid-cols-7 text-center text-xs font-semibold text-slate-400">
         {weekDays.map((day) => (
-          <div key={day}>{day}</div>
+          <div key={day} className="py-1">{day}</div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1.5 place-items-center">
         {days.map((day, index) => (
           <CalendarDay
             key={index}
@@ -118,9 +156,9 @@ const MiniCalendar = ({
               month === today.getMonth() &&
               year === today.getFullYear()
             }
-            hasEvent={
-              day && eventDays.includes(day)
-            }
+            isSelected={isDaySelected(day)}
+            hasEvent={day && eventDays.includes(day)}
+            onClick={() => handleDayClick(day)}
           />
         ))}
       </div>

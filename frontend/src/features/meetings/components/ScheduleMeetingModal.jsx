@@ -7,7 +7,6 @@ import {
   Users,
   AlertCircle,
   Plus,
-  Loader2,
   Check,
 } from "lucide-react";
 import {
@@ -25,10 +24,13 @@ export const ScheduleMeetingModal = ({
   isOpen = false,
   onClose,
   onMeetingCreated,
+  initialDate,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(
+    initialDate || new Date().toISOString().split("T")[0]
+  );
   const [startTime, setStartTime] = useState("10:00 AM");
   const [endTime, setEndTime] = useState("10:30 AM");
   const [platform, setPlatform] = useState("GOOGLE_MEET");
@@ -42,7 +44,7 @@ export const ScheduleMeetingModal = ({
     if (isOpen) {
       setTitle("");
       setDescription("");
-      setDate(new Date().toISOString().split("T")[0]);
+      setDate(initialDate || new Date().toISOString().split("T")[0]);
       setStartTime("10:00 AM");
       setEndTime("10:30 AM");
       setPlatform("GOOGLE_MEET");
@@ -55,12 +57,15 @@ export const ScheduleMeetingModal = ({
       employeeService
         .getAllEmployees()
         .then((res) => {
-          const list = res?.data?.employees || res?.data || [];
-          setEmployees(list);
+          const list =
+            res?.employees ||
+            res?.data?.employees ||
+            (Array.isArray(res) ? res : res?.data || []);
+          setEmployees(Array.isArray(list) ? list : []);
         })
         .catch((err) => console.warn("Failed to load employees for meeting:", err));
     }
-  }, [isOpen]);
+  }, [isOpen, initialDate]);
 
   const toggleAttendee = (id) => {
     setSelectedAttendeeIds((prev) =>
@@ -81,7 +86,7 @@ export const ScheduleMeetingModal = ({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!title.trim() || !date || !startTime || !endTime) {
       setError("Please fill in meeting title, date, and schedule times.");
       return;
@@ -91,14 +96,19 @@ export const ScheduleMeetingModal = ({
       setLoading(true);
       setError("");
 
+      let formattedLink = meetingLink?.trim();
+      if (formattedLink && !/^https?:\/\//i.test(formattedLink)) {
+        formattedLink = `https://${formattedLink}`;
+      }
+
       const payload = {
         title: title.trim(),
         description: description.trim() || undefined,
         date: new Date(date).toISOString(),
-        startTime,
-        endTime,
+        startTime: startTime.trim(),
+        endTime: endTime.trim(),
         platform,
-        meetingLink: meetingLink || undefined,
+        meetingLink: formattedLink || undefined,
         status: "SCHEDULED",
         attendeeIds: selectedAttendeeIds.length > 0 ? selectedAttendeeIds : undefined,
       };
@@ -109,11 +119,12 @@ export const ScheduleMeetingModal = ({
       onClose();
     } catch (err) {
       console.error("Failed to schedule meeting:", err);
-      setError(
+      const msg =
+        err.errors?.[0]?.message ||
         err.response?.data?.message ||
-          err.message ||
-          "Failed to schedule meeting."
-      );
+        err.message ||
+        "Failed to schedule meeting.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -135,21 +146,24 @@ export const ScheduleMeetingModal = ({
       maxWidth="xl"
       footer={
         <div className="flex items-center justify-end gap-3 w-full">
-          <GlassButton variant="ghost" onClick={onClose} disabled={loading}>
+          <GlassButton variant="ghost" onClick={onClose} isDisabled={loading}>
             Cancel
           </GlassButton>
           <GlassButton
             variant="primary"
+            type="submit"
+            form="schedule-meeting-form"
             onClick={handleSubmit}
-            disabled={loading}
-            icon={loading ? Loader2 : Plus}
+            isDisabled={loading}
+            isLoading={loading}
+            icon={Plus}
           >
             {loading ? "Scheduling..." : "Schedule Sync"}
           </GlassButton>
         </div>
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form id="schedule-meeting-form" onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />

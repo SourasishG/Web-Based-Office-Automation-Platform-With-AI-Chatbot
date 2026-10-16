@@ -19,15 +19,27 @@ export const getTimelineQuerySchema = z.object({
 
 export const createMeetingSchema = z.object({
   body: z.object({
-    title: z.string().min(2, "Meeting title must be at least 2 characters"),
-    description: z.string().optional(),
+    title: z.string().trim().min(2, "Meeting title must be at least 2 characters"),
+    description: z.string().trim().optional(),
     date: z.string().min(1, "Date is required"),
-    startTime: z.string().min(1, "Start time is required"),
-    endTime: z.string().min(1, "End time is required"),
+    startTime: z.string().trim().min(1, "Start time is required"),
+    endTime: z.string().trim().min(1, "End time is required"),
     platform: z.nativeEnum(MeetingPlatform).default(MeetingPlatform.GOOGLE_MEET).optional(),
-    meetingLink: z.string().url("Meeting link must be a valid URL").optional(),
+    meetingLink: z
+      .string()
+      .trim()
+      .optional()
+      .transform((val) => {
+        if (!val || !val.trim()) return undefined;
+        let trimmed = val.trim();
+        if (!/^https?:\/\//i.test(trimmed)) {
+          trimmed = `https://${trimmed}`;
+        }
+        return trimmed;
+      })
+      .pipe(z.string().url("Meeting link must be a valid URL").optional()),
     status: z.nativeEnum(MeetingStatus).default(MeetingStatus.SCHEDULED).optional(),
-    attendeeIds: z.array(z.string().uuid("Invalid attendee UUID")).optional(),
+    attendeeIds: z.array(z.string().uuid("Invalid attendee UUID")).optional().default([]),
   }),
 });
 
@@ -36,15 +48,27 @@ export const updateMeetingSchema = z.object({
     id: z.string().uuid("Invalid meeting ID format"),
   }),
   body: z.object({
-    title: z.string().min(2).optional(),
-    description: z.string().optional(),
+    title: z.string().trim().min(2).optional(),
+    description: z.string().trim().optional(),
     date: z.string().optional(),
-    startTime: z.string().optional(),
-    endTime: z.string().optional(),
+    startTime: z.string().trim().optional(),
+    endTime: z.string().trim().optional(),
     platform: z.nativeEnum(MeetingPlatform).optional(),
-    meetingLink: z.string().url().optional(),
+    meetingLink: z
+      .string()
+      .trim()
+      .optional()
+      .transform((val) => {
+        if (!val || !val.trim()) return undefined;
+        let trimmed = val.trim();
+        if (!/^https?:\/\//i.test(trimmed)) {
+          trimmed = `https://${trimmed}`;
+        }
+        return trimmed;
+      })
+      .pipe(z.string().url("Meeting link must be a valid URL").optional()),
     status: z.nativeEnum(MeetingStatus).optional(),
-    attendeeIds: z.array(z.string().uuid()).optional(),
+    attendeeIds: z.array(z.string().uuid("Invalid attendee UUID")).optional(),
   }),
 });
 

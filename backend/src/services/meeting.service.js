@@ -233,6 +233,10 @@ export const getMeetingById = async (id) => {
 export const createMeeting = async (data, hostId) => {
   const { attendeeIds, date, ...meetingData } = data;
 
+  const validAttendeeIds = Array.isArray(attendeeIds)
+    ? [...new Set(attendeeIds.filter((id) => id && id !== hostId))]
+    : [];
+
   const meeting = await prisma.meeting.create({
     data: {
       ...meetingData,
@@ -242,9 +246,7 @@ export const createMeeting = async (data, hostId) => {
         create: [
           // Automatically add host as accepted attendee
           { userId: hostId, status: "ACCEPTED" },
-          ...(attendeeIds || [])
-            .filter((id) => id !== hostId)
-            .map((userId) => ({ userId, status: "PENDING" })),
+          ...validAttendeeIds.map((userId) => ({ userId, status: "PENDING" })),
         ],
       },
     },
@@ -279,13 +281,12 @@ export const updateMeeting = async (id, data) => {
 
   // Handle attendee replacement if specified
   if (attendeeIds && Array.isArray(attendeeIds)) {
+    const validAttendeeIds = [...new Set(attendeeIds.filter((userId) => userId && userId !== exists.hostId))];
     await prisma.meetingAttendee.deleteMany({ where: { meetingId: id } });
     await prisma.meetingAttendee.createMany({
       data: [
         { meetingId: id, userId: exists.hostId, status: "ACCEPTED" },
-        ...attendeeIds
-          .filter((userId) => userId !== exists.hostId)
-          .map((userId) => ({ meetingId: id, userId, status: "PENDING" })),
+        ...validAttendeeIds.map((userId) => ({ meetingId: id, userId, status: "PENDING" })),
       ],
       skipDuplicates: true,
     });

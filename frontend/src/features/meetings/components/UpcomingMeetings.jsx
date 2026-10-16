@@ -14,7 +14,12 @@ import MeetingCard from "./MeetingCard";
  * @param {string} searchTerm - Search query filter
  * @param {function} onJoinMeeting - Join callback handler
  */
-export const UpcomingMeetings = ({ meetings = [], searchTerm = "", onJoinMeeting }) => {
+export const UpcomingMeetings = ({
+  meetings = [],
+  searchTerm = "",
+  onJoinMeeting,
+  onViewCalendar,
+}) => {
   const normalizedMeetings = meetings.map((m) => ({
     id: m.id,
     title: m.title,
@@ -72,9 +77,16 @@ export const UpcomingMeetings = ({ meetings = [], searchTerm = "", onJoinMeeting
       subtitle={`${filteredMeetings.length} scheduled events`}
       icon={Calendar}
       action={
-        <GlassBadge variant="cyan" size="sm">
-          Calendar Sync
-        </GlassBadge>
+        <button
+          type="button"
+          onClick={onViewCalendar}
+          className="cursor-pointer transition-transform hover:scale-105"
+          title="Open Interactive Calendar"
+        >
+          <GlassBadge variant="cyan" size="sm" icon={Calendar}>
+            Calendar Sync
+          </GlassBadge>
+        </button>
       }
       variant="default"
       padding="md"
@@ -101,7 +113,12 @@ export const UpcomingMeetings = ({ meetings = [], searchTerm = "", onJoinMeeting
       {/* Bottom Footer Action */}
       <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
         <span className="text-xs text-slate-400 font-medium">Auto-synced with Calendar</span>
-        <GlassButton variant="ghost" size="sm" rightIcon={ArrowRight}>
+        <GlassButton
+          variant="ghost"
+          size="sm"
+          rightIcon={ArrowRight}
+          onClick={onViewCalendar}
+        >
           View Calendar
         </GlassButton>
       </div>

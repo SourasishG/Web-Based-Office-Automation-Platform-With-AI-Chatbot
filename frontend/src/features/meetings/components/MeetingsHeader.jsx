@@ -1,4 +1,4 @@
-import { Plus, Sparkles, Video } from "lucide-react";
+import { Plus, Sparkles, Video, Calendar } from "lucide-react";
 import {
   GlassPanel,
   GlassSearchBar,
@@ -9,13 +9,14 @@ import {
 
 /**
  * MeetingsHeader - Apple Liquid Glass Control Bar for Meetings
- * Provides global search, meeting status filters, and the primary schedule meeting action.
+ * Provides global search, meeting status filters, and primary meeting actions.
  * 
  * @param {string} searchTerm - Active search query
  * @param {function} onSearchChange - Search text change handler
  * @param {string} activeTab - Active filter tab ID ('all', 'today', 'upcoming', 'completed')
  * @param {function} onTabChange - Tab switcher handler
  * @param {function} onScheduleClick - Schedule Meeting modal trigger callback
+ * @param {function} onCalendarClick - Interactive Calendar modal trigger callback
  */
 export const MeetingsHeader = ({
   searchTerm,
@@ -23,6 +24,7 @@ export const MeetingsHeader = ({
   activeTab = "all",
   onTabChange,
   onScheduleClick,
+  onCalendarClick,
 }) => {
   // Filter Tabs Configuration
   const filterTabs = [
@@ -41,7 +43,7 @@ export const MeetingsHeader = ({
       {/* Background Soft Glow */}
       <div className="absolute -top-16 -right-16 w-56 h-56 bg-linear-to-br from-cyan-500/15 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-      {/* Top Header Row: Title & Primary Action */}
+      {/* Top Header Row: Title & Primary Actions */}
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
@@ -62,8 +64,19 @@ export const MeetingsHeader = ({
           </div>
         </div>
 
-        {/* Action Button: Schedule Meeting */}
-        <div className="flex items-center gap-2">
+        {/* Action Buttons: Calendar View & Schedule Meeting */}
+        <div className="flex items-center gap-2.5">
+          {onCalendarClick && (
+            <GlassButton
+              variant="secondary"
+              size="md"
+              icon={Calendar}
+              onClick={onCalendarClick}
+            >
+              Calendar
+            </GlassButton>
+          )}
+
           <GlassButton
             variant="primary"
             size="md"
