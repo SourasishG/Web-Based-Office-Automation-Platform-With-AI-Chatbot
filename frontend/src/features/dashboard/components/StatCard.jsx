@@ -27,40 +27,24 @@ export const StatCard = ({
   // Determine Trend Badge Variant & Icon
   const getTrendBadge = () => {
     if (!change) return null;
-    if (changeType === "positive") {
-      return (
-        <GlassBadge variant="success" size="sm" icon={TrendingUp}>
-          {change}
-        </GlassBadge>
-      );
-    }
-    if (changeType === "negative") {
-      return (
-        <GlassBadge variant="danger" size="sm" icon={TrendingDown}>
-          {change}
-        </GlassBadge>
-      );
-    }
     return (
-      <GlassBadge variant="cyan" size="sm" icon={ArrowUpRight}>
-        {change}
-      </GlassBadge>
+      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C6F432] text-[#0B0B0C] shadow-sm flex items-center gap-1">
+        <TrendingUp className="w-2.5 h-2.5 stroke-[2.5]" />
+        <span>{change}</span>
+      </span>
     );
   };
 
   return (
-    <GlassCard
-      variant="standard"
-      glow={glow}
-      hoverable
+    <div
       onClick={onClick}
-      className="flex flex-col justify-between h-full relative overflow-hidden group"
+      className="bg-[#141416] border border-white/10 hover:border-white/20 rounded-2xl p-4 shadow-xl flex flex-col justify-between text-white transition-all cursor-pointer group"
     >
       {/* Top Row: Metric Icon & Trend Badge */}
-      <div className="flex items-start justify-between gap-2 mb-4">
+      <div className="flex items-start justify-between gap-2 mb-3">
         {Icon && (
-          <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 transition-all duration-300 shrink-0">
-            {isValidElement(Icon) ? Icon : <Icon className="w-5 h-5" />}
+          <div className="p-2 rounded-xl bg-white/5 border border-white/10 text-[#C6F432] group-hover:bg-[#C6F432]/20 transition-all duration-300 shrink-0">
+            {isValidElement(Icon) ? Icon : <Icon className="w-4 h-4" />}
           </div>
         )}
 
@@ -69,17 +53,14 @@ export const StatCard = ({
 
       {/* Main Metric Value & Title */}
       <div className="space-y-1">
-        <h3 className="text-3xl font-extrabold tracking-tight text-white leading-none">
+        <h3 className="text-2xl font-extrabold tracking-tight text-white leading-none">
           {value}
         </h3>
-        <p className="text-xs font-medium text-slate-400 tracking-wide">
+        <p className="text-xs font-semibold text-zinc-400 tracking-wide">
           {title}
         </p>
       </div>
-
-      {/* Subtle Bottom Ambient Gradient Highlight */}
-      <div className="absolute -bottom-10 -right-10 w-28 h-28 bg-gradient-to-tr from-cyan-500/10 via-blue-500/5 to-transparent rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all duration-500 pointer-events-none" />
-    </GlassCard>
+    </div>
   );
 };
 
