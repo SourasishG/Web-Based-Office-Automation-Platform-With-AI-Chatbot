@@ -1,27 +1,21 @@
 import { isValidElement } from "react";
-import { TrendingUp, TrendingDown, ArrowUpRight } from "lucide-react";
-import { GlassCard } from "../../../components/ui/GlassCard";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
+import { TrendingUp } from "lucide-react";
 
 /**
- * StatCard - Apple Liquid Glass Executive KPI Card
- * Displays high-level workplace metrics with trend badges, specular light lines, and spring hover lifts.
+ * StatCard - Executive KPI Card
+ * Displays high-level workplace metrics with trend badges and clean dark styling.
  * 
  * @param {string} title - Metric label (e.g., "Active Employees")
  * @param {string | number} value - Main statistical value (e.g., "248")
  * @param {string} change - Growth or change statement (e.g., "+12% this month")
- * @param {'positive' | 'negative' | 'neutral'} changeType - Trend classification
  * @param {React.ReactNode} icon - Metric Lucide icon component
- * @param {'none' | 'blue' | 'cyan' | 'purple' | 'white'} glow - Ambient glow color
  * @param {function} onClick - Optional click handler
  */
 export const StatCard = ({
   title,
   value,
   change,
-  changeType = "positive",
   icon: Icon,
-  glow = "none",
   onClick,
 }) => {
   // Determine Trend Badge Variant & Icon

@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { CloudSun, Sun, CloudRain, Wind, Droplets, MapPin, RefreshCw, Zap, CloudFog, CloudLightning, Moon, CloudMoon } from "lucide-react";
-import { GlassPanel } from "../../../components/ui/GlassPanel";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
 
 /**
  * WeatherWidget - Precise Real-Time Weather & Atmospheric Monitor
