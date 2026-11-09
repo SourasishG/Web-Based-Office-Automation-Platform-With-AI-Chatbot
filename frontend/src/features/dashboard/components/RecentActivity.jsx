@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Activity, Clock, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
-import { GlassAvatar } from "../../../components/ui/GlassAvatar";
 import { GlassButton } from "../../../components/ui/GlassButton";
 
 /**
@@ -110,12 +109,13 @@ export const RecentActivity = ({ activities, theme = "default" }) => {
               className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group hover:bg-slate-50/50 px-1 rounded-xl transition-colors"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <GlassAvatar
-                  src={log.user?.avatar}
-                  name={log.user?.name || "User"}
-                  size="sm"
-                  className="shrink-0 ring-1 ring-slate-200"
-                />
+                <div className="w-8 h-8 rounded-full bg-[#C6F432] text-[#0B0B0C] font-black flex items-center justify-center text-xs shrink-0 shadow-sm ring-2 ring-[#C6F432]/30">
+                  {log.user?.avatar ? (
+                    <img src={log.user.avatar} alt={log.user.name} className="w-full h-full object-cover rounded-full" />
+                  ) : (
+                    <span>{log.user?.name ? log.user.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() : "AR"}</span>
+                  )}
+                </div>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-[#0B0B0C] truncate">
                     {log.user?.name}
@@ -167,12 +167,13 @@ export const RecentActivity = ({ activities, theme = "default" }) => {
             className="pt-3.5 first:pt-0 flex items-start gap-3 group"
           >
             {/* User Avatar */}
-            <GlassAvatar
-              src={log.user?.avatar}
-              name={log.user?.name || "User"}
-              size="sm"
-              className="mt-0.5 shrink-0"
-            />
+            <div className="w-8 h-8 rounded-full bg-[#C6F432] text-[#0B0B0C] font-black flex items-center justify-center text-xs shrink-0 shadow-sm mt-0.5">
+              {log.user?.avatar ? (
+                <img src={log.user.avatar} alt={log.user.name} className="w-full h-full object-cover rounded-full" />
+              ) : (
+                <span>{log.user?.name ? log.user.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() : "AR"}</span>
+              )}
+            </div>
 
             {/* Log Details */}
             <div className="min-w-0 flex-1">
