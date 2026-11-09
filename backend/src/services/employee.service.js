@@ -219,13 +219,17 @@ export const getEmployeeById = async (id) => {
  * Update employee record
  */
 export const updateEmployee = async (id, updateData) => {
-  const exists = await prisma.user.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid employee ID is required");
+  }
+
+  const exists = await prisma.user.findUnique({ where: { id: id.trim() } });
   if (!exists) {
     throw new ApiError(404, "Employee not found");
   }
 
   const updated = await prisma.user.update({
-    where: { id },
+    where: { id: id.trim() },
     data: updateData,
     select: {
       id: true,
@@ -252,11 +256,15 @@ export const updateEmployee = async (id, updateData) => {
  * Delete employee record
  */
 export const deleteEmployee = async (id) => {
-  const exists = await prisma.user.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid employee ID is required");
+  }
+
+  const exists = await prisma.user.findUnique({ where: { id: id.trim() } });
   if (!exists) {
     throw new ApiError(404, "Employee not found");
   }
 
-  await prisma.user.delete({ where: { id } });
+  await prisma.user.delete({ where: { id: id.trim() } });
   return true;
 };

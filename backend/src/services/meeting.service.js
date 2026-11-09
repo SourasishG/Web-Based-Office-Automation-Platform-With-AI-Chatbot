@@ -188,8 +188,12 @@ export const getMeetingStats = async () => {
  * Get meeting detail by ID
  */
 export const getMeetingById = async (id) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid meeting ID is required");
+  }
+
   const meeting = await prisma.meeting.findUnique({
-    where: { id },
+    where: { id: id.trim() },
     include: {
       host: {
         select: {
