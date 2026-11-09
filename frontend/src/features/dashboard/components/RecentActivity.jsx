@@ -11,7 +11,7 @@ import { GlassButton } from "../../../components/ui/GlassButton";
  * 
  * @param {Array<object>} activities - Array of activity log items
  */
-export const RecentActivity = ({ activities }) => {
+export const RecentActivity = ({ activities, theme = "default" }) => {
   const navigate = useNavigate();
 
   // Fallback Activity Log Feed
@@ -64,17 +64,82 @@ export const RecentActivity = ({ activities }) => {
   const getTypeBadge = (type) => {
     switch (type) {
       case "task":
-        return <GlassBadge variant="success" size="sm">Task</GlassBadge>;
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C6F432] text-[#0B0B0C]">Task</span>;
       case "code":
-        return <GlassBadge variant="purple" size="sm">Dev</GlassBadge>;
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700">Dev</span>;
       case "ticket":
-        return <GlassBadge variant="cyan" size="sm">Ticket</GlassBadge>;
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">Ticket</span>;
       case "meeting":
-        return <GlassBadge variant="primary" size="sm">Event</GlassBadge>;
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Sync</span>;
       default:
-        return <GlassBadge variant="default" size="sm">System</GlassBadge>;
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">System</span>;
     }
   };
+
+  if (theme === "light") {
+    return (
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-xl text-[#0B0B0C] transition-all">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-zinc-700">
+              <Activity className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#0B0B0C]">
+                Recent Activity
+              </h2>
+              <p className="text-xs text-zinc-500">Real-time workplace audit log</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("/notifications")}
+            aria-label="View Full Audit Log"
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-zinc-600 hover:text-black transition-colors"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Activity Table / Rows */}
+        <div className="divide-y divide-slate-100/80">
+          {logs.map((log) => (
+            <div
+              key={log.id}
+              className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group hover:bg-slate-50/50 px-1 rounded-xl transition-colors"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <GlassAvatar
+                  src={log.user?.avatar}
+                  name={log.user?.name || "User"}
+                  size="sm"
+                  className="shrink-0 ring-1 ring-slate-200"
+                />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-[#0B0B0C] truncate">
+                    {log.user?.name}
+                  </p>
+                  <p className="text-[11px] text-zinc-500 truncate">
+                    <span>{log.action}</span>{" "}
+                    <span className="font-medium text-zinc-800">{log.target}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="text-[10px] text-zinc-400 font-mono hidden sm:inline-block">
+                  {log.time}
+                </span>
+                {getTypeBadge(log.type)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <GlassPanel

@@ -10,7 +10,7 @@ import { GlassButton } from "../../../components/ui/GlassButton";
  * 
  * @param {Array<object>} announcements - Array of announcement notice objects
  */
-export const Announcements = ({ announcements }) => {
+export const Announcements = ({ announcements, theme = "default" }) => {
   const navigate = useNavigate();
 
   const defaultAnnouncements = [
@@ -58,6 +58,62 @@ export const Announcements = ({ announcements }) => {
         };
       })
     : defaultAnnouncements;
+
+  if (theme === "light") {
+    return (
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-xl text-[#0B0B0C] transition-all">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-zinc-700">
+              <Megaphone className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#0B0B0C]">
+                Announcements
+              </h2>
+              <p className="text-xs text-zinc-500">Company notices & broadcast updates</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("/notifications")}
+            aria-label="View All Announcements"
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-zinc-600 hover:text-black transition-colors"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Notices List */}
+        <div className="space-y-3">
+          {notices.map((notice) => (
+            <div
+              key={notice.id}
+              className="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-slate-200 transition-colors"
+            >
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="flex items-center gap-2">
+                  {notice.isPinned && (
+                    <span className="px-2 py-0.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-[10px] font-bold flex items-center gap-1">
+                      <Pin className="w-2.5 h-2.5 fill-current" />
+                      Pinned
+                    </span>
+                  )}
+                  <span className="text-xs font-bold text-[#0B0B0C]">{notice.title}</span>
+                </div>
+                <span className="text-[10px] text-zinc-400 font-mono">{notice.date}</span>
+              </div>
+              <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed">
+                {notice.snippet}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   // Category Tag Variant
   const getCategoryBadge = (category) => {

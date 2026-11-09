@@ -11,7 +11,7 @@ import { ProgressRing } from "../../../components/ui/ProgressRing";
  * 
  * @param {Array<object>} deadlines - Array of upcoming milestone deadline objects
  */
-export const UpcomingDeadlines = ({ deadlines }) => {
+export const UpcomingDeadlines = ({ deadlines, theme = "default" }) => {
   const navigate = useNavigate();
 
   const defaultDeadlines = [
@@ -52,6 +52,63 @@ export const UpcomingDeadlines = ({ deadlines }) => {
         };
       })
     : defaultDeadlines;
+
+  if (theme === "light") {
+    return (
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xl text-[#0B0B0C] transition-all">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-zinc-700">
+              <Clock className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold tracking-tight text-[#0B0B0C]">
+                Upcoming Deadlines
+              </h2>
+              <p className="text-[11px] text-zinc-500">Sprint deliverables</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("/projects")}
+            aria-label="View Projects"
+            className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-zinc-600 hover:text-black transition-colors"
+          >
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Deadlines List */}
+        <div className="space-y-3 mt-2">
+          {items.slice(0, 2).map((item) => (
+            <div key={item.id} className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100">
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="font-bold text-[#0B0B0C] truncate max-w-[160px]">
+                  {item.title}
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-[10px] font-extrabold">
+                  {item.progress}%
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[11px] text-zinc-500 mb-2">
+                <span>{item.project}</span>
+                <span className="font-mono text-zinc-400">{item.daysLeft}</span>
+              </div>
+              {/* Progress Bar */}
+              <div className="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                <div
+                  className="h-full bg-[#0B0B0C] rounded-full transition-all duration-500"
+                  style={{ width: `${item.progress}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   // Priority Badge Helper
   const getPriorityBadge = (priority) => {
