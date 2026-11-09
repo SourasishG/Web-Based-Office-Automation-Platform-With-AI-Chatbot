@@ -1,6 +1,5 @@
 import { Menu, Bell, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import ThemeToggle from "../common/ThemeToggle";
 import useAuth from "../../hooks/useAuth";
 
 const Navbar = ({ setMobileOpen }) => {
@@ -60,8 +59,6 @@ const Navbar = ({ setMobileOpen }) => {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        <ThemeToggle />
-
         {/* Notification Center Bell Button */}
         <button
           type="button"
