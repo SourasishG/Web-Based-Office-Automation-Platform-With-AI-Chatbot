@@ -8,7 +8,7 @@
 
 :root {
   --bg-app: #0B0B0C;
-  --bg-gradient: linear-gradient(180deg, #0B0B0C 0%, #0B0B0C 60%, #FFFFFF 60%, #FFFFFF 100%);
+  --bg-gradient: linear-gradient(180deg, #0B0B0C 0%, #0B0B0C 45%, #18181c 58%, #e4e4e7 82%, #FFFFFF 100%);
   --text-main: #FFFFFF;
   --text-muted: #94a3b8;
   --border-glass: rgba(255, 255, 255, 0.1);

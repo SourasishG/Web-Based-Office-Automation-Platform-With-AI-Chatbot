@@ -138,7 +138,7 @@ const Dashboard = () => {
       className="min-h-screen text-white font-sans selection:bg-[#C6F432] selection:text-[#0B0B0C] pb-16 transition-all"
       style={{
         background:
-          "linear-gradient(180deg, #0B0B0C 0%, #0B0B0C 60%, #FFFFFF 60%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #0B0B0C 0%, #0B0B0C 45%, #18181c 58%, #e4e4e7 82%, #FFFFFF 100%)",
       }}
     >
       {/* Top Floating Rounded Pill Navbar */}
