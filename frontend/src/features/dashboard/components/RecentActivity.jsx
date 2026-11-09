@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Activity, Clock, ArrowRight } from "lucide-react";
 import { GlassPanel } from "../../../components/ui/GlassPanel";
 import { GlassAvatar } from "../../../components/ui/GlassAvatar";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
 import { GlassButton } from "../../../components/ui/GlassButton";
 
 /**
