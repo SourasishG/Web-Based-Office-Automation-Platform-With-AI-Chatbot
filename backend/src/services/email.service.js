@@ -241,13 +241,18 @@ export const composeEmail = async (senderId, data) => {
  * Toggle starred status
  */
 export const toggleStar = async (id, userId) => {
-  const email = await prisma.email.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid email ID is required");
+  }
+
+  const cleanId = id.trim();
+  const email = await prisma.email.findUnique({ where: { id: cleanId } });
   if (!email || (email.recipientId !== userId && email.senderId !== userId)) {
     throw new ApiError(404, "Email not found");
   }
 
   const updated = await prisma.email.update({
-    where: { id },
+    where: { id: cleanId },
     data: { isStarred: !email.isStarred },
   });
 
@@ -258,13 +263,18 @@ export const toggleStar = async (id, userId) => {
  * Toggle read status
  */
 export const toggleRead = async (id, userId) => {
-  const email = await prisma.email.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid email ID is required");
+  }
+
+  const cleanId = id.trim();
+  const email = await prisma.email.findUnique({ where: { id: cleanId } });
   if (!email || email.recipientId !== userId) {
     throw new ApiError(404, "Email not found");
   }
 
   const updated = await prisma.email.update({
-    where: { id },
+    where: { id: cleanId },
     data: { isRead: !email.isRead },
   });
 
@@ -275,13 +285,18 @@ export const toggleRead = async (id, userId) => {
  * Move email to a different folder (e.g. TRASH)
  */
 export const moveToFolder = async (id, folder, userId) => {
-  const email = await prisma.email.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid email ID is required");
+  }
+
+  const cleanId = id.trim();
+  const email = await prisma.email.findUnique({ where: { id: cleanId } });
   if (!email || (email.recipientId !== userId && email.senderId !== userId)) {
     throw new ApiError(404, "Email not found");
   }
 
   const updated = await prisma.email.update({
-    where: { id },
+    where: { id: cleanId },
     data: { folder },
   });
 
@@ -292,11 +307,16 @@ export const moveToFolder = async (id, folder, userId) => {
  * Permanent deletion
  */
 export const deleteEmail = async (id, userId) => {
-  const email = await prisma.email.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid email ID is required");
+  }
+
+  const cleanId = id.trim();
+  const email = await prisma.email.findUnique({ where: { id: cleanId } });
   if (!email || (email.recipientId !== userId && email.senderId !== userId)) {
     throw new ApiError(404, "Email not found");
   }
 
-  await prisma.email.delete({ where: { id } });
+  await prisma.email.delete({ where: { id: cleanId } });
   return true;
 };
