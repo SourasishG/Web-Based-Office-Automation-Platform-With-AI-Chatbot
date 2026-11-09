@@ -42,7 +42,7 @@ const PaymentHistoryCard = () => {
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#0B0B0C]">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-midnight">
             Payment History
           </h2>
           <p className="text-xs text-zinc-500 mt-0.5">Recent payments history</p>
