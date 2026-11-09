@@ -188,18 +188,14 @@ export const WeatherWidget = ({ weatherData }) => {
   }, [fetchPreciseWeather]);
 
   return (
-    <GlassPanel
-      variant="floating"
-      padding="lg"
-      className="h-full flex flex-col justify-between relative overflow-hidden group"
-    >
+    <div className="bg-[#141416] border border-white/10 rounded-3xl p-5 sm:p-6 shadow-xl text-white transition-all hover:border-white/20 h-full flex flex-col justify-between relative overflow-hidden group">
       {/* Background Soft Glow Accent */}
-      <div className="absolute -bottom-10 -right-10 w-44 h-44 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-colors duration-500 pointer-events-none" />
+      <div className="absolute -bottom-10 -right-10 w-44 h-44 bg-[#C6F432]/10 rounded-full blur-2xl group-hover:bg-[#C6F432]/20 transition-colors duration-500 pointer-events-none" />
 
       {/* Header: Location, Refresh CTA & Live Badge */}
       <div className="relative z-10 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-slate-300 min-w-0">
-          <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300 min-w-0">
+          <MapPin className="w-3.5 h-3.5 text-[#C6F432] shrink-0" />
           <span className="truncate">{weatherState.city}</span>
         </div>
 
@@ -208,14 +204,15 @@ export const WeatherWidget = ({ weatherData }) => {
             type="button"
             onClick={() => fetchPreciseWeather()}
             title="Refresh Live Weather"
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors focus:outline-none"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors focus:outline-none"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${weatherState.isLoading ? "animate-spin text-cyan-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${weatherState.isLoading ? "animate-spin text-[#C6F432]" : ""}`} />
           </button>
 
-          <GlassBadge variant="cyan" size="sm" dot>
+          <span className="px-2 py-0.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-[10px] font-bold tracking-tight shadow-sm flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0B0B0C] animate-pulse" />
             Live Weather
-          </GlassBadge>
+          </span>
         </div>
       </div>
 
@@ -223,56 +220,56 @@ export const WeatherWidget = ({ weatherData }) => {
       <div className="relative z-10 my-3 flex items-center justify-between">
         <div>
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-extrabold tracking-tight text-white leading-none">
+            <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-none">
               {weatherState.temp}°
             </span>
-            <span className="text-xl font-medium text-slate-400">C</span>
+            <span className="text-xl font-medium text-zinc-400">C</span>
           </div>
 
-          <div className="flex items-center gap-2 mt-1.5">
-            <p className="text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 mt-2">
+            <p className="text-xs font-bold text-white">
               {weatherState.condition}
             </p>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-zinc-400">
               (Feels like {weatherState.feelsLike}°)
             </span>
           </div>
         </div>
 
-        <div className="shrink-0 p-2.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
+        <div className="shrink-0 p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
           {getWeatherIcon(weatherState.weatherCode, weatherState.condition, weatherState.isDay)}
         </div>
       </div>
 
       {/* Atmospheric Secondary Metrics Bar */}
       <div className="relative z-10 pt-3 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
-        <div className="flex items-center gap-2 text-slate-400 bg-slate-950/30 px-2.5 py-1.5 rounded-xl border border-white/5">
-          <Droplets className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+        <div className="flex items-center gap-2 text-zinc-400 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/5">
+          <Droplets className="w-3.5 h-3.5 text-[#C6F432] shrink-0" />
           <div className="truncate">
-            <span className="text-[10px] block text-slate-500">Humidity</span>
-            <span className="font-semibold text-slate-200">{weatherState.humidity}%</span>
+            <span className="text-[10px] block text-zinc-500">Humidity</span>
+            <span className="font-semibold text-white">{weatherState.humidity}%</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-slate-400 bg-slate-950/30 px-2.5 py-1.5 rounded-xl border border-white/5">
-          <Wind className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+        <div className="flex items-center gap-2 text-zinc-400 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/5">
+          <Wind className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
           <div className="truncate">
-            <span className="text-[10px] block text-slate-500">Wind Speed</span>
-            <span className="font-semibold text-slate-200">{weatherState.windSpeed}</span>
+            <span className="text-[10px] block text-zinc-500">Wind Speed</span>
+            <span className="font-semibold text-white">{weatherState.windSpeed}</span>
           </div>
         </div>
       </div>
 
       {/* Footer Timestamp */}
       {weatherState.lastUpdated && (
-        <div className="relative z-10 text-[10px] text-slate-500 mt-2 flex items-center justify-between">
+        <div className="relative z-10 text-[10px] text-zinc-500 mt-2 flex items-center justify-between">
           <span className="flex items-center gap-1">
-            <Zap className="w-3 h-3 text-cyan-400" /> Open-Meteo Real-Time Sync
+            <Zap className="w-3 h-3 text-[#C6F432]" /> Open-Meteo Real-Time Sync
           </span>
           <span>Updated {weatherState.lastUpdated}</span>
         </div>
       )}
-    </GlassPanel>
+    </div>
   );
 };
 
