@@ -129,11 +129,16 @@ export const createAnnouncement = async (data, authorId) => {
  * Delete an announcement
  */
 export const deleteAnnouncement = async (id) => {
-  const exists = await prisma.announcement.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid announcement ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.announcement.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Announcement not found");
   }
 
-  await prisma.announcement.delete({ where: { id } });
+  await prisma.announcement.delete({ where: { id: cleanId } });
   return true;
 };

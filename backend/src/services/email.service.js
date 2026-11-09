@@ -126,8 +126,13 @@ export const getEmailFolderCounts = async (userId) => {
  * Get single email detail and auto-mark as read if recipient
  */
 export const getEmailById = async (id, userId) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid email ID is required");
+  }
+
+  const cleanId = id.trim();
   const email = await prisma.email.findUnique({
-    where: { id },
+    where: { id: cleanId },
     include: {
       sender: {
         select: {
