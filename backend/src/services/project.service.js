@@ -130,8 +130,12 @@ export const getProjectStats = async () => {
  * Get project detail with members and assigned tasks
  */
 export const getProjectById = async (id) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid project ID is required");
+  }
+
   const project = await prisma.project.findUnique({
-    where: { id },
+    where: { id: id.trim() },
     include: {
       owner: {
         select: {
@@ -228,7 +232,12 @@ export const createProject = async (data, creatorId) => {
  * Update project details and team member associations
  */
 export const updateProject = async (id, data) => {
-  const exists = await prisma.project.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid project ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.project.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Project not found");
   }
@@ -237,10 +246,10 @@ export const updateProject = async (id, data) => {
 
   // Handle member list replacement if memberIds provided
   if (memberIds && Array.isArray(memberIds)) {
-    await prisma.projectMember.deleteMany({ where: { projectId: id } });
+    await prisma.projectMember.deleteMany({ where: { projectId: cleanId } });
     await prisma.projectMember.createMany({
       data: memberIds.map((userId) => ({
-        projectId: id,
+        projectId: cleanId,
         userId,
         role: "Member",
       })),
@@ -249,7 +258,7 @@ export const updateProject = async (id, data) => {
   }
 
   const updated = await prisma.project.update({
-    where: { id },
+    where: { id: cleanId },
     data: {
       ...updateData,
       ...(startDate !== undefined ? { startDate: startDate ? new Date(startDate) : null } : {}),
@@ -277,11 +286,16 @@ export const updateProject = async (id, data) => {
  * Delete project
  */
 export const deleteProject = async (id) => {
-  const exists = await prisma.project.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid project ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.project.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Project not found");
   }
 
-  await prisma.project.delete({ where: { id } });
+  await prisma.project.delete({ where: { id: cleanId } });
   return true;
 };

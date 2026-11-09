@@ -73,13 +73,18 @@ export const getNotificationStats = async (userId) => {
  * Toggle or mark notification as read
  */
 export const markAsRead = async (id, userId) => {
-  const notification = await prisma.notification.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid notification ID is required");
+  }
+
+  const cleanId = id.trim();
+  const notification = await prisma.notification.findUnique({ where: { id: cleanId } });
   if (!notification || notification.userId !== userId) {
     throw new ApiError(404, "Notification not found");
   }
 
   const updated = await prisma.notification.update({
-    where: { id },
+    where: { id: cleanId },
     data: { isRead: !notification.isRead },
   });
 
@@ -90,6 +95,10 @@ export const markAsRead = async (id, userId) => {
  * Mark all notifications for user as read
  */
 export const markAllAsRead = async (userId) => {
+  if (!userId || typeof userId !== "string" || userId === "undefined") {
+    return true;
+  }
+
   await prisma.notification.updateMany({
     where: { userId, isRead: false },
     data: { isRead: true },
@@ -102,12 +111,17 @@ export const markAllAsRead = async (userId) => {
  * Delete single notification
  */
 export const deleteNotification = async (id, userId) => {
-  const notification = await prisma.notification.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid notification ID is required");
+  }
+
+  const cleanId = id.trim();
+  const notification = await prisma.notification.findUnique({ where: { id: cleanId } });
   if (!notification || notification.userId !== userId) {
     throw new ApiError(404, "Notification not found");
   }
 
-  await prisma.notification.delete({ where: { id } });
+  await prisma.notification.delete({ where: { id: cleanId } });
   return true;
 };
 

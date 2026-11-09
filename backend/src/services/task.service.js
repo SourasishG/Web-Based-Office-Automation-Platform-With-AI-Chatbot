@@ -117,8 +117,12 @@ export const getTaskStats = async (projectId) => {
  * Get single task by ID
  */
 export const getTaskById = async (id) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid task ID is required");
+  }
+
   const task = await prisma.task.findUnique({
-    where: { id },
+    where: { id: id.trim() },
     include: {
       project: {
         select: { id: true, title: true, department: true, status: true },
@@ -179,7 +183,12 @@ export const createTask = async (data) => {
  * Update task
  */
 export const updateTask = async (id, data) => {
-  const exists = await prisma.task.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid task ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.task.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Task not found");
   }
@@ -187,7 +196,7 @@ export const updateTask = async (id, data) => {
   const { dueDate, subtasks, ...updateData } = data;
 
   const updated = await prisma.task.update({
-    where: { id },
+    where: { id: cleanId },
     data: {
       ...updateData,
       ...(dueDate !== undefined ? { dueDate: dueDate ? new Date(dueDate) : null } : {}),
@@ -216,13 +225,18 @@ export const updateTask = async (id, data) => {
  * Drag-and-drop Kanban reorder (column switch + order indexing)
  */
 export const reorderTask = async (id, { status, orderIndex }) => {
-  const exists = await prisma.task.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid task ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.task.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Task not found");
   }
 
   const updated = await prisma.task.update({
-    where: { id },
+    where: { id: cleanId },
     data: {
       status,
       orderIndex,
@@ -244,11 +258,16 @@ export const reorderTask = async (id, { status, orderIndex }) => {
  * Delete task
  */
 export const deleteTask = async (id) => {
-  const exists = await prisma.task.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid task ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.task.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Task not found");
   }
 
-  await prisma.task.delete({ where: { id } });
+  await prisma.task.delete({ where: { id: cleanId } });
   return true;
 };

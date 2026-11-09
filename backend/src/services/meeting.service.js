@@ -276,7 +276,12 @@ export const createMeeting = async (data, hostId) => {
  * Update / Reschedule meeting
  */
 export const updateMeeting = async (id, data) => {
-  const exists = await prisma.meeting.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid meeting ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.meeting.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Meeting not found");
   }
@@ -286,18 +291,18 @@ export const updateMeeting = async (id, data) => {
   // Handle attendee replacement if specified
   if (attendeeIds && Array.isArray(attendeeIds)) {
     const validAttendeeIds = [...new Set(attendeeIds.filter((userId) => userId && userId !== exists.hostId))];
-    await prisma.meetingAttendee.deleteMany({ where: { meetingId: id } });
+    await prisma.meetingAttendee.deleteMany({ where: { meetingId: cleanId } });
     await prisma.meetingAttendee.createMany({
       data: [
-        { meetingId: id, userId: exists.hostId, status: "ACCEPTED" },
-        ...validAttendeeIds.map((userId) => ({ meetingId: id, userId, status: "PENDING" })),
+        { meetingId: cleanId, userId: exists.hostId, status: "ACCEPTED" },
+        ...validAttendeeIds.map((userId) => ({ meetingId: cleanId, userId, status: "PENDING" })),
       ],
       skipDuplicates: true,
     });
   }
 
   const updated = await prisma.meeting.update({
-    where: { id },
+    where: { id: cleanId },
     data: {
       ...updateData,
       ...(date ? { date: new Date(date) } : {}),
@@ -324,11 +329,16 @@ export const updateMeeting = async (id, data) => {
  * Cancel or delete meeting
  */
 export const deleteMeeting = async (id) => {
-  const exists = await prisma.meeting.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid meeting ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.meeting.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Meeting not found");
   }
 
-  await prisma.meeting.delete({ where: { id } });
+  await prisma.meeting.delete({ where: { id: cleanId } });
   return true;
 };

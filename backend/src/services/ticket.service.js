@@ -157,8 +157,12 @@ export const getTicketKanban = async (filters = {}) => {
  * Get ticket details with complete comment conversation timeline
  */
 export const getTicketById = async (id) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid ticket ID is required");
+  }
+
   const ticket = await prisma.ticket.findUnique({
-    where: { id },
+    where: { id: id.trim() },
     include: {
       requester: {
         select: {
@@ -244,7 +248,12 @@ export const createTicket = async (data, requesterId) => {
  * Update ticket status, assignee, or resolution notes
  */
 export const updateTicket = async (id, data) => {
-  const exists = await prisma.ticket.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid ticket ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.ticket.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Ticket not found");
   }
@@ -257,7 +266,7 @@ export const updateTicket = async (id, data) => {
   }
 
   const updated = await prisma.ticket.update({
-    where: { id },
+    where: { id: cleanId },
     data: updatePayload,
     include: {
       requester: {
@@ -276,14 +285,19 @@ export const updateTicket = async (id, data) => {
  * Add message to ticket comment timeline
  */
 export const addComment = async (ticketId, authorId, data) => {
-  const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
+  if (!ticketId || typeof ticketId !== "string" || ticketId === "undefined" || !ticketId.trim()) {
+    throw new ApiError(400, "Valid ticket ID is required");
+  }
+
+  const cleanTicketId = ticketId.trim();
+  const ticket = await prisma.ticket.findUnique({ where: { id: cleanTicketId } });
   if (!ticket) {
     throw new ApiError(404, "Ticket not found");
   }
 
   const comment = await prisma.ticketComment.create({
     data: {
-      ticketId,
+      ticketId: cleanTicketId,
       authorId,
       message: data.message,
       isAiGenerated: data.isAiGenerated || false,
@@ -302,11 +316,16 @@ export const addComment = async (ticketId, authorId, data) => {
  * Delete ticket
  */
 export const deleteTicket = async (id) => {
-  const exists = await prisma.ticket.findUnique({ where: { id } });
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid ticket ID is required");
+  }
+
+  const cleanId = id.trim();
+  const exists = await prisma.ticket.findUnique({ where: { id: cleanId } });
   if (!exists) {
     throw new ApiError(404, "Ticket not found");
   }
 
-  await prisma.ticket.delete({ where: { id } });
+  await prisma.ticket.delete({ where: { id: cleanId } });
   return true;
 };
