@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Calendar, ChevronDown, Plus, Sparkles, CheckSquare, Mail, Ticket, ArrowRight } from "lucide-react";
+import { Calendar, Plus, Sparkles, CheckSquare, Mail, Ticket, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import QuixoticTopNavbar from "./components/QuixoticTopNavbar";
@@ -35,6 +35,28 @@ const Dashboard = () => {
   const [deadlines, setDeadlines] = useState([]);
   const [team, setTeam] = useState([]);
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  // Live second-by-second ticker for current date and time
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedDateTime = useMemo(() => {
+    const dateStr = currentDateTime.toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    const timeStr = currentDateTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return `${dateStr} • ${timeStr}`;
+  }, [currentDateTime]);
 
   // Extract first name for greeting
   const firstName = useMemo(() => {
