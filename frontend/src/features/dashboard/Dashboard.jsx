@@ -192,13 +192,11 @@ const Dashboard = () => {
               </p>
             </div>
 
-            {/* Date Range Picker Pill & Primary Lime Green Action Button */}
+            {/* Current Date & Time Pill (Replaced static date range) */}
             <div className="flex flex-wrap items-center gap-3">
-              {/* Date Range Pill */}
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1E] border border-white/10 text-xs font-semibold text-zinc-300 shadow-md">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1E] border border-white/10 text-xs font-semibold text-zinc-200 shadow-md">
                 <Calendar className="w-3.5 h-3.5 text-[#C6F432]" />
-                <span>29 Jun, 2025 - 29 August, 2025</span>
-                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+                <span className="font-mono">{formattedDateTime}</span>
               </div>
 
               {/* Primary Action Button: Lime Green */}

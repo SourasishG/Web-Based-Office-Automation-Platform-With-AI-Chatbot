@@ -163,33 +163,18 @@ html.light .ai-card-bg .bg-slate-950\/60 {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
-html.light ::-webkit-scrollbar-track {
-  background: #e2e8f0;
+/* Scroller-free: Completely hide scrollbars across all browsers while enabling smooth mouse roller scrolling */
+html,
+body,
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #020617;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: linear-gradient(
-    to bottom,
-    #06b6d4,
-    #2563eb
-  );
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to bottom,
-    #22d3ee,
-    #3b82f6
-  );
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
 }
 
 * {
