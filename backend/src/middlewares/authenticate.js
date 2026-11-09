@@ -19,14 +19,14 @@ export const authenticate = async (req, res, next) => {
       token = req.cookies.token;
     }
 
-    if (!token) {
+    if (!token || token === "null" || token === "undefined") {
       throw new ApiError(401, "Authentication token missing. Please log in.");
     }
 
     // 3. Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded || !decoded.id) {
-      throw new ApiError(401, "Invalid authentication token.");
+    if (!decoded || !decoded.id || typeof decoded.id !== "string" || !decoded.id.trim() || decoded.id === "undefined") {
+      throw new ApiError(401, "Invalid authentication token: missing valid user ID.");
     }
 
     // 4. Fetch user from DB
@@ -57,6 +57,17 @@ export const authenticate = async (req, res, next) => {
     }
     if (error.name === "JsonWebTokenError") {
       return next(new ApiError(401, "Invalid token signature."));
+    }
+    if (
+      error.name === "PrismaClientInitializationError" ||
+      (typeof error.message === "string" && (error.message.includes("tenant/user") || error.message.includes("ENOTFOUND")))
+    ) {
+      return next(
+        new ApiError(
+          503,
+          "Database connection unavailable: The Supabase PostgreSQL database is paused or unreachable. Please restore your project in the Supabase Dashboard."
+        )
+      );
     }
     return next(error);
   }

@@ -6,6 +6,18 @@ import { ApiError } from "../utils/ApiError.js";
  * Builds live real-time workplace context for the requesting user
  */
 export const getUserWorkspaceContext = async (userId) => {
+  if (!userId || typeof userId !== "string" || userId === "undefined") {
+    return {
+      user: null,
+      pendingTasks: [],
+      todayMeetings: [],
+      openTickets: [],
+      unreadEmailsCount: 0,
+      latestAnnouncement: null,
+      activeProjectsCount: 0,
+    };
+  }
+
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
@@ -507,8 +519,10 @@ export const summarizeEmail = async (userId, { emailId, subject, content }) => {
     }
 
     // Ensure user has access to this email (sender, recipient, or admin)
-    const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
-    if (email.senderId !== userId && email.recipientId !== userId && user.role !== "ADMIN") {
+    const user = userId && typeof userId === "string" && userId !== "undefined"
+      ? await prisma.user.findUnique({ where: { id: userId }, select: { role: true } })
+      : null;
+    if (email.senderId !== userId && email.recipientId !== userId && user?.role !== "ADMIN") {
       throw new ApiError(403, "You do not have permission to view or summarize this email");
     }
 
@@ -591,13 +605,18 @@ export const draftEmailReply = async (userId, { emailId, subject, threadContent,
     }
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { firstName: true, lastName: true, jobTitle: true, department: true },
-  });
+  const user = userId && typeof userId === "string" && userId !== "undefined"
+    ? await prisma.user.findUnique({
+        where: { id: userId },
+        select: { firstName: true, lastName: true, jobTitle: true, department: true },
+      })
+    : null;
+
+  const authorName = user ? `${user.firstName} ${user.lastName}`.trim() : "Team Member";
+  const authorRole = user?.jobTitle || "Team Member";
 
   const prompt = `
-Draft a workplace email reply as Herric for ${user.firstName} ${user.lastName} (${user.jobTitle || "Team Member"}).
+Draft a workplace email reply as Herric for ${authorName} (${authorRole}).
 Context Thread:
 ${contextSnippet}
 

@@ -166,8 +166,12 @@ export const getOrgChart = async () => {
  * Get individual employee profile with project & task associations
  */
 export const getEmployeeById = async (id) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid employee ID is required");
+  }
+
   const employee = await prisma.user.findUnique({
-    where: { id },
+    where: { id: id.trim() },
     select: {
       id: true,
       email: true,

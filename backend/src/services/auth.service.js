@@ -21,8 +21,12 @@ const sanitizeUser = (user) => {
 };
 
 export const registerUser = async (data) => {
+  if (!data?.email || typeof data.email !== "string" || !data.email.trim()) {
+    throw new ApiError(400, "Valid email address is required");
+  }
+
   const existingUser = await prisma.user.findUnique({
-    where: { email: data.email.toLowerCase() },
+    where: { email: data.email.trim().toLowerCase() },
   });
 
   if (existingUser) {
@@ -49,8 +53,12 @@ export const registerUser = async (data) => {
 };
 
 export const loginUser = async (email, password) => {
+  if (!email || typeof email !== "string" || !email.trim()) {
+    throw new ApiError(400, "Valid email address is required");
+  }
+
   const user = await prisma.user.findUnique({
-    where: { email: email.toLowerCase() },
+    where: { email: email.trim().toLowerCase() },
     include: {
       manager: {
         select: { id: true, firstName: true, lastName: true, email: true },
@@ -78,8 +86,12 @@ export const loginUser = async (email, password) => {
 };
 
 export const getUserById = async (id) => {
+  if (!id || typeof id !== "string" || id === "undefined" || !id.trim()) {
+    throw new ApiError(400, "Valid user ID is required");
+  }
+
   const user = await prisma.user.findUnique({
-    where: { id },
+    where: { id: id.trim() },
     include: {
       manager: {
         select: { id: true, firstName: true, lastName: true, email: true, jobTitle: true },
