@@ -1,18 +1,15 @@
 import { useState, isValidElement } from "react";
 import { motion } from "framer-motion";
-import { GlassPanel } from "../../../components/ui/GlassPanel";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
 import TaskCard from "./TaskCard";
 import { Inbox, Plus } from "lucide-react";
 
 /**
- * TaskColumn - Apple Liquid Glass Floating Column Surface
- * Container panel for agile kanban task cards with sticky headers, task counters, and drag-and-drop support.
+ * TaskColumn - Quixotic Kanban Column Surface
+ * Positioned in the lower 40% Pure White region with smooth drag-and-drop feedback.
  * 
  * @param {string} columnKey - Unique column key ('TODO', 'IN_PROGRESS', 'REVIEW', 'COMPLETED')
  * @param {string} title - Column header title
  * @param {React.ReactNode} icon - Column header icon component
- * @param {'slate' | 'blue' | 'purple' | 'emerald'} accent - Column theme accent
  * @param {Array<object>} tasks - Task cards assigned to this column
  * @param {function} onTaskClick - Task card selection callback
  * @param {function} onDropTask - Drop handler (taskId, targetColumnKey) => void
@@ -24,7 +21,6 @@ export const TaskColumn = ({
   columnKey,
   title,
   icon: Icon,
-  accent = "slate",
   tasks = [],
   onTaskClick,
   onDropTask,
@@ -33,14 +29,6 @@ export const TaskColumn = ({
   onQuickAdd,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
-
-  // Column Accent Badge Variants
-  const badgeVariants = {
-    slate: "default",
-    blue: "primary",
-    purple: "purple",
-    emerald: "success",
-  };
 
   const columnVariants = {
     hidden: { opacity: 0, y: 15 },
@@ -78,51 +66,49 @@ export const TaskColumn = ({
 
   return (
     <motion.div variants={columnVariants} className="w-full">
-      <GlassPanel
-        variant="default"
-        padding="none"
+      <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`flex flex-col min-h-130 max-h-200 relative overflow-hidden transition-all duration-200 ${
+        className={`flex flex-col min-h-130 max-h-200 rounded-3xl bg-zinc-50 border transition-all duration-200 overflow-hidden shadow-sm ${
           isDragOver
-            ? "border-cyan-400/80 shadow-[0_0_30px_rgba(6,182,212,0.35)] ring-1 ring-cyan-400"
-            : ""
+            ? "border-[#C6F432] ring-2 ring-[#C6F432]/60 bg-[#C6F432]/5"
+            : "border-zinc-200/80"
         }`}
       >
         {/* Sticky Header Bar */}
-        <div className="sticky top-0 z-20 px-5 py-4 bg-slate-950/70 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between">
+        <div className="sticky top-0 z-20 px-5 py-3.5 bg-white/90 backdrop-blur-md border-b border-zinc-200/80 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             {Icon && (
-              <div className="p-2 rounded-xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
-                {isValidElement(Icon) ? Icon : <Icon className="w-4 h-4" />}
+              <div className="w-7 h-7 rounded-xl bg-zinc-100 border border-zinc-200 text-[#0B0B0C] flex items-center justify-center shrink-0">
+                {isValidElement(Icon) ? Icon : <Icon className="w-3.5 h-3.5 stroke-[2.2]" />}
               </div>
             )}
-            <h3 className="text-sm font-semibold text-white tracking-tight">
+            <h3 className="text-sm font-bold text-[#0B0B0C] tracking-tight">
               {title}
             </h3>
           </div>
 
           <div className="flex items-center gap-2">
-            <GlassBadge variant={badgeVariants[accent] || "default"} size="sm">
+            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-zinc-100 text-[#0B0B0C] border border-zinc-200">
               {tasks.length}
-            </GlassBadge>
+            </span>
 
             {onQuickAdd && (
               <button
                 type="button"
                 onClick={() => onQuickAdd(columnKey)}
                 title={`Add task to ${title}`}
-                className="p-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white border border-white/10 transition-colors"
+                className="w-7 h-7 rounded-lg bg-zinc-100 hover:bg-[#C6F432] text-zinc-600 hover:text-[#0B0B0C] border border-zinc-200 flex items-center justify-center transition-colors cursor-pointer"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               </button>
             )}
           </div>
         </div>
 
         {/* Scrollable Task Cards Body */}
-        <div className="p-4 space-y-3.5 overflow-y-auto flex-1 custom-scrollbar">
+        <div className="p-3.5 space-y-3 overflow-y-auto flex-1 custom-scrollbar">
           {tasks.length > 0 ? (
             tasks.map((task, idx) => (
               <TaskCard
@@ -136,7 +122,7 @@ export const TaskColumn = ({
           ) : (
             <div
               className={`py-16 flex flex-col items-center justify-center text-center transition-colors ${
-                isDragOver ? "text-cyan-400" : "text-slate-500"
+                isDragOver ? "text-[#0B0B0C]" : "text-zinc-400"
               }`}
             >
               <Inbox className="w-8 h-8 mb-2 stroke-[1.5]" />
@@ -146,7 +132,7 @@ export const TaskColumn = ({
             </div>
           )}
         </div>
-      </GlassPanel>
+      </div>
     </motion.div>
   );
 };

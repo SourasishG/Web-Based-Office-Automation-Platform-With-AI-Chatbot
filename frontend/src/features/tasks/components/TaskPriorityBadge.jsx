@@ -1,70 +1,57 @@
 import { AlertOctagon, AlertCircle, ArrowUp, ArrowDown } from "lucide-react";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
 
 /**
- * TaskPriorityBadge - Apple Liquid Glass Task Priority Indicator
- * Renders priority classification badges with distinct neon glass tints, glowing borders, and icons.
+ * TaskPriorityBadge - Quixotic Task Priority Pill
  * 
  * @param {string} priority - Priority value ('critical', 'high', 'medium', 'low')
- * @param {'sm' | 'md' | 'lg'} size - Badge size preset
  * @param {string} className - Additional CSS classes
  */
 export const TaskPriorityBadge = ({
   priority = "medium",
-  size = "sm",
   className = "",
 }) => {
   const p = (priority || "").toLowerCase();
 
   if (p === "critical") {
     return (
-      <GlassBadge
-        variant="danger"
-        size={size}
-        icon={AlertOctagon}
-        glow
-        className={className}
+      <span
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20 ${className}`}
       >
+        <AlertOctagon className="w-3 h-3" />
         Critical
-      </GlassBadge>
+      </span>
     );
   }
 
   if (p === "high") {
     return (
-      <GlassBadge
-        variant="danger"
-        size={size}
-        icon={AlertCircle}
-        className={className}
+      <span
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20 ${className}`}
       >
+        <AlertCircle className="w-3 h-3" />
         High
-      </GlassBadge>
+      </span>
     );
   }
 
   if (p === "medium") {
     return (
-      <GlassBadge
-        variant="warning"
-        size={size}
-        icon={ArrowUp}
-        className={className}
+      <span
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-700 border border-blue-500/20 ${className}`}
       >
+        <ArrowUp className="w-3 h-3" />
         Medium
-      </GlassBadge>
+      </span>
     );
   }
 
   return (
-    <GlassBadge
-      variant="ghost"
-      size={size}
-      icon={ArrowDown}
-      className={className}
+    <span
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-zinc-500/10 text-zinc-600 border border-zinc-500/20 ${className}`}
     >
+      <ArrowDown className="w-3 h-3" />
       Low
-    </GlassBadge>
+    </span>
   );
 };
 
