@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 
 /**
- * ProgressBar - Apple Liquid Glass Progress Bar Line
- * Displays an animated progress track with specular highlight reflections and dynamic percentage labels.
+ * ProgressBar - Executive Project Progress Line
+ * Animated progress track with Lime Green fill and dynamic percentage label.
  * 
  * @param {number} progress - Progress value (0 - 100)
  * @param {boolean} showLabel - Display progress percentage header
@@ -20,25 +20,25 @@ export const ProgressBar = ({
     <div className={`w-full space-y-1.5 select-none ${className}`}>
       {/* Label & Percentage */}
       {showLabel && (
-        <div className="flex items-center justify-between text-xs font-medium">
-          <span className="text-slate-400">Progress</span>
-          <span className="text-cyan-300 font-mono font-semibold">
+        <div className="flex items-center justify-between text-xs font-semibold">
+          <span className="text-zinc-500">Progress</span>
+          <span className="text-[#0B0B0C] font-mono font-bold">
             {Math.round(normalizedProgress)}%
           </span>
         </div>
       )}
 
       {/* Progress Track */}
-      <div className="w-full h-2 rounded-full bg-slate-950/60 overflow-hidden border border-white/10 p-0.5 relative shadow-inner">
-        {/* Animated Active Liquid Fill Bar */}
+      <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden border border-slate-200/80 p-0.5 relative">
+        {/* Animated Active Lime Fill Bar */}
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${normalizedProgress}%` }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="h-full rounded-full bg-linear-to-r from-blue-600 via-cyan-500 to-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.6)] relative overflow-hidden"
+          className="h-full rounded-full bg-[#C6F432] shadow-sm relative overflow-hidden"
         >
-          {/* Specular Light Reflection Sweep */}
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+          {/* Subtle Specular Light Sweep */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
         </motion.div>
       </div>
     </div>
