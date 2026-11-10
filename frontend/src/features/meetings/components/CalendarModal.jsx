@@ -84,27 +84,31 @@ export const CalendarModal = ({
       maxWidth="2xl"
       footer={
         <div className="flex items-center justify-between w-full">
-          <GlassButton
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
             onClick={handleViewTimeline}
-            rightIcon={ArrowRight}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
           >
-            View in Timeline
-          </GlassButton>
+            <span>View in Timeline</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#C6F432]" />
+          </button>
 
           <div className="flex items-center gap-2">
-            <GlassButton variant="ghost" size="sm" onClick={onClose}>
-              Close
-            </GlassButton>
-            <GlassButton
-              variant="primary"
-              size="sm"
-              icon={Plus}
-              onClick={handleScheduleForDate}
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
             >
-              Schedule on This Date
-            </GlassButton>
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={handleScheduleForDate}
+              className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>Schedule on This Date</span>
+            </button>
           </div>
         </div>
       }
@@ -126,7 +130,7 @@ export const CalendarModal = ({
             <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10">
               <div>
                 <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-                  <CalendarIcon className="w-4 h-4 text-cyan-400" />
+                  <CalendarIcon className="w-4 h-4 text-[#C6F432]" />
                   <span>{formattedDateTitle}</span>
                 </h4>
                 <p className="text-[11px] text-slate-400 mt-0.5">

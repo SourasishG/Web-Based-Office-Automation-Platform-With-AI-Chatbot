@@ -1,13 +1,9 @@
 import { Clock, Inbox, ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
-import {
-  GlassPanel,
-  GlassButton,
-} from "../../../components/ui";
 import TimelineItem from "./TimelineItem";
 
 /**
- * DailyTimeline - Apple Liquid Glass Hour-by-Hour Daily Schedule Timeline
- * Displays sequential meetings for any chosen date with live indicators, status badges, and join triggers.
+ * DailyTimeline - Quixotic Hour-by-Hour Daily Schedule Timeline
+ * Positioned in the lower 40% Pure White region with #0B0B0C typography and lime accents.
  * 
  * @param {Array<object>} schedule - Daily timeline events array
  * @param {string} searchTerm - Search query filter
@@ -64,7 +60,6 @@ export const DailyTimeline = ({
 
   // Filter events by tab and search query
   const filteredEvents = normalizedSchedule.filter((event) => {
-    // Tab Filter
     if (activeTab === "today" && (event.status === "completed" || event.status === "cancelled")) {
       return false;
     }
@@ -75,7 +70,6 @@ export const DailyTimeline = ({
       return false;
     }
 
-    // Search Query Filter
     if (!searchTerm) return true;
     const query = searchTerm.toLowerCase();
     return (
@@ -125,83 +119,95 @@ export const DailyTimeline = ({
   };
 
   return (
-    <GlassPanel
-      title="Daily Timeline"
-      subtitle={`${filteredEvents.length} operational sync${filteredEvents.length !== 1 ? "s" : ""} on schedule`}
-      icon={Clock}
-      action={
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Day Navigation Controls */}
-          <div className="flex items-center rounded-xl bg-white/5 border border-white/10 p-0.5">
-            <button
-              type="button"
-              onClick={handlePrevDay}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
-              title="Previous Day"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-
-            <button
-              type="button"
-              onClick={handleTodayClick}
-              className={`px-2 py-0.5 text-xs font-semibold rounded-md transition ${
-                isToday
-                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
-                  : "text-slate-300 hover:text-white"
-              }`}
-            >
-              {formattedDateLabel}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleNextDay}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
-              title="Next Day"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+    <div className="bg-white border border-zinc-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between h-full">
+      {/* Header Bar */}
+      <div>
+        <div className="flex flex-wrap items-center justify-between pb-4 border-b border-zinc-100 gap-3 mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[#0B0B0C]">
+              <Clock className="w-4 h-4 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-[#0B0B0C] tracking-tight">
+                Daily Timeline
+              </h3>
+              <p className="text-[11px] text-zinc-500 font-medium">
+                {filteredEvents.length} operational sync{filteredEvents.length !== 1 ? "s" : ""} on schedule
+              </p>
+            </div>
           </div>
 
-          {/* Open Calendar Dialog Button */}
-          {onOpenCalendar && (
-            <GlassButton
-              variant="cyan"
-              size="sm"
-              icon={CalendarIcon}
-              onClick={onOpenCalendar}
-              title="Open Calendar Overview"
-            >
-              <span className="hidden sm:inline">Calendar</span>
-            </GlassButton>
+          {/* Day Navigation Controls */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center rounded-xl bg-zinc-100 border border-zinc-200 p-0.5">
+              <button
+                type="button"
+                onClick={handlePrevDay}
+                className="p-1 rounded-lg text-zinc-600 hover:text-[#0B0B0C] hover:bg-white transition cursor-pointer"
+                title="Previous Day"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleTodayClick}
+                className={`px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer ${
+                  isToday
+                    ? "bg-[#C6F432] text-[#0B0B0C] shadow-xs"
+                    : "text-zinc-700 hover:text-black hover:bg-white"
+                }`}
+              >
+                {formattedDateLabel}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleNextDay}
+                className="p-1 rounded-lg text-zinc-600 hover:text-[#0B0B0C] hover:bg-white transition cursor-pointer"
+                title="Next Day"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {onOpenCalendar && (
+              <button
+                type="button"
+                onClick={onOpenCalendar}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-[#C6F432] text-zinc-700 hover:text-[#0B0B0C] border border-zinc-200 text-xs font-semibold transition-all cursor-pointer"
+                title="Open Calendar Overview"
+              >
+                <CalendarIcon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Calendar</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Timeline Stream */}
+        <div className="relative pl-3 sm:pl-6 space-y-5 my-2">
+          {/* Continuous Vertical Timeline Guide Line */}
+          <div className="absolute left-3 sm:left-6 top-3 bottom-3 w-0.5 bg-zinc-200 -translate-x-1/2 pointer-events-none" />
+
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((item, idx) => (
+              <TimelineItem key={item.id || idx} item={item} />
+            ))
+          ) : (
+            <div className="py-14 flex flex-col items-center justify-center text-center text-zinc-400">
+              <Inbox className="w-8 h-8 mb-2 stroke-[1.5]" />
+              <span className="text-xs font-semibold text-zinc-600">
+                No meetings scheduled for this date
+              </span>
+              <span className="text-[11px] text-zinc-400 mt-0.5">
+                {isToday ? "You have a clear schedule today." : `No events recorded for ${formattedDateLabel}.`}
+              </span>
+            </div>
           )}
         </div>
-      }
-      variant="default"
-      padding="md"
-      className="h-full flex flex-col justify-between"
-    >
-      {/* Timeline Stream */}
-      <div className="relative pl-3 sm:pl-6 space-y-6 my-2">
-        {/* Continuous Vertical Liquid Timeline Guide Line */}
-        <div className="absolute left-3 sm:left-6 top-3 bottom-3 w-0.5 bg-linear-to-b from-cyan-500/40 via-blue-500/20 to-transparent -translate-x-1/2 pointer-events-none" />
-
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((item, idx) => (
-            <TimelineItem key={item.id || idx} item={item} />
-          ))
-        ) : (
-          <div className="py-12 flex flex-col items-center justify-center text-center text-slate-400">
-            <Inbox className="w-8 h-8 text-slate-500 mb-2 stroke-[1.5]" />
-            <span className="text-xs font-medium">No meetings scheduled for this date</span>
-            <span className="text-[11px] text-slate-500 mt-1">
-              {isToday ? "You have a clear schedule today." : `No events recorded for ${formattedDateLabel}.`}
-            </span>
-          </div>
-        )}
       </div>
-    </GlassPanel>
+    </div>
   );
 };
 

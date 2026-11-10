@@ -1,18 +1,14 @@
-import { Calendar, ArrowRight, Inbox } from "lucide-react";
-import {
-  GlassPanel,
-  GlassBadge,
-  GlassButton,
-} from "../../../components/ui";
+import { Calendar, Inbox } from "lucide-react";
 import MeetingCard from "./MeetingCard";
 
 /**
- * UpcomingMeetings - Apple Liquid Glass Upcoming Events Sidebar Deck
- * Renders filtered upcoming meeting cards and calendar sync indicators.
+ * UpcomingMeetings - Quixotic Upcoming Meetings Sidebar Deck
+ * Positioned in the lower 40% Pure White region with #0B0B0C typography and lime accents.
  * 
  * @param {Array<object>} meetings - List of upcoming meeting objects
  * @param {string} searchTerm - Search query filter
  * @param {function} onJoinMeeting - Join callback handler
+ * @param {function} onViewCalendar - Open calendar callback handler
  */
 export const UpcomingMeetings = ({
   meetings = [],
@@ -72,57 +68,54 @@ export const UpcomingMeetings = ({
   });
 
   return (
-    <GlassPanel
-      title="Upcoming Meetings"
-      subtitle={`${filteredMeetings.length} scheduled events`}
-      icon={Calendar}
-      action={
-        <button
-          type="button"
-          onClick={onViewCalendar}
-          className="cursor-pointer transition-transform hover:scale-105"
-          title="Open Interactive Calendar"
-        >
-          <GlassBadge variant="cyan" size="sm" icon={Calendar}>
-            Calendar Sync
-          </GlassBadge>
-        </button>
-      }
-      variant="default"
-      padding="md"
-      className="h-full flex flex-col justify-between"
-    >
-      {/* Meetings Card List */}
-      <div className="space-y-3.5">
-        {filteredMeetings.length > 0 ? (
-          filteredMeetings.map((meeting, idx) => (
-            <MeetingCard
-              key={meeting.id || idx}
-              meeting={meeting}
-              onJoin={onJoinMeeting}
-            />
-          ))
-        ) : (
-          <div className="py-12 flex flex-col items-center justify-center text-center text-slate-400">
-            <Inbox className="w-8 h-8 text-slate-500 mb-2 stroke-[1.5]" />
-            <span className="text-xs font-medium">No matching upcoming meetings</span>
+    <div className="bg-white border border-zinc-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between h-full">
+      {/* Header Bar */}
+      <div>
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[#0B0B0C]">
+              <Calendar className="w-4 h-4 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-[#0B0B0C] tracking-tight">
+                Upcoming Meetings
+              </h3>
+              <p className="text-[11px] text-zinc-500 font-medium">
+                {filteredMeetings.length} scheduled events
+              </p>
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* Bottom Footer Action */}
-      <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-        <span className="text-xs text-slate-400 font-medium">Auto-synced with Calendar</span>
-        <GlassButton
-          variant="ghost"
-          size="sm"
-          rightIcon={ArrowRight}
-          onClick={onViewCalendar}
-        >
-          View Calendar
-        </GlassButton>
+          <button
+            type="button"
+            onClick={onViewCalendar}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 hover:bg-[#C6F432] text-zinc-700 hover:text-[#0B0B0C] border border-zinc-200 transition-all cursor-pointer"
+            title="Open Interactive Calendar"
+          >
+            <Calendar className="w-3 h-3 text-[#0B0B0C]" />
+            <span>Calendar</span>
+          </button>
+        </div>
+
+        {/* Meetings Card List */}
+        <div className="space-y-3">
+          {filteredMeetings.length > 0 ? (
+            filteredMeetings.map((meeting, idx) => (
+              <MeetingCard
+                key={meeting.id || idx}
+                meeting={meeting}
+                onJoin={onJoinMeeting}
+              />
+            ))
+          ) : (
+            <div className="py-12 flex flex-col items-center justify-center text-center text-zinc-400">
+              <Inbox className="w-8 h-8 mb-2 stroke-[1.5]" />
+              <span className="text-xs font-medium">No upcoming meetings scheduled</span>
+            </div>
+          )}
+        </div>
       </div>
-    </GlassPanel>
+    </div>
   );
 };
 

@@ -14,7 +14,6 @@ import {
   GlassInput,
   GlassTextarea,
   GlassSelect,
-  GlassButton,
   GlassAvatar,
 } from "../../../components/ui";
 import { meetingService } from "../../../services/meetingService";
@@ -146,20 +145,24 @@ export const ScheduleMeetingModal = ({
       maxWidth="xl"
       footer={
         <div className="flex items-center justify-end gap-3 w-full">
-          <GlassButton variant="ghost" onClick={onClose} isDisabled={loading}>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+          >
             Cancel
-          </GlassButton>
-          <GlassButton
-            variant="primary"
+          </button>
+          <button
             type="submit"
             form="schedule-meeting-form"
             onClick={handleSubmit}
-            isDisabled={loading}
-            isLoading={loading}
-            icon={Plus}
+            disabled={loading}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
           >
-            {loading ? "Scheduling..." : "Schedule Sync"}
-          </GlassButton>
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <span>{loading ? "Scheduling..." : "Schedule Sync"}</span>
+          </button>
         </div>
       }
     >
@@ -265,8 +268,8 @@ export const ScheduleMeetingModal = ({
                   onClick={() => toggleAttendee(emp.id)}
                   className={`flex items-center justify-between gap-2 p-2 rounded-xl border cursor-pointer transition-all ${
                     isSelected
-                      ? "bg-cyan-500/20 border-cyan-400 text-white"
-                      : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                      ? "bg-[#C6F432]/15 border-[#C6F432] text-white"
+                      : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
@@ -276,16 +279,16 @@ export const ScheduleMeetingModal = ({
                       size="xs"
                     />
                     <div className="truncate">
-                      <div className="text-xs font-medium truncate">{fullName}</div>
-                      <div className="text-[10px] text-slate-400 truncate">{emp.jobTitle || emp.department}</div>
+                      <div className="text-xs font-semibold truncate">{fullName}</div>
+                      <div className="text-[10px] text-zinc-400 truncate">{emp.jobTitle || emp.department}</div>
                     </div>
                   </div>
 
                   <div
                     className={`w-4 h-4 rounded-md flex items-center justify-center border shrink-0 ${
                       isSelected
-                        ? "bg-cyan-500 border-cyan-400 text-black"
-                        : "border-white/30 bg-slate-900/60"
+                        ? "bg-[#C6F432] border-[#C6F432] text-[#0B0B0C]"
+                        : "border-white/30 bg-black/40"
                     }`}
                   >
                     {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
