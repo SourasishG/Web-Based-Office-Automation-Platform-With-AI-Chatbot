@@ -258,9 +258,13 @@ Do not include explanations or markdown fences.`;
             {loadingDelete ? "Deleting..." : "Delete"}
           </GlassButton>
 
-          <GlassButton variant="primary" size="sm" onClick={onClose}>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
             Done
-          </GlassButton>
+          </button>
         </div>
       }
     >
@@ -293,10 +297,10 @@ Do not include explanations or markdown fences.`;
                   key={p.key}
                   type="button"
                   onClick={() => handleStatusChange(p.key)}
-                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
+                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                     isActive
-                      ? "bg-cyan-500/20 border-cyan-400 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-                      : "bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10"
+                      ? "bg-[#C6F432] border-[#C6F432] text-[#0B0B0C] shadow-md shadow-[#C6F432]/20 font-bold"
+                      : "bg-white/5 border-white/10 text-zinc-400 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
