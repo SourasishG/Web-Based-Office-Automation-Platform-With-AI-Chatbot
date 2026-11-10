@@ -184,42 +184,42 @@ export const ScheduleMeetingModal = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-cyan-400" /> Date
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-[#C6F432]" /> Date
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-white text-xs focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-white text-xs focus:outline-none focus:border-[#C6F432] transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-cyan-400" /> Start Time
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#C6F432]" /> Start Time
             </label>
             <input
               type="text"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
               placeholder="10:00 AM"
-              className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-white text-xs focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-white text-xs focus:outline-none focus:border-[#C6F432] transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-cyan-400" /> End Time
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#C6F432]" /> End Time
             </label>
             <input
               type="text"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
               placeholder="10:30 AM"
-              className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-white text-xs focus:outline-none focus:border-cyan-400"
+              className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-white text-xs focus:outline-none focus:border-[#C6F432] transition-colors"
               required
             />
           </div>
@@ -231,6 +231,7 @@ export const ScheduleMeetingModal = ({
             options={platformOptions}
             value={platform}
             onChange={handlePlatformChange}
+            icon={Video}
           />
 
           <GlassInput
@@ -253,7 +254,7 @@ export const ScheduleMeetingModal = ({
         <div>
           <label className="text-xs font-semibold text-slate-300 flex items-center justify-between mb-2">
             <span className="flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-cyan-400" /> Invite Colleagues ({selectedAttendeeIds.length})
+              <Users className="w-3.5 h-3.5 text-[#C6F432]" /> Invite Colleagues ({selectedAttendeeIds.length})
             </span>
             <span className="text-[11px] text-slate-400">Optional</span>
           </label>

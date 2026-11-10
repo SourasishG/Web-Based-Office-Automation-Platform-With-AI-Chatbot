@@ -139,9 +139,9 @@ export const CalendarModal = ({
               </div>
 
               {dayMeetings.length > 0 && (
-                <GlassBadge variant="cyan" size="sm">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#C6F432]/20 text-[#C6F432] border border-[#C6F432]/30">
                   {dayMeetings.length} Event{dayMeetings.length !== 1 ? "s" : ""}
-                </GlassBadge>
+                </span>
               )}
             </div>
 
@@ -154,7 +154,7 @@ export const CalendarModal = ({
                     className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all space-y-1.5"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-mono font-semibold text-cyan-400 flex items-center gap-1">
+                      <span className="text-xs font-mono font-semibold text-[#C6F432] flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {item.time || `${item.startTime || ""} - ${item.endTime || ""}`}
                       </span>
@@ -179,7 +179,7 @@ export const CalendarModal = ({
                         {item.platform ? (
                           <Video className="w-3 h-3 text-blue-400" />
                         ) : (
-                          <MapPin className="w-3 h-3 text-cyan-400" />
+                          <MapPin className="w-3 h-3 text-[#C6F432]" />
                         )}
                         <span>{item.platform || "Virtual Room"}</span>
                       </span>
@@ -189,7 +189,7 @@ export const CalendarModal = ({
                           href={item.meetingLink}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-cyan-300 hover:text-cyan-200 font-semibold text-[11px]"
+                          className="inline-flex items-center gap-1 text-[#C6F432] hover:underline font-semibold text-[11px]"
                         >
                           Join <ExternalLink className="w-3 h-3" />
                         </a>
