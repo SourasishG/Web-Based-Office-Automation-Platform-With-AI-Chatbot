@@ -171,18 +171,27 @@ export const CreateTaskModal = ({
       maxWidth="lg"
       footer={
         <div className="flex items-center justify-end gap-3 w-full">
-          <GlassButton variant="ghost" size="sm" onClick={onClose} disabled={loading}>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+          >
             Cancel
-          </GlassButton>
-          <GlassButton
-            variant="primary"
-            size="sm"
+          </button>
+          <button
+            type="button"
             onClick={handleSubmit}
             disabled={loading}
-            icon={loading ? Loader2 : Plus}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Create Task"}
-          </GlassButton>
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+            )}
+            <span>{loading ? "Creating..." : "Create Task"}</span>
+          </button>
         </div>
       }
     >

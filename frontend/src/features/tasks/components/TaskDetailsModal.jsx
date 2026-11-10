@@ -383,16 +383,19 @@ Do not include explanations or markdown fences.`;
             </div>
 
             {/* AI Generator CTA */}
-            <GlassButton
-              variant="outline"
-              size="xs"
-              icon={loadingAi ? Loader2 : Sparkles}
+            <button
+              type="button"
               onClick={handleGenerateSubtasksHerric}
               disabled={loadingAi}
-              className="text-cyan-300 border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-500/10"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#C6F432]/10 border border-[#C6F432]/30 text-[#C6F432] hover:bg-[#C6F432]/20 transition-all cursor-pointer disabled:opacity-50"
             >
-              {loadingAi ? "Herric thinking..." : "Ask Herric to Generate"}
-            </GlassButton>
+              {loadingAi ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5" />
+              )}
+              <span>{loadingAi ? "Herric thinking..." : "Ask Herric to Generate"}</span>
+            </button>
           </div>
 
           {/* Add Subtask Input */}
@@ -437,8 +440,8 @@ Do not include explanations or markdown fences.`;
                     <div
                       className={`w-4 h-4 rounded-md flex items-center justify-center border transition-colors ${
                         subtask.completed
-                          ? "bg-emerald-500 border-emerald-400 text-black"
-                          : "border-white/30 bg-slate-900/60"
+                          ? "bg-[#C6F432] border-[#C6F432] text-[#0B0B0C]"
+                          : "border-white/30 bg-black/40"
                       }`}
                     >
                       {subtask.completed && <Check className="w-3 h-3 stroke-[3]" />}
