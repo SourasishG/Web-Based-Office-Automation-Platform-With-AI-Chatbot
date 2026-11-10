@@ -180,13 +180,13 @@ const Login = () => {
 
           {/* SVG 3D Floating Geometric Spheres (Modeled after reference image) */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {/* Top-Right Large Curved Cutout */}
-            <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-gradient-to-br from-[#1c1c22] to-[#0f0f12] opacity-80 border border-white/5 shadow-2xl" />
+            {/* Top-Right Large Curved Cutout - Lime Green 3D Sphere */}
+            <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-gradient-to-br from-[#E4FF8A] via-[#C6F432] to-[#557500] opacity-95 shadow-[0_20px_60px_rgba(198,244,50,0.35),inset_0_4px_16px_rgba(255,255,255,0.4),inset_0_-10px_24px_rgba(0,0,0,0.35)] border border-[#C6F432]/60" />
 
-            {/* Center-Bottom Prominent 3D Sphere */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-br from-[#24242c] via-[#15151a] to-[#09090b] shadow-[0_20px_50px_rgba(0,0,0,0.9),inset_0_4px_12px_rgba(255,255,255,0.12)] border border-white/10 flex items-center justify-center">
-              {/* Subtle Lime Specular Ring Accent */}
-              <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#C6F432]/10 to-transparent blur-md" />
+            {/* Center-Bottom Prominent 3D Sphere - Lime Green */}
+            <div className="absolute bottom-10 sm:bottom-12 left-1/2 -translate-x-1/2 w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-br from-[#E8FFA3] via-[#C6F432] to-[#4D6B00] shadow-[0_25px_60px_rgba(0,0,0,0.7),0_10px_40px_rgba(198,244,50,0.4),inset_0_6px_20px_rgba(255,255,255,0.5),inset_0_-12px_28px_rgba(0,0,0,0.5)] border border-[#C6F432]/70 flex items-center justify-center relative overflow-hidden">
+              {/* Specular Light Highlight */}
+              <div className="absolute top-4 left-6 w-16 h-16 rounded-full bg-white/40 blur-sm pointer-events-none" />
             </div>
 
             {/* Bottom-Left Overlapping Sphere */}
