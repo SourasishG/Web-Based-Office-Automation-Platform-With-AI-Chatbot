@@ -277,8 +277,8 @@ Do not include explanations or markdown fences.`;
         )}
 
         {aiMessage && (
-          <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs flex items-center gap-2">
-            <Sparkles className="w-4 h-4 shrink-0 text-cyan-400" />
+          <div className="p-3 rounded-xl bg-[#C6F432]/10 border border-[#C6F432]/25 text-white text-xs flex items-center gap-2">
+            <Sparkles className="w-4 h-4 shrink-0 text-[#C6F432]" />
             <span>{aiMessage}</span>
           </div>
         )}
@@ -320,7 +320,7 @@ Do not include explanations or markdown fences.`;
 
           {currentTask.project && (
             <div className="flex items-center gap-1.5">
-              <FolderKanban className="w-3.5 h-3.5 text-cyan-400" />
+              <FolderKanban className="w-3.5 h-3.5 text-[#C6F432]" />
               <span className="text-xs text-slate-200">
                 {currentTask.project.title}
               </span>

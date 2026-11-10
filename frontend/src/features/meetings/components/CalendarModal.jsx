@@ -12,7 +12,6 @@ import {
 import {
   GlassModal,
   GlassButton,
-  GlassBadge,
 } from "../../../components/ui";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
 
