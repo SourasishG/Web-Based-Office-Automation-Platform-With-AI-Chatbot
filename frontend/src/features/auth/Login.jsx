@@ -204,7 +204,7 @@ const Login = () => {
               </svg>
             </div>
             <span className="font-extrabold text-lg tracking-tight text-white">
-              Office<span className="text-[#C6F432]">Aid</span>
+              Office<span className="text-[#0B0B0C]">Aid</span>
             </span>
           </div>
 
