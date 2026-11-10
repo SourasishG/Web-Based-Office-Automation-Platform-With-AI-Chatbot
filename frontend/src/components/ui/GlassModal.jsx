@@ -99,8 +99,8 @@ export const GlassModal = ({
                             <div className="relative px-6 pt-6 pb-4 flex items-start justify-between border-b border-white/10">
                                 <div className="flex items-center gap-3">
                                     {Icon && (
-                                        <div className="p-2.5 rounded-2xl bg-slate-800/60 border border-white/10 text-cyan-400 shrink-0">
-                                            {React.isValidElement(Icon) ? Icon : <Icon className="w-5 h-5" />}
+                                        <div className="w-10 h-10 rounded-2xl bg-[#C6F432]/10 border border-[#C6F432]/25 text-[#C6F432] flex items-center justify-center shrink-0">
+                                            {React.isValidElement(Icon) ? Icon : <Icon className="w-5 h-5 stroke-[2.2]" />}
                                         </div>
                                     )}
                                     <div>

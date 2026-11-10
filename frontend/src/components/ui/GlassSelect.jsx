@@ -95,8 +95,8 @@ export const GlassSelect = ({
             error
               ? "border-rose-500/60 shadow-[0_0_20px_-3px_rgba(244,63,94,0.3)]"
               : isOpen
-              ? "border-cyan-400/60 shadow-[0_0_25px_-5px_rgba(6,182,212,0.35)] bg-slate-900/50"
-              : "border-white/10 hover:border-white/20 shadow-inner"
+              ? "border-[#C6F432] shadow-[0_0_20px_-3px_rgba(198,244,50,0.35)] bg-slate-900/60"
+              : "border-white/10 hover:border-[#C6F432]/40 shadow-inner"
           }
           ${isDisabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer"}
           ${className}
@@ -104,7 +104,7 @@ export const GlassSelect = ({
       >
         <div className="flex items-center gap-2.5 truncate pr-2">
           {Icon && (
-            <span className="text-slate-400 shrink-0">
+            <span className="text-[#C6F432] shrink-0">
               {React.isValidElement(Icon) ? Icon : <Icon className="w-4 h-4" />}
             </span>
           )}
@@ -112,7 +112,7 @@ export const GlassSelect = ({
           {selectedOption ? (
             <div className="flex items-center gap-2 truncate">
               {selectedOption.icon && (
-                <span className="shrink-0 text-cyan-400">
+                <span className="shrink-0 text-[#C6F432]">
                   {React.isValidElement(selectedOption.icon) ? (
                     selectedOption.icon
                   ) : (
@@ -131,7 +131,7 @@ export const GlassSelect = ({
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={animations.spring.snappy}
-          className="text-slate-400 shrink-0 ml-1"
+          className={`${isOpen ? "text-[#C6F432]" : "text-zinc-400"} shrink-0 ml-1`}
         >
           <ChevronDown className="w-4 h-4" />
         </motion.div>
@@ -162,7 +162,7 @@ export const GlassSelect = ({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search options..."
-                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#C6F432]"
                   />
                 </div>
               </div>
@@ -187,14 +187,14 @@ export const GlassSelect = ({
                         option.disabled
                           ? "opacity-40 cursor-not-allowed"
                           : isSelected
-                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
+                          ? "bg-[#C6F432]/20 text-[#C6F432] border border-[#C6F432]/40 font-bold"
                           : "text-slate-300 hover:text-white hover:bg-white/10"
                       }
                     `}
                   >
                     <div className="flex items-center gap-2.5 truncate">
                       {OptionIcon && (
-                        <span className={`shrink-0 ${isSelected ? "text-cyan-400" : "text-slate-400"}`}>
+                        <span className={`shrink-0 ${isSelected ? "text-[#C6F432]" : "text-slate-400"}`}>
                           {React.isValidElement(OptionIcon) ? OptionIcon : <OptionIcon className="w-4 h-4" />}
                         </span>
                       )}
@@ -206,7 +206,7 @@ export const GlassSelect = ({
                       </div>
                     </div>
 
-                    {isSelected && <Check className="w-4 h-4 text-cyan-400 shrink-0 ml-2" />}
+                    {isSelected && <Check className="w-4 h-4 text-[#C6F432] shrink-0 ml-2" />}
                   </button>
                 );
               })

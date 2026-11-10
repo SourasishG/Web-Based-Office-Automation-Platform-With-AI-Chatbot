@@ -69,8 +69,8 @@ export const GlassTextarea = React.forwardRef(({
             error
               ? "border-rose-500/60 shadow-[0_0_20px_-3px_rgba(244,63,94,0.3)]"
               : isFocused
-              ? "border-cyan-400/60 shadow-[0_0_25px_-5px_rgba(6,182,212,0.35)] bg-slate-900/50"
-              : "border-white/10 hover:border-white/20 shadow-inner"
+              ? "border-[#C6F432] shadow-[0_0_20px_-3px_rgba(198,244,50,0.3)] bg-slate-900/60"
+              : "border-white/10 hover:border-[#C6F432]/40 shadow-inner"
           }
           ${isDisabled ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}
         `}
@@ -88,7 +88,7 @@ export const GlassTextarea = React.forwardRef(({
           onBlur={() => setIsFocused(false)}
           className={`
             w-full p-4 bg-transparent text-sm text-slate-100 placeholder-slate-500
-            focus:outline-none border-none selection:bg-cyan-500/30 selection:text-white
+            focus:outline-none border-none selection:bg-[#C6F432] selection:text-[#0B0B0C]
             ${resizable ? "resize-y" : "resize-none"}
             ${className}
           `}

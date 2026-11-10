@@ -13,7 +13,6 @@ import {
   GlassInput,
   GlassTextarea,
   GlassSelect,
-  GlassButton,
 } from "../../../components/ui";
 import { taskService } from "../../../services/taskService";
 import { projectService } from "../../../services/projectService";
@@ -225,6 +224,7 @@ export const CreateTaskModal = ({
             options={statusOptions}
             value={status}
             onChange={(val) => setStatus(val)}
+            icon={CheckSquare}
           />
 
           <GlassSelect
@@ -232,6 +232,7 @@ export const CreateTaskModal = ({
             options={priorityOptions}
             value={priority}
             onChange={(val) => setPriority(val)}
+            icon={AlertCircle}
           />
         </div>
 
@@ -266,7 +267,7 @@ export const CreateTaskModal = ({
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400 transition-colors"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 text-white text-sm focus:outline-none focus:border-[#C6F432] transition-colors"
             />
           </div>
         </div>
@@ -285,15 +286,14 @@ export const CreateTaskModal = ({
               onChange={(e) => setNewSubtaskTitle(e.target.value)}
               className="flex-1"
             />
-            <GlassButton
+            <button
               type="button"
-              variant="outline"
-              size="sm"
-              icon={Plus}
               onClick={handleAddSubtask}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#C6F432]/10 hover:bg-[#C6F432]/20 border border-[#C6F432]/30 text-[#C6F432] text-xs font-bold transition-all cursor-pointer"
             >
-              Add
-            </GlassButton>
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Add</span>
+            </button>
           </div>
 
           {subtasks.length > 0 && (
