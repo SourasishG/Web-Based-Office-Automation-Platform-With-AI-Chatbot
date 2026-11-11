@@ -16,6 +16,7 @@ import TeamAvailability from "./components/TeamAvailability";
 
 import { dashboardData } from "./data/dashboardData";
 import useAuth from "../../hooks/useAuth";
+import useAiAssistant from "../../hooks/useAiAssistant";
 import dashboardService from "../../services/dashboardService";
 
 /**
@@ -26,6 +27,7 @@ import dashboardService from "../../services/dashboardService";
  */
 const Dashboard = () => {
   const { user } = useAuth();
+  const { setIsOpen: setAiOpen } = useAiAssistant();
   const navigate = useNavigate();
 
   const [metrics, setMetrics] = useState(null);
@@ -151,7 +153,7 @@ const Dashboard = () => {
       title: "Ask Herric AI",
       desc: "Instant workspace assistant",
       icon: Sparkles,
-      path: "/chatbot",
+      action: () => setAiOpen(true),
     },
   ];
 
@@ -330,7 +332,11 @@ const Dashboard = () => {
                     type="button"
                     onClick={() => {
                       setIsQuickActionOpen(false);
-                      navigate(item.path);
+                      if (item.action) {
+                        item.action();
+                      } else if (item.path) {
+                        navigate(item.path);
+                      }
                     }}
                     className="w-full p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/15 flex items-center justify-between text-left group transition-all"
                   >

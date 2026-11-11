@@ -8,7 +8,6 @@ import {
   Users,
   Mail,
   Ticket,
-  Sparkles,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -26,7 +25,6 @@ const QuixoticDock = () => {
     { icon: Users, label: "Employees", path: "/employees" },
     { icon: Mail, label: "Emails", path: "/emails" },
     { icon: Ticket, label: "Tickets", path: "/tickets" },
-    { icon: Sparkles, label: "Herric AI", path: "/chatbot" },
   ];
 
   return (
