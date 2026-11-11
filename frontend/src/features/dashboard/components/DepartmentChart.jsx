@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, BarChart3, Users } from "lucide-react";
 
 const DEFAULT_DEPARTMENTS = [
@@ -15,6 +16,7 @@ const DEFAULT_DEPARTMENTS = [
  */
 export const DepartmentChart = ({ departmentData }) => {
   const [timeframe, setTimeframe] = useState("monthly");
+  const navigate = useNavigate();
 
   const { departments, totalEmployees } = useMemo(() => {
     let rawList = [];
@@ -109,8 +111,9 @@ export const DepartmentChart = ({ departmentData }) => {
 
           <button
             type="button"
+            onClick={() => navigate("/employees")}
             aria-label="View Full Department Report"
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-zinc-300 hover:text-white transition-colors"
+            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-zinc-300 hover:text-white transition-colors cursor-pointer"
           >
             <ArrowUpRight className="w-4 h-4" />
           </button>
@@ -143,58 +146,65 @@ export const DepartmentChart = ({ departmentData }) => {
         <div className="flex items-end justify-between h-52 sm:h-60 px-2">
           {/* Y-Axis Metrics */}
           <div className="flex flex-col justify-between h-full text-[11px] font-mono text-zinc-500 pr-3 pb-6 select-none">
-            <span>50</span>
-            <span>40</span>
-            <span>30</span>
-            <span>20</span>
-            <span>10</span>
-            <span>0</span>
+            <span>100%</span>
+            <span>80%</span>
+            <span>60%</span>
+            <span>40%</span>
+            <span>20%</span>
+            <span>0%</span>
           </div>
 
           {/* Vertical Pill Bars */}
-          <div className="flex-1 flex items-end justify-around h-full border-b border-white/10 pb-6 relative">
+          <div className="flex-1 flex items-end justify-around h-full border-b border-white/10 pb-6 relative gap-3 px-2">
             <div className="absolute inset-x-0 top-0 border-b border-white/5 pointer-events-none" />
             <div className="absolute inset-x-0 top-1/4 border-b border-white/5 pointer-events-none" />
             <div className="absolute inset-x-0 top-2/4 border-b border-white/5 pointer-events-none" />
             <div className="absolute inset-x-0 top-3/4 border-b border-white/5 pointer-events-none" />
 
-            {departments.map((dept) => (
-              <div
-                key={dept.name}
-                className="flex flex-col items-center justify-end h-full relative group"
-                style={{ width: `${Math.max(12, Math.floor(80 / departments.length))}%` }}
-              >
-                {/* Floating Peak Badge */}
-                {dept.isPeak && (
-                  <div className="absolute -top-7 flex flex-col items-center animate-bounce">
-                    <span className="px-2 py-0.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-[10px] font-extrabold shadow-md tracking-tight whitespace-nowrap">
-                      {dept.badge || "+17.8%"}
-                    </span>
-                    <span className="w-1.5 h-1.5 bg-[#C6F432] rounded-full mt-0.5" />
-                  </div>
-                )}
-
-                {/* Pill Bar */}
+            {departments.map((dept) => {
+              const barHeight =
+                timeframe === "annually"
+                  ? Math.min(96, Math.max(22, Math.round(dept.height * 0.92)))
+                  : dept.height;
+              return (
                 <div
-                  className={`w-full rounded-full transition-all duration-500 relative overflow-hidden ${
-                    dept.isPeak
-                      ? "bg-[#C6F432] shadow-lg shadow-[#C6F432]/25"
-                      : "bg-[#1E2620] border border-[#C6F432]/20 hover:border-[#C6F432]/50"
-                  }`}
-                  style={{
-                    height: `${dept.height}%`,
-                    backgroundImage: !dept.isPeak ? "url(#deptStripedPill)" : "none",
-                  }}
+                  key={dept.name}
+                  className="flex flex-col items-center justify-end h-full relative group w-12 sm:w-14 shrink-0"
                 >
-                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
-                </div>
+                  {/* Floating Peak Badge */}
+                  {dept.isPeak && (
+                    <div className="absolute -top-7 flex flex-col items-center animate-bounce z-10">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-[10px] font-extrabold shadow-md tracking-tight whitespace-nowrap">
+                        {dept.badge || "+17.8%"}
+                      </span>
+                      <span className="w-1.5 h-1.5 bg-[#C6F432] rounded-full mt-0.5" />
+                    </div>
+                  )}
 
-                {/* X-Axis Department Name */}
-                <span className="absolute -bottom-6 text-[10px] font-semibold text-zinc-400 group-hover:text-white transition-colors truncate max-w-full text-center">
-                  {dept.name.split(" ")[0]}
-                </span>
-              </div>
-            ))}
+                  {/* Vertical Pill Bar */}
+                  <div
+                    className={`w-10 sm:w-12 rounded-2xl transition-all duration-500 relative overflow-hidden ${
+                      dept.isPeak
+                        ? "bg-[#C6F432] shadow-lg shadow-[#C6F432]/25"
+                        : "bg-[#1E2620] border border-[#C6F432]/20 hover:border-[#C6F432]/50"
+                    }`}
+                    style={{
+                      height: `${barHeight}%`,
+                      backgroundImage: !dept.isPeak
+                        ? "url(#deptStripedPill)"
+                        : "none",
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
+                  </div>
+
+                  {/* X-Axis Department Name */}
+                  <span className="absolute -bottom-6 text-[10px] font-semibold text-zinc-400 group-hover:text-white transition-colors whitespace-nowrap text-center">
+                    {dept.name.split(" ")[0]}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
