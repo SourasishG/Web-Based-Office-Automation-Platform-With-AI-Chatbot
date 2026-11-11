@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
-import { Mail, Sparkles, Send, FileText, User, AlertCircle, Loader2 } from "lucide-react";
+import {
+  Mail,
+  Sparkles,
+  Send,
+  FileText,
+  User,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 import { GlassModal } from "../../../components/ui/GlassModal";
 import { GlassInput } from "../../../components/ui/GlassInput";
 import { GlassTextarea } from "../../../components/ui/GlassTextarea";
-import { GlassButton } from "../../../components/ui/GlassButton";
 import { GlassSelect } from "../../../components/ui/GlassSelect";
 import { employeeService } from "../../../services/employeeService";
 import { aiService } from "../../../services/aiService";
@@ -39,7 +46,9 @@ export const ComposeEmailModal = ({
           const list = res?.data?.employees || res?.data || [];
           setEmployees(list);
         })
-        .catch((err) => console.warn("Failed to load employees for compose:", err));
+        .catch((err) =>
+          console.warn("Failed to load employees for compose:", err)
+        );
     }
   }, [isOpen]);
 
@@ -55,7 +64,9 @@ export const ComposeEmailModal = ({
     try {
       setLoadingAi(true);
       setError("");
-      const instructions = `Draft a workplace email regarding ${category}${subject ? `: "${subject}"` : ""}. Keep it polished, executive, and structured.`;
+      const instructions = `Draft a workplace email regarding ${category}${
+        subject ? `: "${subject}"` : ""
+      }. Keep it polished, executive, and structured.`;
       const res = await aiService.draftReply({
         instructions,
         tone: "PROFESSIONAL",
@@ -69,7 +80,6 @@ export const ComposeEmailModal = ({
       }
     } catch (err) {
       console.error("Herric AI draft error:", err);
-      // Fallback
       setBody(
         `Dear Team,\n\nHere is an update regarding our ongoing project milestones and next deliverables. Please review the details and let me know if you have any questions.\n\nBest regards,\nOffice Aid Team`
       );
@@ -83,7 +93,11 @@ export const ComposeEmailModal = ({
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if ((!recipientId && !recipientEmail.trim()) || !subject.trim() || !body.trim()) {
+    if (
+      (!recipientId && !recipientEmail.trim()) ||
+      !subject.trim() ||
+      !body.trim()
+    ) {
       setError("Please specify a recipient, subject line, and message body.");
       return;
     }
@@ -210,18 +224,22 @@ export const ComposeEmailModal = ({
 
         {/* Herric AI Drafter Trigger */}
         <div className="flex items-center justify-between pt-1">
-          <span className="text-xs font-semibold text-slate-300">Message Content</span>
-          <GlassButton
+          <span className="text-xs font-semibold text-zinc-300">
+            Message Content
+          </span>
+          <button
             type="button"
-            variant="ghost"
-            size="xs"
-            icon={loadingAi ? Loader2 : Sparkles}
             onClick={handleAiDraft}
             disabled={loadingAi}
-            className="text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/10"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C6F432]/15 hover:bg-[#C6F432]/25 border border-[#C6F432]/35 text-[#C6F432] text-xs font-bold transition-all cursor-pointer disabled:opacity-50"
           >
-            {loadingAi ? "Herric Writing..." : "Draft with Herric"}
-          </GlassButton>
+            {loadingAi ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
+            <span>{loadingAi ? "Herric Writing..." : "Draft with Herric"}</span>
+          </button>
         </div>
 
         {/* Message Body */}
@@ -234,34 +252,38 @@ export const ComposeEmailModal = ({
         />
 
         {/* Action Buttons */}
-        <div className="pt-3 flex items-center justify-between border-t border-white/10">
-          <GlassButton
-            variant="ghost"
+        <div className="pt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/10">
+          <button
             type="button"
-            icon={FileText}
             onClick={handleDraft}
             disabled={loading}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
           >
-            Save as Draft
-          </GlassButton>
+            <FileText className="w-3.5 h-3.5" />
+            <span>Save as Draft</span>
+          </button>
 
-          <div className="flex items-center gap-2">
-            <GlassButton
-              variant="outline"
+          <div className="flex items-center gap-2.5">
+            <button
               type="button"
               onClick={onClose}
               disabled={loading}
+              className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-zinc-200 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
             >
               Cancel
-            </GlassButton>
-            <GlassButton
-              variant="primary"
+            </button>
+            <button
               type="submit"
-              icon={loading ? Loader2 : Send}
               disabled={loading}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
             >
-              {loading ? "Sending..." : "Send Message"}
-            </GlassButton>
+              {loading ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Send className="w-3.5 h-3.5 stroke-[2.2]" />
+              )}
+              <span>{loading ? "Sending..." : "Send Message"}</span>
+            </button>
           </div>
         </div>
       </form>

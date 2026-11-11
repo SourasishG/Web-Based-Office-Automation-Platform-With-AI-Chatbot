@@ -1,11 +1,8 @@
 import { Star, Inbox } from "lucide-react";
-import { GlassAvatar } from "../../../components/ui/GlassAvatar";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
-import { GlassPanel } from "../../../components/ui/GlassPanel";
 
 /**
- * EmailList - List view of email threads with avatars, snippets, and star triggers
- * 
+ * EmailList - Quixotic Pure White Message Thread List
+ *
  * @param {Array} emails - Array of email objects
  * @param {string} selectedEmailId - ID of currently selected email
  * @param {function} onSelectEmail - Email click handler
@@ -19,37 +16,39 @@ export const EmailList = ({
 }) => {
   if (!emails || emails.length === 0) {
     return (
-      <GlassPanel
-        variant="inset"
-        padding="xl"
-        className="flex flex-col items-center justify-center text-center my-4 py-16"
-      >
-        <div className="p-4 rounded-3xl bg-white/5 border border-white/10 text-slate-400 mb-4">
-          <Inbox className="w-10 h-10" />
+      <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-sm h-full flex flex-col items-center justify-center text-center p-10">
+        <div className="w-16 h-16 rounded-3xl bg-zinc-100 border border-zinc-200 text-zinc-400 flex items-center justify-center mb-4">
+          <Inbox className="w-8 h-8" />
         </div>
-        <h3 className="text-lg font-bold text-white tracking-tight">
+        <h3 className="text-lg font-extrabold text-[#0B0B0C] tracking-tight">
           No Messages Found
         </h3>
-        <p className="text-xs text-slate-400 max-w-sm mt-1">
+        <p className="text-xs text-zinc-500 max-w-xs mt-1">
           Your active folder or search filter returned no emails.
         </p>
-      </GlassPanel>
+      </div>
     );
   }
 
-  const getCategoryVariant = (category) => {
+  const getCategoryStyle = (category) => {
     switch (category) {
-      case "Announcement": return "purple";
-      case "Project Sync": return "cyan";
-      case "HR Memo": return "success";
-      case "IT Alert": return "danger";
-      case "Meeting Minutes": return "blue";
-      default: return "ghost";
+      case "Announcement":
+        return "bg-purple-500/10 text-purple-700 border-purple-500/20";
+      case "Project Sync":
+        return "bg-[#C6F432]/25 text-[#244203] border-[#C6F432]/50";
+      case "HR Memo":
+        return "bg-emerald-500/10 text-emerald-700 border-emerald-500/20";
+      case "IT Alert":
+        return "bg-rose-500/10 text-rose-600 border-rose-500/20";
+      case "Meeting Minutes":
+        return "bg-blue-500/10 text-blue-700 border-blue-500/20";
+      default:
+        return "bg-zinc-100 text-zinc-700 border-zinc-200";
     }
   };
 
   return (
-    <div className="h-full overflow-y-auto pr-1 space-y-2">
+    <div className="bg-white border border-zinc-200/80 rounded-3xl p-3.5 shadow-sm h-full overflow-y-auto space-y-2.5">
       {emails.map((email) => {
         const isSelected = selectedEmailId === email.id;
 
@@ -58,7 +57,12 @@ export const EmailList = ({
             email.sender.name ||
             "Colleague"
           : "Colleague";
-        const senderAvatar = email.sender?.avatarUrl || email.sender?.avatar;
+        const senderAvatar =
+          email.sender?.avatarUrl ||
+          email.sender?.avatar ||
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+            senderName
+          )}&background=0B0B0C&color=C6F432`;
 
         const displayTime = email.createdAt
           ? new Date(email.createdAt).toLocaleDateString("en-US", {
@@ -73,55 +77,58 @@ export const EmailList = ({
           <div
             key={email.id}
             onClick={() => onSelectEmail(email)}
-            className={`
-              p-4 rounded-2xl transition-all duration-200 cursor-pointer select-none
-              flex items-start justify-between gap-3 relative group
-              ${
-                isSelected
-                  ? "bg-cyan-500/15 border-2 border-cyan-400/50 shadow-md shadow-cyan-500/5"
-                  : email.isRead
-                  ? "bg-slate-900/30 border border-white/5 hover:border-white/15 hover:bg-slate-900/50"
-                  : "bg-slate-900/60 border border-cyan-500/20 hover:border-cyan-500/40 shadow-sm"
-              }
-            `}
+            className={`p-4 rounded-2xl transition-all duration-200 cursor-pointer select-none flex items-start justify-between gap-3 relative group ${
+              isSelected
+                ? "bg-[#C6F432]/15 border-2 border-[#C6F432] shadow-xs"
+                : email.isRead
+                ? "bg-zinc-50/80 border border-zinc-200/70 hover:border-[#C6F432] hover:bg-white"
+                : "bg-white border border-zinc-300 hover:border-[#C6F432] shadow-xs"
+            }`}
           >
             {/* Unread Indicator Dot */}
             {!email.isRead && (
-              <span className="absolute top-4 left-2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />
+              <span className="absolute top-4 left-2.5 w-2 h-2 rounded-full bg-[#C6F432] ring-2 ring-[#0B0B0C]/10" />
             )}
 
             {/* Left Content: Avatar & Identity */}
-            <div className="flex items-start gap-3 pl-2 min-w-0">
-              <GlassAvatar
+            <div className="flex items-start gap-3 pl-2.5 min-w-0">
+              <img
                 src={senderAvatar}
-                name={senderName}
-                size="md"
-                className="shrink-0 mt-0.5"
+                alt={senderName}
+                className="w-10 h-10 rounded-full object-cover border border-zinc-200 shrink-0 mt-0.5"
               />
 
               <div className="min-w-0 flex-1">
-                {/* Header: Sender Name & Category Badge */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h4 className={`text-sm tracking-tight truncate ${!email.isRead ? "font-extrabold text-white" : "font-medium text-slate-200"}`}>
+                  <h4
+                    className={`text-sm tracking-tight truncate text-[#0B0B0C] ${
+                      !email.isRead ? "font-extrabold" : "font-semibold"
+                    }`}
+                  >
                     {senderName}
                   </h4>
                   {email.category && (
-                    <GlassBadge
-                      variant={getCategoryVariant(email.category)}
-                      size="sm"
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getCategoryStyle(
+                        email.category
+                      )}`}
                     >
                       {email.category}
-                    </GlassBadge>
+                    </span>
                   )}
                 </div>
 
-                {/* Subject */}
-                <p className={`text-xs mt-1 truncate ${!email.isRead ? "font-bold text-cyan-300" : "font-medium text-slate-300"}`}>
+                <p
+                  className={`text-xs mt-1 truncate ${
+                    !email.isRead
+                      ? "font-bold text-[#0B0B0C]"
+                      : "font-medium text-zinc-700"
+                  }`}
+                >
                   {email.subject}
                 </p>
 
-                {/* Snippet Preview */}
-                <p className="text-xs text-slate-400 mt-1 line-clamp-1">
+                <p className="text-xs text-zinc-500 mt-1 line-clamp-1">
                   {snippetText}
                 </p>
               </div>
@@ -129,7 +136,7 @@ export const EmailList = ({
 
             {/* Right Meta: Date & Star Trigger */}
             <div className="flex flex-col items-end gap-2 shrink-0">
-              <span className="text-[11px] font-medium text-slate-400 font-mono">
+              <span className="text-[11px] font-semibold text-zinc-500 font-mono">
                 {displayTime}
               </span>
 
@@ -139,13 +146,14 @@ export const EmailList = ({
                   e.stopPropagation();
                   onToggleStar(email.id);
                 }}
-                className="p-1 text-slate-400 hover:text-yellow-400 transition-colors focus:outline-none"
+                aria-label="Star email"
+                className="p-1 text-zinc-400 hover:text-amber-500 transition-colors focus:outline-none cursor-pointer"
               >
                 <Star
                   className={`w-4 h-4 ${
                     email.isStarred
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-slate-500 hover:text-yellow-400"
+                      ? "fill-amber-400 text-amber-400"
+                      : "text-zinc-400 hover:text-amber-500"
                   }`}
                 />
               </button>

@@ -29,6 +29,7 @@ const QuixoticTopNavbar = () => {
     { label: "Tasks", path: "/tasks" },
     { label: "Meetings", path: "/meetings" },
     { label: "Employees", path: "/employees" },
+    { label: "Emails", path: "/emails" },
     { label: "Tickets", path: "/tickets" },
   ];
 

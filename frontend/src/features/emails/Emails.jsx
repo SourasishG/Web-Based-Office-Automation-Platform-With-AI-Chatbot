@@ -1,24 +1,36 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import { Calendar, Plus, Loader2 } from "lucide-react";
+
+import QuixoticTopNavbar from "../dashboard/components/QuixoticTopNavbar";
+import QuixoticDock from "../dashboard/components/QuixoticDock";
+
 import EmailsHeader from "./components/EmailsHeader";
 import EmailSidebar from "./components/EmailSidebar";
 import EmailList from "./components/EmailList";
 import EmailDetailView from "./components/EmailDetailView";
 import ComposeEmailModal from "./components/ComposeEmailModal";
+
 import { emailService } from "../../services/emailService";
 import initialEmails from "./data/emailData";
-import { Loader2 } from "lucide-react";
 
 /**
- * Emails - Apple Liquid Glass Master Email & Communications Feature Page
- * Connected to live Express 5 backend with Herric AI summarization and auto-draft reply.
+ * Emails - Executive Quixotic Email & Communications Feature Page
+ * Strictly aligned with Dashboard, Projects, Tasks, Meetings, Employees, Tickets, Profile, and Notifications:
+ * - 60% Midnight Black (#0B0B0C) at top, 40% Pure White (#FFFFFF) at bottom
+ * - 10% Lime Green (#C6F432) on primary buttons & active indicators
+ * - Plus Jakarta Sans typography
+ * - Floating QuixoticTopNavbar & QuixoticDock
  */
 export const Emails = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [emails, setEmails] = useState([]);
-  const [folderCounts, setFolderCounts] = useState({ inboxUnread: 0, starred: 0, drafts: 0 });
+  const [folderCounts, setFolderCounts] = useState({
+    inboxUnread: 0,
+    starred: 0,
+    drafts: 0,
+  });
   const [activeFolder, setActiveFolder] = useState("inbox"); // 'inbox', 'sent', 'starred', 'drafts', 'trash'
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -29,15 +41,40 @@ export const Emails = () => {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
+  // Live second-by-second ticker for current date and time
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedDateTime = useMemo(() => {
+    const dateStr = currentDateTime.toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    const timeStr = currentDateTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return `${dateStr} • ${timeStr}`;
+  }, [currentDateTime]);
+
   // Auto-trigger compose modal if URL includes ?new=true
   useEffect(() => {
     if (searchParams.get("new") === "true") {
       setIsComposeOpen(true);
-      setSearchParams((prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete("new");
-        return next;
-      }, { replace: true });
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete("new");
+          return next;
+        },
+        { replace: true }
+      );
     }
   }, [searchParams, setSearchParams]);
 
@@ -51,9 +88,7 @@ export const Emails = () => {
       setLoading(true);
 
       const folderParam =
-        activeFolder === "starred"
-          ? "STARRED"
-          : activeFolder.toUpperCase();
+        activeFolder === "starred" ? "STARRED" : activeFolder.toUpperCase();
 
       const [emailsRes, countsRes] = await Promise.allSettled([
         emailService.getEmails({ folder: folderParam, limit: 100 }),
@@ -63,13 +98,23 @@ export const Emails = () => {
       if (emailsRes.status === "fulfilled" && emailsRes.value) {
         const resData = emailsRes.value.data ?? emailsRes.value;
         const liveEmails =
-          resData.emails ||
-          (Array.isArray(resData) ? resData : []);
-        setEmails(liveEmails);
-        setSelectedEmailId((prevId) => prevId || (liveEmails.length > 0 ? liveEmails[0].id : null));
+          resData.emails || (Array.isArray(resData) ? resData : []);
+        const fallbackList =
+          liveEmails.length > 0
+            ? liveEmails
+            : activeFolder === "inbox"
+            ? initialEmails
+            : [];
+        setEmails(fallbackList);
+        setSelectedEmailId((prevId) =>
+          prevId && fallbackList.some((e) => e.id === prevId)
+            ? prevId
+            : fallbackList[0]?.id || ""
+        );
       } else {
-        setEmails([]);
-        setSelectedEmailId(null);
+        const fallbackList = activeFolder === "inbox" ? initialEmails : [];
+        setEmails(fallbackList);
+        setSelectedEmailId(fallbackList[0]?.id || "");
       }
 
       if (countsRes.status === "fulfilled" && countsRes.value) {
@@ -77,7 +122,9 @@ export const Emails = () => {
       }
     } catch (err) {
       console.error("Failed to load email hub data:", err);
-      setEmails(initialEmails);
+      const fallbackList = activeFolder === "inbox" ? initialEmails : [];
+      setEmails(fallbackList);
+      setSelectedEmailId(fallbackList[0]?.id || "");
     } finally {
       setLoading(false);
     }
@@ -90,12 +137,10 @@ export const Emails = () => {
   // Filtered Emails List
   const filteredEmails = useMemo(() => {
     return emails.filter((email) => {
-      // Category Filter
       if (categoryFilter !== "all" && email.category !== categoryFilter) {
         return false;
       }
 
-      // Search Query Filter
       if (!searchTerm.trim()) return true;
 
       const query = searchTerm.toLowerCase();
@@ -117,7 +162,11 @@ export const Emails = () => {
 
   // Currently Selected Email Object
   const selectedEmail = useMemo(() => {
-    return emails.find((e) => e.id === selectedEmailId) || filteredEmails[0] || null;
+    return (
+      emails.find((e) => e.id === selectedEmailId) ||
+      filteredEmails[0] ||
+      null
+    );
   }, [emails, selectedEmailId, filteredEmails]);
 
   // Handler: Select Email
@@ -215,7 +264,11 @@ export const Emails = () => {
         body: replyText,
         category: target?.category || "Project Sync",
       });
-      showToast(`Reply sent to ${target?.sender?.name || target?.sender?.firstName || "colleague"}!`);
+      showToast(
+        `Reply sent to ${
+          target?.sender?.name || target?.sender?.firstName || "colleague"
+        }!`
+      );
     } catch (err) {
       console.error("Failed to send quick reply:", err);
       showToast("Failed to dispatch quick reply.");
@@ -223,79 +276,149 @@ export const Emails = () => {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-4 pb-2 select-none">
-        {/* Toast Alert Popup */}
-        <AnimatePresence>
-          {toastMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 backdrop-blur-2xl text-cyan-300 text-xs font-semibold shadow-xl"
-            >
-              ✨ {toastMessage}
-            </motion.div>
-          )}
-        </AnimatePresence>
+    <div
+      className="min-h-screen text-white font-sans selection:bg-[#C6F432] selection:text-[#0B0B0C] pb-16 transition-all"
+      style={{
+        background:
+          "linear-gradient(180deg, #0B0B0C 0%, #0B0B0C 45%, #18181c 58%, #e4e4e7 82%, #FFFFFF 100%)",
+      }}
+    >
+      {/* Top Floating Rounded Pill Navbar */}
+      <QuixoticTopNavbar />
 
-        {/* Control Header Bar */}
-        <EmailsHeader
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          categoryFilter={categoryFilter}
-          onCategoryFilterChange={setCategoryFilter}
-          onComposeClick={() => setIsComposeOpen(true)}
-        />
+      {/* Toast Alert Popup */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl bg-[#141416] border border-[#C6F432]/50 backdrop-blur-2xl text-white text-xs font-semibold shadow-2xl flex items-center gap-2"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#C6F432]" />
+            <span>{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* Master Mail Split Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-210px)] min-h-[480px]">
-          {/* Left Sidebar Navigation (3 cols) */}
-          <div className="lg:col-span-3">
-            <EmailSidebar
-              activeFolder={activeFolder}
-              onFolderChange={setActiveFolder}
-              counts={folderCounts}
-            />
-          </div>
+      {/* Main Workspace Frame */}
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex gap-6">
+        {/* Left Floating Pill Dock */}
+        <QuixoticDock />
 
-          {/* Middle Email List (4 cols) */}
-          <div className="lg:col-span-4">
-            {loading ? (
-              <div className="h-full flex flex-col items-center justify-center text-cyan-400 gap-2">
-                <Loader2 className="w-7 h-7 animate-spin" />
-                <span className="text-xs text-slate-400">Loading inbox...</span>
+        {/* Center Mail Canvas */}
+        <main className="flex-1 min-w-0 space-y-6 select-none">
+          {/* Executive Header Row */}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          >
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                <span>Internal</span>
+                <span className="text-[#C6F432]">Mail</span>
+              </h1>
+              <p className="text-xs text-zinc-400 mt-1 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#C6F432] animate-pulse" />
+                <span>
+                  Communications Hub • Corporate threads, broadcasts & AI summaries
+                </span>
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1E] border border-white/10 text-xs font-semibold text-zinc-200 shadow-md">
+                <Calendar className="w-3.5 h-3.5 text-[#C6F432]" />
+                <span className="font-mono">{formattedDateTime}</span>
               </div>
-            ) : (
-              <EmailList
-                emails={filteredEmails}
-                selectedEmailId={selectedEmail?.id}
-                onSelectEmail={handleSelectEmail}
-                onToggleStar={handleToggleStar}
-              />
-            )}
-          </div>
 
-          {/* Right Detail Reading Pane (5 cols) */}
-          <div className="lg:col-span-5">
-            <EmailDetailView
-              email={selectedEmail}
-              onToggleStar={handleToggleStar}
-              onDelete={handleDeleteEmail}
-              onSendReply={handleSendReply}
+              <button
+                type="button"
+                onClick={() => setIsComposeOpen(true)}
+                className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-lg shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>Compose Email</span>
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Upper 60% Midnight Black Zone: Control Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.05 }}
+          >
+            <EmailsHeader
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              categoryFilter={categoryFilter}
+              onCategoryFilterChange={setCategoryFilter}
+              onComposeClick={() => setIsComposeOpen(true)}
             />
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Compose Email Modal */}
-        <ComposeEmailModal
-          isOpen={isComposeOpen}
-          onClose={() => setIsComposeOpen(false)}
-          onSend={handleSendEmail}
-          onSaveDraft={handleSaveDraft}
-        />
+          {/* Lower 40% Pure White Zone: Master Mail Split Layout */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:h-[calc(100vh-280px)] min-h-[540px] pt-1"
+          >
+            {/* Left Folder Sidebar (3 cols) */}
+            <div className="lg:col-span-3 min-h-0">
+              <EmailSidebar
+                activeFolder={activeFolder}
+                onFolderChange={setActiveFolder}
+                counts={folderCounts}
+                activeCategory={categoryFilter}
+                onCategorySelect={setCategoryFilter}
+              />
+            </div>
+
+            {/* Middle Email List (4 cols) */}
+            <div className="lg:col-span-4 min-h-0">
+              {loading ? (
+                <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-sm h-full flex flex-col items-center justify-center text-[#0B0B0C] gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-[#0B0B0C]" />
+                  <span className="text-xs font-semibold text-zinc-500">
+                    Loading inbox...
+                  </span>
+                </div>
+              ) : (
+                <EmailList
+                  emails={filteredEmails}
+                  selectedEmailId={selectedEmail?.id}
+                  onSelectEmail={handleSelectEmail}
+                  onToggleStar={handleToggleStar}
+                />
+              )}
+            </div>
+
+            {/* Right Detail Reading Pane (5 cols) */}
+            <div className="lg:col-span-5 min-h-0">
+              <EmailDetailView
+                key={selectedEmail?.id || "empty"}
+                email={selectedEmail}
+                onToggleStar={handleToggleStar}
+                onDelete={handleDeleteEmail}
+                onSendReply={handleSendReply}
+              />
+            </div>
+          </motion.div>
+        </main>
       </div>
-    </DashboardLayout>
+
+      {/* Compose Email Modal */}
+      <ComposeEmailModal
+        isOpen={isComposeOpen}
+        onClose={() => setIsComposeOpen(false)}
+        onSend={handleSendEmail}
+        onSaveDraft={handleSaveDraft}
+      />
+    </div>
   );
 };
 
