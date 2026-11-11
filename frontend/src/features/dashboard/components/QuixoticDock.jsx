@@ -19,8 +19,8 @@ const QuixoticDock = () => {
   const primaryItems = [
     { icon: BarChart2, label: "Analytics", path: "/" },
     { icon: FolderKanban, label: "Projects", path: "/projects" },
-    { icon: CalendarDays, label: "Meetings", path: "/meetings" },
     { icon: ListTodo, label: "Tasks", path: "/tasks" },
+    { icon: CalendarDays, label: "Meetings", path: "/meetings" },
     { icon: Users, label: "Employees", path: "/employees" },
     { icon: Sparkles, label: "Herric AI", path: "/chatbot" },
   ];
