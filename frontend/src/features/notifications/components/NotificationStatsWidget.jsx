@@ -1,33 +1,32 @@
 import { useMemo } from "react";
 import { Bell, BellRing, AlertTriangle, CheckCheck } from "lucide-react";
-import { GlassCard } from "../../../components/ui/GlassCard";
 
 /**
- * NotificationStatsWidget - Summary metric cards for Notification Center
- * 
+ * NotificationStatsWidget - Quixotic Executive KPI Deck for Notification Center
+ * Positioned in the upper 60% Midnight Black region with lime accents.
+ *
  * @param {Array} notifications - Array of notification records
  * @param {object} statsData - Live statistics from backend stats endpoint
  */
 export const NotificationStatsWidget = ({ notifications = [], statsData }) => {
   const stats = useMemo(() => {
-    if (statsData) {
-      return {
-        total: statsData.total !== undefined ? statsData.total : notifications.length,
-        unread: statsData.unreadCount !== undefined ? statsData.unreadCount : 0,
-        urgent: statsData.urgentCount !== undefined ? statsData.urgentCount : 0,
-        read: statsData.readCount !== undefined ? statsData.readCount : 0,
-      };
-    }
-
-    const total = notifications.length;
-    const unread = notifications.filter((n) => !n.isRead).length;
-    const urgent = notifications.filter(
-      (n) => {
-        const p = (n.priority || "").toLowerCase();
-        return (p === "urgent" || p === "high" || p === "critical") && !n.isRead;
-      }
-    ).length;
-    const read = notifications.filter((n) => n.isRead).length;
+    const total =
+      statsData?.total !== undefined ? statsData.total : notifications.length;
+    const unread =
+      statsData?.unreadCount !== undefined
+        ? statsData.unreadCount
+        : notifications.filter((n) => !n.isRead).length;
+    const urgent =
+      statsData?.urgentCount !== undefined
+        ? statsData.urgentCount
+        : notifications.filter((n) => {
+            const p = (n.priority || "").toLowerCase();
+            return (p === "urgent" || p === "high" || p === "critical") && !n.isRead;
+          }).length;
+    const read =
+      statsData?.readCount !== undefined
+        ? statsData.readCount
+        : notifications.filter((n) => n.isRead).length;
 
     return { total, unread, urgent, read };
   }, [notifications, statsData]);
@@ -39,7 +38,6 @@ export const NotificationStatsWidget = ({ notifications = [], statsData }) => {
       value: stats.total,
       subtitle: `${stats.read} Processed / Read`,
       icon: Bell,
-      glow: "cyan",
       badgeText: "System Activity",
     },
     {
@@ -48,7 +46,6 @@ export const NotificationStatsWidget = ({ notifications = [], statsData }) => {
       value: stats.unread,
       subtitle: "Requires Attention",
       icon: BellRing,
-      glow: "blue",
       badgeText: stats.unread > 0 ? "Pending Action" : "All Caught Up",
     },
     {
@@ -57,8 +54,8 @@ export const NotificationStatsWidget = ({ notifications = [], statsData }) => {
       value: stats.urgent,
       subtitle: "Critical Operational Alerts",
       icon: AlertTriangle,
-      glow: stats.urgent > 0 ? "purple" : "white",
       badgeText: stats.urgent > 0 ? "Immediate Focus" : "Clear Queue",
+      urgent: stats.urgent > 0,
     },
     {
       id: "read-archived",
@@ -66,45 +63,52 @@ export const NotificationStatsWidget = ({ notifications = [], statsData }) => {
       value: stats.read,
       subtitle: "Read & Completed",
       icon: CheckCheck,
-      glow: "white",
       badgeText: "History Log",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
-          <GlassCard
+          <div
             key={card.id}
-            variant="standard"
-            glow={card.glow}
-            className="p-5 flex flex-col justify-between relative overflow-hidden"
+            className="bg-[#141416] border border-white/10 rounded-3xl p-5 shadow-xl flex flex-col justify-between group hover:border-[#C6F432]/40 transition-all duration-300"
           >
             {/* Top Row: Icon & Badge */}
             <div className="flex items-center justify-between gap-3 mb-4">
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
-                <Icon className="w-5 h-5" />
+              <div
+                className={`w-9 h-9 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 ${
+                  card.urgent
+                    ? "bg-rose-500/15 border border-rose-500/30 text-rose-400"
+                    : "bg-[#C6F432]/10 border border-[#C6F432]/20 text-[#C6F432]"
+                }`}
+              >
+                <Icon className="w-4 h-4 stroke-[2.2]" />
               </div>
-              <span className="px-2.5 py-1 text-[11px] font-semibold tracking-wide rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-400/20">
+              <span
+                className={`px-2.5 py-0.5 text-[11px] font-semibold tracking-wide rounded-full border ${
+                  card.urgent
+                    ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
+                    : "bg-white/5 border-white/10 text-zinc-300"
+                }`}
+              >
                 {card.badgeText}
               </span>
             </div>
 
             {/* Bottom Content */}
             <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                {card.title}
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 tracking-tight">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
                 {card.value}
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                {card.subtitle}
+              <p className="text-xs font-medium text-zinc-400 tracking-wide mt-1.5">
+                {card.title}
               </p>
+              <p className="text-[11px] text-zinc-500 mt-1">{card.subtitle}</p>
             </div>
-          </GlassCard>
+          </div>
         );
       })}
     </div>

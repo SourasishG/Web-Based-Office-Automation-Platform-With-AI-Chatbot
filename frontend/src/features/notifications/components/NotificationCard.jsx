@@ -1,13 +1,21 @@
 import { Link } from "react-router-dom";
-import { CheckCircle2, Trash2, ArrowUpRight, Check, ListTodo, Calendar, Mail, Ticket, ShieldAlert, AlertTriangle } from "lucide-react";
-import { GlassCard } from "../../../components/ui/GlassCard";
-import { GlassAvatar } from "../../../components/ui/GlassAvatar";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
-import { GlassButton } from "../../../components/ui/GlassButton";
+import {
+  CheckCircle2,
+  Trash2,
+  ArrowUpRight,
+  Check,
+  ListTodo,
+  Calendar,
+  Mail,
+  Ticket,
+  ShieldAlert,
+  AlertTriangle,
+} from "lucide-react";
 
 /**
- * NotificationCard - Individual Apple Liquid Glass Notification Card
- * 
+ * NotificationCard - Quixotic Pure White Notification Card
+ * Positioned in the lower 40% Pure White region with #0B0B0C typography and lime accents.
+ *
  * @param {object} notification - Notification item data object
  * @param {function} onToggleRead - Toggle read status callback
  * @param {function} onDelete - Delete notification callback
@@ -37,64 +45,85 @@ export const NotificationCard = ({ notification, onToggleRead, onDelete }) => {
       })
     : timestamp || "Just now";
 
-  // Category Icon & Tone Helper
+  const senderName = sender
+    ? `${sender.firstName || ""} ${sender.lastName || ""}`.trim() ||
+      sender.name ||
+      null
+    : null;
+  const senderAvatar = sender?.avatarUrl || sender?.avatar;
+
   const getCategoryIcon = (cat) => {
-    switch (cat) {
+    switch ((cat || "").toLowerCase()) {
       case "tasks":
-        return <ListTodo className="w-4 h-4 text-cyan-400" />;
+        return <ListTodo className="w-4 h-4 text-[#0B0B0C]" />;
       case "meetings":
-        return <Calendar className="w-4 h-4 text-amber-400" />;
+        return <Calendar className="w-4 h-4 text-amber-600" />;
       case "emails":
-        return <Mail className="w-4 h-4 text-purple-400" />;
+        return <Mail className="w-4 h-4 text-purple-600" />;
       case "tickets":
-        return <Ticket className="w-4 h-4 text-rose-400" />;
+        return <Ticket className="w-4 h-4 text-rose-600" />;
       case "system":
-        return <ShieldAlert className="w-4 h-4 text-emerald-400" />;
+        return <ShieldAlert className="w-4 h-4 text-[#386b03]" />;
       default:
-        return <ListTodo className="w-4 h-4 text-cyan-400" />;
+        return <ListTodo className="w-4 h-4 text-[#0B0B0C]" />;
     }
   };
 
-  // Priority Badge Helper
   const getPriorityBadge = (prio) => {
-    switch (prio) {
+    switch ((prio || "").toLowerCase()) {
       case "urgent":
-        return <GlassBadge variant="danger" size="sm" icon={ShieldAlert}>Urgent</GlassBadge>;
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
+            <ShieldAlert className="w-3 h-3" />
+            Urgent
+          </span>
+        );
       case "high":
-        return <GlassBadge variant="warning" size="sm" icon={AlertTriangle}>High</GlassBadge>;
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20">
+            <AlertTriangle className="w-3 h-3" />
+            High
+          </span>
+        );
       case "normal":
-        return <GlassBadge variant="cyan" size="sm">Normal</GlassBadge>;
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#C6F432]/25 text-[#244203] border border-[#C6F432]/50">
+            Normal
+          </span>
+        );
       default:
-        return <GlassBadge variant="ghost" size="sm">Low</GlassBadge>;
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200">
+            Low
+          </span>
+        );
     }
   };
 
   return (
-    <GlassCard
-      variant="standard"
-      hoverable
-      className={`
-        p-5 transition-all duration-300 relative group
-        ${!isRead ? "bg-slate-900/60 border border-cyan-500/30 shadow-md shadow-cyan-500/5" : "bg-slate-900/30 border border-white/5"}
-      `}
+    <div
+      className={`bg-white rounded-3xl p-5 transition-all duration-200 relative group ${
+        !isRead
+          ? "border-2 border-[#C6F432] shadow-md"
+          : "border border-zinc-200/80 shadow-sm hover:border-[#C6F432]"
+      }`}
     >
-      {/* Unread Glow Indicator Dot */}
+      {/* Unread Lime Indicator Dot */}
       {!isRead && (
-        <span className="absolute top-4 left-3 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#06b6d4] animate-pulse" />
+        <span className="absolute top-5 left-4 w-2.5 h-2.5 rounded-full bg-[#C6F432] ring-2 ring-[#0B0B0C]/10 animate-pulse" />
       )}
 
-      <div className="flex items-start justify-between gap-4 pl-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pl-4">
         {/* Left Section: Sender Avatar / Icon & Details */}
         <div className="flex items-start gap-3.5 min-w-0 flex-1">
-          {sender?.avatar ? (
-            <GlassAvatar
-              src={sender.avatar}
-              name={sender.name}
-              size="md"
-              className="shrink-0 mt-0.5"
+          {senderAvatar ? (
+            <img
+              src={senderAvatar}
+              alt={senderName || "Sender"}
+              className="w-11 h-11 rounded-2xl object-cover border border-zinc-200 shrink-0 mt-0.5"
             />
           ) : (
-            <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 mt-0.5">
               {getCategoryIcon(category)}
             </div>
           )}
@@ -102,48 +131,48 @@ export const NotificationCard = ({ notification, onToggleRead, onDelete }) => {
           <div className="min-w-0 flex-1 space-y-1">
             {/* Header Meta: Category, Priority Badge, Sender Name */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[11px] font-mono uppercase font-bold text-slate-400">
-                {category}
+              <span className="text-[11px] font-mono uppercase font-bold text-zinc-500">
+                {category || "general"}
               </span>
               {getPriorityBadge(priority)}
 
-              {sender?.name && (
-                <span className="text-xs text-slate-400">
-                  from <span className="font-semibold text-slate-200">{sender.name}</span>
+              {senderName && (
+                <span className="text-xs text-zinc-500">
+                  from{" "}
+                  <span className="font-bold text-[#0B0B0C]">{senderName}</span>
                 </span>
               )}
             </div>
 
             {/* Notification Title */}
-            <h3 className={`text-sm tracking-tight ${!isRead ? "font-extrabold text-white" : "font-semibold text-slate-200"}`}>
+            <h3
+              className={`text-sm tracking-tight text-[#0B0B0C] ${
+                !isRead ? "font-extrabold" : "font-bold"
+              }`}
+            >
               {title}
             </h3>
 
             {/* Message Body */}
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {message}
-            </p>
+            <p className="text-xs text-zinc-600 leading-relaxed">{message}</p>
           </div>
         </div>
 
         {/* Right Section: Timestamp & Actions */}
-        <div className="flex flex-col items-end justify-between gap-3 shrink-0 self-stretch">
-          <span className="text-[11px] font-medium text-slate-400 font-mono">
+        <div className="flex sm:flex-col items-center sm:items-end justify-between gap-3 shrink-0 self-stretch pt-3 sm:pt-0 border-t sm:border-t-0 border-zinc-100">
+          <span className="text-[11px] font-semibold text-zinc-500 font-mono">
             {displayTime}
           </span>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             {actionUrl && (
-              <Link to={actionUrl}>
-                <GlassButton
-                  variant="ghost"
-                  size="sm"
-                  icon={ArrowUpRight}
-                  className="text-xs px-2.5"
-                  title="Open Action"
-                >
-                  View
-                </GlassButton>
+              <Link
+                to={actionUrl}
+                title="Open Action"
+                className="flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold shadow-xs hover:scale-[1.03] active:scale-[0.98] transition-all"
+              >
+                <span>View</span>
+                <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </Link>
             )}
 
@@ -151,30 +180,31 @@ export const NotificationCard = ({ notification, onToggleRead, onDelete }) => {
               type="button"
               onClick={() => onToggleRead(id)}
               title={isRead ? "Mark as Unread" : "Mark as Read"}
-              className={`
-                p-2 rounded-xl border transition-colors
-                ${
-                  isRead
-                    ? "bg-white/5 border-white/10 text-slate-400 hover:text-white"
-                    : "bg-cyan-500/15 border-cyan-400/30 text-cyan-300 hover:bg-cyan-500/30"
-                }
-              `}
+              className={`p-2 rounded-full border transition-colors cursor-pointer ${
+                isRead
+                  ? "bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-[#0B0B0C] hover:bg-zinc-200"
+                  : "bg-[#C6F432]/25 border-[#C6F432]/60 text-[#244203] hover:bg-[#C6F432]/40"
+              }`}
             >
-              {isRead ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}
+              {isRead ? (
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              ) : (
+                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              )}
             </button>
 
             <button
               type="button"
               onClick={() => onDelete(id)}
               title="Delete Notification"
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-red-500/20 hover:text-red-400 transition-colors"
+              className="p-2 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-500 hover:bg-rose-500/10 hover:text-rose-600 hover:border-rose-500/30 transition-colors cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
-    </GlassCard>
+    </div>
   );
 };
 

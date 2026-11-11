@@ -1,16 +1,16 @@
-import { Bell, CheckCheck, Trash2, Sparkles, Filter } from "lucide-react";
 import {
-  GlassPanel,
-  GlassSearchBar,
-  GlassTabs,
-  GlassDropdown,
-  GlassButton,
-  GlassBadge,
-} from "../../../components/ui";
+  CheckCheck,
+  Trash2,
+  Sparkles,
+  Filter,
+  Search,
+} from "lucide-react";
+import { GlassDropdown } from "../../../components/ui";
 
 /**
- * NotificationsHeader - Apple Liquid Glass Control Bar for Notification Center
- * 
+ * NotificationsHeader - Quixotic Executive Control Bar for Notification Center
+ * Positioned in the upper 60% Midnight Black region.
+ *
  * @param {string} searchTerm - Active search query
  * @param {function} onSearchChange - Search text handler
  * @param {string} activeCategory - Active category filter ID
@@ -34,14 +34,12 @@ export const NotificationsHeader = ({
   onMarkAllRead,
   onClearAll,
 }) => {
-  // Read Status Tabs
   const readTabs = [
     { id: "all", label: "All Alerts" },
     { id: "unread", label: "Unread" },
     { id: "read", label: "Read" },
   ];
 
-  // Category Tabs
   const categoryTabs = [
     { id: "all", label: "All Categories" },
     { id: "tasks", label: "Tasks" },
@@ -51,113 +49,150 @@ export const NotificationsHeader = ({
     { id: "system", label: "System" },
   ];
 
-  // Priority Dropdown Options
   const priorityOptions = [
-    { label: "All Priority Levels", onClick: () => onPriorityFilterChange("all") },
-    { label: "Urgent Priority", onClick: () => onPriorityFilterChange("urgent") },
-    { label: "High Priority", onClick: () => onPriorityFilterChange("high") },
-    { label: "Normal Priority", onClick: () => onPriorityFilterChange("normal") },
-    { label: "Low Priority", onClick: () => onPriorityFilterChange("low") },
+    {
+      id: "all",
+      label: "All Priority Levels",
+      onClick: () => onPriorityFilterChange("all"),
+    },
+    {
+      id: "urgent",
+      label: "Urgent Priority",
+      onClick: () => onPriorityFilterChange("urgent"),
+    },
+    {
+      id: "high",
+      label: "High Priority",
+      onClick: () => onPriorityFilterChange("high"),
+    },
+    {
+      id: "normal",
+      label: "Normal Priority",
+      onClick: () => onPriorityFilterChange("normal"),
+    },
+    {
+      id: "low",
+      label: "Low Priority",
+      onClick: () => onPriorityFilterChange("low"),
+    },
   ];
 
   const getPriorityLabel = () => {
     if (priorityFilter === "all") return "Priority: All";
-    return `Priority: ${priorityFilter.charAt(0).toUpperCase() + priorityFilter.slice(1)}`;
+    return `Priority: ${
+      priorityFilter.charAt(0).toUpperCase() + priorityFilter.slice(1)
+    }`;
   };
 
   return (
-    <GlassPanel
-      variant="floating"
-      padding="md"
-      className="relative overflow-hidden flex flex-col gap-4"
-    >
-      {/* Background Soft Ambient Glow */}
-      <div className="absolute -top-16 -right-16 w-56 h-56 bg-linear-to-br from-cyan-500/15 via-purple-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-
-      {/* Top Header Row: Title & Action CTAs */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+    <div className="bg-[#141416] border border-white/10 rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col gap-4 text-white">
+      {/* Top Header Row: Title & Global CTAs */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
-            <Bell className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                Notification Center
-              </h1>
-              <GlassBadge variant="cyan" size="sm" icon={Sparkles}>
-                Live Sync
-              </GlassBadge>
-            </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Real-time operational alerts, task assignments, meeting invites, and security events.
-            </p>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+            Live Alert Stream
+          </h2>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#C6F432]/20 text-[#C6F432] border border-[#C6F432]/30 flex items-center gap-1">
+            <Sparkles className="w-3 h-3" />
+            Live Sync
+          </span>
         </div>
 
         {/* Global CTAs */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <GlassButton
-            variant="ghost"
-            size="sm"
-            icon={CheckCheck}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
             onClick={onMarkAllRead}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
-            Mark All as Read
-          </GlassButton>
+            <CheckCheck className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Mark All as Read</span>
+          </button>
 
-          <GlassButton
-            variant="danger"
-            size="sm"
-            icon={Trash2}
+          <button
+            type="button"
             onClick={onClearAll}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition-all cursor-pointer"
           >
-            Clear All
-          </GlassButton>
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Clear All</span>
+          </button>
         </div>
       </div>
 
-      {/* Bottom Controls Row: Search Input, Read Tabs, Category Tabs, Priority Filter */}
-      <div className="relative z-10 pt-3 border-t border-white/10 flex flex-col lg:flex-row items-center justify-between gap-3">
-        {/* Search Bar & Read Filter */}
-        <div className="w-full lg:max-w-xl flex flex-col sm:flex-row items-center gap-3">
-          <div className="w-full sm:flex-1">
-            <GlassSearchBar
+      {/* Bottom Controls Row: Search Input, Read Tabs, Category Tabs, Priority Dropdown */}
+      <div className="pt-4 border-t border-white/10 flex flex-col xl:flex-row items-center justify-between gap-3">
+        {/* Search Bar & Read Status Switcher */}
+        <div className="w-full xl:w-auto flex flex-col sm:flex-row items-center gap-3 flex-1">
+          <div className="w-full sm:max-w-xs flex items-center bg-[#1A1A1E] border border-white/10 focus-within:border-[#C6F432]/40 rounded-full px-4 py-2 text-xs text-white shadow-inner transition-colors">
+            <Search className="w-4 h-4 text-zinc-400 mr-2 shrink-0" />
+            <input
+              type="text"
               value={searchTerm}
-              onChange={onSearchChange}
+              onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search notifications by keyword or sender..."
-              shortcutKey="⌘K"
+              className="w-full bg-transparent border-none outline-none text-xs text-white placeholder-zinc-500 font-medium"
             />
           </div>
 
-          <GlassTabs
-            tabs={readTabs}
-            activeTab={activeReadStatus}
-            onChange={onReadStatusChange}
-            size="sm"
-          />
+          <div className="flex items-center bg-[#1A1A1E] border border-white/10 rounded-full p-1 text-xs shrink-0">
+            {readTabs.map((tab) => {
+              const isActive = activeReadStatus === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => onReadStatusChange(tab.id)}
+                  className={`px-3 py-1 rounded-full font-semibold transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-[#C6F432] text-[#0B0B0C] font-bold shadow-sm"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Category Tabs & Priority Dropdown */}
-        <div className="w-full lg:w-auto flex flex-wrap items-center gap-2 justify-between lg:justify-end overflow-x-auto">
-          <GlassTabs
-            tabs={categoryTabs}
-            activeTab={activeCategory}
-            onChange={onCategoryChange}
-            size="sm"
-          />
+        <div className="w-full xl:w-auto flex flex-wrap items-center gap-3 justify-between xl:justify-end">
+          <div className="flex items-center bg-[#1A1A1E] border border-white/10 rounded-full p-1 text-xs overflow-x-auto max-w-full">
+            {categoryTabs.map((tab) => {
+              const isActive = activeCategory === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => onCategoryChange(tab.id)}
+                  className={`px-3 py-1 rounded-full font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-[#C6F432] text-[#0B0B0C] font-bold shadow-sm"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
 
           <GlassDropdown
             trigger={
-              <GlassButton variant="ghost" size="sm" icon={Filter}>
-                {getPriorityLabel()}
-              </GlassButton>
+              <button
+                type="button"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1E] border border-white/10 hover:border-[#C6F432]/40 text-xs font-semibold text-zinc-200 transition-colors cursor-pointer"
+              >
+                <Filter className="w-3.5 h-3.5 text-[#C6F432]" />
+                <span>{getPriorityLabel()}</span>
+              </button>
             }
             items={priorityOptions}
           />
         </div>
       </div>
-    </GlassPanel>
+    </div>
   );
 };
 
