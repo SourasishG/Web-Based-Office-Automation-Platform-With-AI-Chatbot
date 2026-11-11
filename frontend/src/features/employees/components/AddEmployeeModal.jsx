@@ -168,12 +168,20 @@ const EmployeeForm = ({ initialData, onClose, onSubmit }) => {
 
       {/* Action Buttons */}
       <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/10">
-        <GlassButton variant="ghost" type="button" onClick={onClose}>
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+        >
           Cancel
-        </GlassButton>
-        <GlassButton variant="primary" type="submit">
-          {isEditing ? "Save Changes" : "Create Employee Profile"}
-        </GlassButton>
+        </button>
+        <button
+          type="submit"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+        >
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <span>{isEditing ? "Save Changes" : "Create Employee Profile"}</span>
+        </button>
       </div>
     </form>
   );
@@ -201,7 +209,7 @@ export const AddEmployeeModal = ({
           : "Register a new verified employee into the workplace roster."
       }
       icon={User}
-      maxWidth="max-w-2xl"
+      maxWidth="2xl"
     >
       <EmployeeForm
         key={initialData?.id || "new-emp-form"}
