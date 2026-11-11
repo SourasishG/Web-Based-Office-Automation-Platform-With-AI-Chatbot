@@ -1,10 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { UserX } from "lucide-react";
 import EmployeeCard from "./EmployeeCard";
-import { GlassPanel } from "../../../components/ui/GlassPanel";
 
 /**
- * EmployeeGrid - Renders employee cards in a responsive grid container with layout animations
+ * EmployeeGrid - Responsive Grid Container for Pure White Employee Cards
  * 
  * @param {Array} employees - Array of employee object records
  * @param {function} onMessageClick - Message button handler callback
@@ -13,21 +12,17 @@ import { GlassPanel } from "../../../components/ui/GlassPanel";
 export const EmployeeGrid = ({ employees = [], onMessageClick, onEditClick }) => {
   if (!employees || employees.length === 0) {
     return (
-      <GlassPanel
-        variant="inset"
-        padding="xl"
-        className="flex flex-col items-center justify-center text-center my-8 py-16"
-      >
-        <div className="p-4 rounded-3xl bg-white/5 border border-white/10 text-slate-400 mb-4">
-          <UserX className="w-10 h-10" />
+      <div className="bg-white border border-zinc-200/80 rounded-3xl p-12 shadow-sm flex flex-col items-center justify-center text-center my-4">
+        <div className="w-16 h-16 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-500 mb-4">
+          <UserX className="w-8 h-8" />
         </div>
-        <h3 className="text-xl font-bold text-white tracking-tight">
+        <h3 className="text-xl font-extrabold text-[#0B0B0C] tracking-tight">
           No Employees Found
         </h3>
-        <p className="text-sm text-slate-400 max-w-md mt-1">
+        <p className="text-sm text-zinc-600 max-w-md mt-1.5">
           No team members match your active search or filter criteria. Try adjusting your search query or department filter.
         </p>
-      </GlassPanel>
+      </div>
     );
   }
 

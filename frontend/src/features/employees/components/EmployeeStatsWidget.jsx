@@ -1,10 +1,9 @@
 import { useMemo } from "react";
 import { Users, UserCheck, Clock, Star, Building2 } from "lucide-react";
-import { GlassCard } from "../../../components/ui/GlassCard";
 
 /**
- * EmployeeStatsWidget - Top Metric Cards for Employee Directory
- * Displays key HR metrics: total staff headcount, online status, average performance rating, etc.
+ * EmployeeStatsWidget - Quixotic Executive KPI Deck for Employee Directory
+ * Positioned in the upper 60% Midnight Black region with lime accents.
  * 
  * @param {Array} employees - Array of employee object records
  * @param {object} statsData - Live aggregate statistics from backend
@@ -12,20 +11,28 @@ import { GlassCard } from "../../../components/ui/GlassCard";
 export const EmployeeStatsWidget = ({ employees = [], statsData = null }) => {
   const stats = useMemo(() => {
     const total = statsData?.total ?? employees.length;
-    const online = statsData?.onlineCount ?? employees.filter((e) => (e.presenceStatus || e.status || "").toLowerCase() === "online").length;
+    const online =
+      statsData?.onlineCount ??
+      employees.filter(
+        (e) => (e.presenceStatus || e.status || "").toLowerCase() === "online"
+      ).length;
     const meetingOrAway =
-      statsData && typeof statsData.busyCount === "number" && typeof statsData.awayCount === "number"
+      statsData &&
+      typeof statsData.busyCount === "number" &&
+      typeof statsData.awayCount === "number"
         ? statsData.busyCount + statsData.awayCount
         : employees.filter((e) => {
             const s = (e.presenceStatus || e.status || "").toLowerCase();
             return s === "busy" || s === "away" || s === "meeting";
           }).length;
-    
-    // Average score calculation
-    const scoreSum = employees.reduce((acc, curr) => acc + (curr.performanceScore || 0), 0);
-    const avgScore = employees.length > 0 ? (scoreSum / employees.length).toFixed(1) : "4.9";
 
-    // Top department breakdown
+    const scoreSum = employees.reduce(
+      (acc, curr) => acc + (curr.performanceScore || 0),
+      0
+    );
+    const avgScore =
+      employees.length > 0 ? (scoreSum / employees.length).toFixed(1) : "4.9";
+
     const deptCounts = statsData?.departmentCounts || {};
     if (Object.keys(deptCounts).length === 0) {
       employees.forEach((e) => {
@@ -54,7 +61,6 @@ export const EmployeeStatsWidget = ({ employees = [], statsData = null }) => {
       value: stats.total,
       subtitle: "Verified Workspace Members",
       icon: Users,
-      glow: "cyan",
       badgeText: "Active Roster",
     },
     {
@@ -63,7 +69,6 @@ export const EmployeeStatsWidget = ({ employees = [], statsData = null }) => {
       value: stats.online,
       subtitle: `${stats.total > 0 ? Math.round((stats.online / stats.total) * 100) : 0}% Engagement Rate`,
       icon: UserCheck,
-      glow: "blue",
       badgeText: "Live Presence",
     },
     {
@@ -72,7 +77,6 @@ export const EmployeeStatsWidget = ({ employees = [], statsData = null }) => {
       value: stats.meetingOrAway,
       subtitle: "In Calls or Stepped Away",
       icon: Clock,
-      glow: "purple",
       badgeText: "Busy Status",
     },
     {
@@ -81,46 +85,45 @@ export const EmployeeStatsWidget = ({ employees = [], statsData = null }) => {
       value: `${stats.avgScore} / 5.0`,
       subtitle: `Top Dept: ${stats.topDept}`,
       icon: Star,
-      glow: "white",
       badgeText: "Top Tier",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
-          <GlassCard
+          <div
             key={card.id}
-            variant="standard"
-            glow={card.glow}
-            className="p-5 flex flex-col justify-between relative overflow-hidden"
+            className="bg-[#141416] border border-white/10 rounded-3xl p-5 shadow-xl flex flex-col justify-between group hover:border-[#C6F432]/40 transition-all duration-300"
           >
             {/* Top Row: Icon & Badge */}
             <div className="flex items-center justify-between gap-3 mb-4">
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-cyan-400 shrink-0">
-                <Icon className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-2xl bg-[#C6F432]/10 border border-[#C6F432]/20 flex items-center justify-center text-[#C6F432] group-hover:scale-110 transition-transform shrink-0">
+                <Icon className="w-4 h-4 stroke-[2.2]" />
               </div>
-              <span className="px-2.5 py-1 text-[11px] font-semibold tracking-wide rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-400/20">
+              <span className="px-2.5 py-0.5 text-[11px] font-semibold tracking-wide rounded-full bg-white/5 border border-white/10 text-zinc-300">
                 {card.badgeText}
               </span>
             </div>
 
             {/* Bottom Content */}
             <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                {card.title}
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 tracking-tight">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
                 {card.value}
               </h3>
-              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
-                {card.id === "performance-score" && <Building2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
-                {card.subtitle}
+              <p className="text-xs font-medium text-zinc-400 tracking-wide mt-1.5">
+                {card.title}
+              </p>
+              <p className="text-[11px] text-zinc-500 mt-1 flex items-center gap-1">
+                {card.id === "performance-score" && (
+                  <Building2 className="w-3 h-3 text-[#C6F432] shrink-0" />
+                )}
+                <span>{card.subtitle}</span>
               </p>
             </div>
-          </GlassCard>
+          </div>
         );
       })}
     </div>
