@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { User, Mail, Phone, MapPin, Briefcase, Building, ShieldCheck, Sparkles } from "lucide-react";
+import { User, Mail, Phone, MapPin, Briefcase, Building, ShieldCheck, Sparkles, Plus } from "lucide-react";
 import { GlassModal } from "../../../components/ui/GlassModal";
 import { GlassInput } from "../../../components/ui/GlassInput";
-import { GlassButton } from "../../../components/ui/GlassButton";
 
 /**
  * Inner Form Component - Resets state naturally on key change
