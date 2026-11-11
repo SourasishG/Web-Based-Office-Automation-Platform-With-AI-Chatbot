@@ -8,6 +8,20 @@ const QuixoticTopNavbar = () => {
   const location = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [failedAvatarSrc, setFailedAvatarSrc] = useState(null);
+
+  const avatarSrc = user?.avatarUrl || user?.avatar;
+  const showAvatarImage = Boolean(avatarSrc) && failedAvatarSrc !== avatarSrc;
+  const displayName = user?.firstName
+    ? `${user.firstName} ${user.lastName || ""}`.trim()
+    : user?.name || user?.fullName || "Sourasish Ghosh";
+  const initials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
 
   const navItems = [
     { label: "Dashboard", path: "/" },
@@ -95,26 +109,20 @@ const QuixoticTopNavbar = () => {
           {/* User Profile Avatar */}
           <Link
             to="/profile"
+            title={displayName}
+            aria-label={`View profile for ${displayName}`}
             className="flex items-center gap-2 pl-1 pr-1.5 py-1 rounded-full hover:bg-white/5 transition-colors group"
           >
             <div className="w-9 h-9 rounded-full ring-2 ring-[#C6F432]/60 overflow-hidden bg-zinc-800 flex items-center justify-center text-xs font-bold text-white">
-              {user?.avatar ? (
+              {showAvatarImage ? (
                 <img
-                  src={user.avatar}
-                  alt={user.name || "User"}
+                  src={avatarSrc}
+                  alt={displayName}
+                  onError={() => setFailedAvatarSrc(avatarSrc)}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-[#C6F432]">
-                  {user?.name
-                    ? user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .substring(0, 2)
-                        .toUpperCase()
-                    : "SG"}
-                </span>
+                <span className="text-[#C6F432]">{initials || "SG"}</span>
               )}
             </div>
           </Link>
