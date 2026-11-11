@@ -1,106 +1,119 @@
 import { Code, Sparkles } from "lucide-react";
-import { GlassPanel } from "../../../components/ui/GlassPanel";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
 
 /**
- * SkillsCard - Apple Liquid Glass Technical Expertise Showcase
- * Renders technical proficiency progress indicators, domain skill badges, and mastery levels.
- * 
- * @param {Array<object>} skills - List of technical skill objects
+ * SkillsCard - Quixotic Pure White Technical Expertise Showcase
+ * Positioned in the lower 40% Pure White region with #0B0B0C typography and lime accents.
+ *
+ * @param {Array<object|string>} skills - List of technical skill items
  */
 export const SkillsCard = ({ skills }) => {
-  // Fallback Technical Skill Matrix
   const defaultSkills = [
-    { name: "React 19 & Frontend Architecture", level: 98, category: "Expert", color: "from-cyan-500 to-blue-600" },
-    { name: "Apple Liquid Glass UI / UX Design", level: 95, category: "Master", color: "from-purple-500 to-pink-600" },
-    { name: "Tailwind CSS v4 & Framer Motion", level: 92, category: "Expert", color: "from-blue-500 to-cyan-500" },
-    { name: "Node.js & REST API Architecture", level: 88, category: "Advanced", color: "from-emerald-500 to-teal-600" },
-    { name: "AI & LLM Tool Integration", level: 85, category: "Advanced", color: "from-amber-500 to-orange-600" },
+    { name: "React 19 & Frontend Architecture", level: 98, category: "Expert" },
+    { name: "Quixotic UI / UX Systems", level: 95, category: "Master" },
+    { name: "Tailwind CSS v4 & Framer Motion", level: 92, category: "Expert" },
+    { name: "Node.js & REST API Architecture", level: 88, category: "Advanced" },
+    { name: "AI & LLM Tool Integration", level: 85, category: "Advanced" },
   ];
 
-  const skillList = Array.isArray(skills) && skills.length > 0
-    ? skills.map((s, idx) => {
-        if (typeof s === "string") {
-          const levels = [95, 92, 88, 85, 90, 84, 89];
-          const categories = ["Master", "Expert", "Advanced", "Proficient"];
-          const colors = [
-            "from-cyan-500 to-blue-600",
-            "from-purple-500 to-pink-600",
-            "from-blue-500 to-cyan-500",
-            "from-emerald-500 to-teal-600",
-            "from-amber-500 to-orange-600",
-          ];
-          return {
-            name: s,
-            level: levels[idx % levels.length],
-            category: categories[idx % categories.length],
-            color: colors[idx % colors.length],
-          };
-        }
-        return s;
-      })
-    : defaultSkills;
+  const skillList =
+    Array.isArray(skills) && skills.length > 0
+      ? skills.map((s, idx) => {
+          if (typeof s === "string") {
+            const levels = [95, 92, 88, 85, 90, 84, 89];
+            const categories = ["Master", "Expert", "Advanced", "Proficient"];
+            return {
+              name: s,
+              level: levels[idx % levels.length],
+              category: categories[idx % categories.length],
+            };
+          }
+          return s;
+        })
+      : defaultSkills;
+
+  const techBadges = [
+    "System Design",
+    "Vite",
+    "Context API",
+    "Framer Motion",
+    "JWT Auth",
+    "Lucide Icons",
+  ];
 
   return (
-    <GlassPanel
-      title="Technical Expertise"
-      subtitle="Mastery & verified engineering competencies"
-      icon={Code}
-      action={
-        <GlassBadge variant="cyan" size="sm" icon={Sparkles}>
+    <div className="bg-white border border-zinc-200/80 rounded-3xl p-5 sm:p-6 shadow-sm hover:border-[#C6F432] transition-all duration-200 h-full flex flex-col justify-between">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 pb-4 border-b border-zinc-200/80">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[#0B0B0C] shrink-0">
+            <Code className="w-4 h-4 stroke-[2.2]" />
+          </div>
+          <div>
+            <h3 className="text-base font-extrabold tracking-tight text-[#0B0B0C]">
+              Technical Expertise
+            </h3>
+            <p className="text-[11px] text-zinc-500">
+              Mastery & verified engineering competencies
+            </p>
+          </div>
+        </div>
+
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#C6F432]/25 text-[#244203] border border-[#C6F432]/50 shrink-0">
+          <Sparkles className="w-3 h-3 text-[#386b03]" />
           Verified Skills
-        </GlassBadge>
-      }
-      variant="default"
-      padding="none"
-      className="h-full flex flex-col justify-between"
-    >
-      <div className="p-4 sm:p-5 space-y-4">
+        </span>
+      </div>
+
+      {/* Skill Progress Rows */}
+      <div className="py-5 space-y-4 flex-1">
         {skillList.map((skill, idx) => (
           <div key={idx} className="space-y-1.5">
-            {/* Skill Title & Level */}
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-white tracking-tight">
+            <div className="flex items-center justify-between text-xs gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-bold text-[#0B0B0C] tracking-tight truncate">
                   {skill.name}
                 </span>
                 {skill.category && (
-                  <GlassBadge
-                    variant={skill.level >= 90 ? "cyan" : "primary"}
-                    size="sm"
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                      skill.level >= 90
+                        ? "bg-[#C6F432]/25 text-[#244203] border-[#C6F432]/50"
+                        : "bg-zinc-100 text-zinc-700 border-zinc-200"
+                    }`}
                   >
                     {skill.category}
-                  </GlassBadge>
+                  </span>
                 )}
               </div>
-              <span className="font-mono font-semibold text-cyan-300">
+              <span className="font-mono font-extrabold text-[#0B0B0C] shrink-0">
                 {skill.level}%
               </span>
             </div>
 
-            {/* Liquid Progress Line */}
-            <div className="w-full h-2 rounded-full bg-slate-950/60 overflow-hidden border border-white/10 p-0.5 relative shadow-inner">
+            <div className="w-full h-2.5 rounded-full bg-zinc-100 overflow-hidden border border-zinc-200 p-0.5">
               <div
                 style={{ width: `${skill.level}%` }}
-                className={`h-full rounded-full bg-linear-to-r ${
-                  skill.color || "from-cyan-500 to-blue-600"
-                } shadow-[0_0_12px_rgba(6,182,212,0.5)] transition-all duration-700`}
+                className={`h-full rounded-full transition-all duration-700 ${
+                  skill.level >= 90 ? "bg-[#C6F432]" : "bg-[#0B0B0C]"
+                }`}
               />
             </div>
           </div>
         ))}
-
-        {/* Skill Badges Deck */}
-        <div className="pt-3 border-t border-white/10 flex flex-wrap gap-1.5">
-          <GlassBadge variant="ghost" size="sm">System Design</GlassBadge>
-          <GlassBadge variant="ghost" size="sm">Vite</GlassBadge>
-          <GlassBadge variant="ghost" size="sm">Context API</GlassBadge>
-          <GlassBadge variant="ghost" size="sm">Framer Motion</GlassBadge>
-          <GlassBadge variant="ghost" size="sm">JWT Auth</GlassBadge>
-          <GlassBadge variant="ghost" size="sm">Lucide Icons</GlassBadge>
-        </div>
       </div>
-    </GlassPanel>
+
+      {/* Bottom Stack Tags */}
+      <div className="pt-4 border-t border-zinc-200/80 flex flex-wrap gap-1.5">
+        {techBadges.map((tag) => (
+          <span
+            key={tag}
+            className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 };
 

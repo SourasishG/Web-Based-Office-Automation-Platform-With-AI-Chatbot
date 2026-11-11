@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Calendar, Edit3 } from "lucide-react";
 
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import QuixoticTopNavbar from "../dashboard/components/QuixoticTopNavbar";
+import QuixoticDock from "../dashboard/components/QuixoticDock";
+
 import ProfileHeader from "./components/ProfileHeader";
 import PersonalInfo from "./components/PersonalInfo";
 import ProfileStats from "./components/ProfileStats";
@@ -14,8 +17,12 @@ import useAuth from "../../hooks/useAuth";
 import authService from "../../services/authService";
 
 /**
- * Profile - Apple Liquid Glass Executive Profile Workspace
- * Live integration with Supabase PostgreSQL and current user authentication context
+ * Profile - Executive Quixotic Profile Workspace
+ * Strictly aligned with Dashboard, Projects, Tasks, Meetings, Employees, and Tickets theme:
+ * - 60% Midnight Black (#0B0B0C) at top, 40% Pure White (#FFFFFF) at bottom
+ * - 10% Lime Green (#C6F432) on primary buttons & active indicators
+ * - Plus Jakarta Sans typography
+ * - Floating QuixoticTopNavbar & QuixoticDock
  */
 const Profile = () => {
   const { user: authUser, updateUser } = useAuth();
@@ -23,6 +30,28 @@ const Profile = () => {
 
   const [profileData, setProfileData] = useState(authUser || {});
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Live second-by-second ticker for current date and time
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedDateTime = useMemo(() => {
+    const dateStr = currentDateTime.toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    const timeStr = currentDateTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return `${dateStr} • ${timeStr}`;
+  }, [currentDateTime]);
 
   // Fetch full live profile with counts, manager, and skills from backend
   useEffect(() => {
@@ -36,7 +65,10 @@ const Profile = () => {
           updateUser(liveUser);
         }
       } catch (err) {
-        console.warn("Could not fetch fresh profile, using session data:", err.message);
+        console.warn(
+          "Could not fetch fresh profile, using session data:",
+          err.message
+        );
       }
     };
 
@@ -72,44 +104,94 @@ const Profile = () => {
   };
 
   return (
-    <DashboardLayout>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="mx-auto w-full max-w-[1600px] space-y-6 select-none"
-      >
-        {/* Header Banner */}
-        <motion.div variants={itemVariants}>
-          <ProfileHeader
-            user={profileData}
-            onEditClick={() => setIsEditModalOpen(true)}
-            onMessageClick={() => navigate("/emails")}
-          />
-        </motion.div>
+    <div
+      className="min-h-screen text-white font-sans selection:bg-[#C6F432] selection:text-[#0B0B0C] pb-16 transition-all"
+      style={{
+        background:
+          "linear-gradient(180deg, #0B0B0C 0%, #0B0B0C 45%, #18181c 58%, #e4e4e7 82%, #FFFFFF 100%)",
+      }}
+    >
+      {/* Top Floating Rounded Pill Navbar */}
+      <QuixoticTopNavbar />
 
-        {/* Info & Stats Deck */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <motion.div variants={itemVariants} className="lg:col-span-5">
-            <PersonalInfo info={profileData} />
+      {/* Main Workspace Frame */}
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex gap-6">
+        {/* Left Floating Pill Dock */}
+        <QuixoticDock />
+
+        {/* Center Executive Profile Canvas */}
+        <motion.main
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="flex-1 min-w-0 space-y-6 select-none"
+        >
+          {/* Executive Header Row */}
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          >
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                <span>Executive</span>
+                <span className="text-[#C6F432]">Profile</span>
+              </h1>
+              <p className="text-xs text-zinc-400 mt-1 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#C6F432] animate-pulse" />
+                <span>
+                  Identity & Credentials • Performance KPIs, verified skills & audit trail
+                </span>
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1E] border border-white/10 text-xs font-semibold text-zinc-200 shadow-md">
+                <Calendar className="w-3.5 h-3.5 text-[#C6F432]" />
+                <span className="font-mono">{formattedDateTime}</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsEditModalOpen(true)}
+                className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-lg shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                <Edit3 className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Edit Profile</span>
+              </button>
+            </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lg:col-span-7">
-            <ProfileStats stats={profileData?._count || profileData?.stats} />
-          </motion.div>
-        </div>
-
-        {/* Skills & Audit Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <motion.div variants={itemVariants} className="lg:col-span-5">
-            <SkillsCard skills={profileData?.skills} />
+          {/* Upper 60% Midnight Black Zone: Header Banner, Credentials & Performance Stats */}
+          <motion.div variants={itemVariants}>
+            <ProfileHeader
+              user={profileData}
+              onEditClick={() => setIsEditModalOpen(true)}
+              onMessageClick={() => navigate("/emails")}
+            />
           </motion.div>
 
-          <motion.div variants={itemVariants} className="lg:col-span-7">
-            <RecentActivity activities={profileData?.recentActivity} />
-          </motion.div>
-        </div>
-      </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <motion.div variants={itemVariants} className="lg:col-span-5">
+              <PersonalInfo info={profileData} />
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="lg:col-span-7">
+              <ProfileStats stats={profileData?._count || profileData?.stats} />
+            </motion.div>
+          </div>
+
+          {/* Lower 40% Pure White Zone: Skills & Audit Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+            <motion.div variants={itemVariants} className="lg:col-span-5">
+              <SkillsCard skills={profileData?.skills} />
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="lg:col-span-7">
+              <RecentActivity activities={profileData?.recentActivity} />
+            </motion.div>
+          </div>
+        </motion.main>
+      </div>
 
       {/* Edit Profile Glass Modal */}
       {isEditModalOpen && (
@@ -123,7 +205,7 @@ const Profile = () => {
           }}
         />
       )}
-    </DashboardLayout>
+    </div>
   );
 };
 
