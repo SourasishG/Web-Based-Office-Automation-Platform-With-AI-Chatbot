@@ -7,6 +7,7 @@ import {
   ListTodo,
   Users,
   Mail,
+  Ticket,
   Sparkles,
   Settings,
   LogOut,
@@ -24,6 +25,7 @@ const QuixoticDock = () => {
     { icon: CalendarDays, label: "Meetings", path: "/meetings" },
     { icon: Users, label: "Employees", path: "/employees" },
     { icon: Mail, label: "Emails", path: "/emails" },
+    { icon: Ticket, label: "Tickets", path: "/tickets" },
     { icon: Sparkles, label: "Herric AI", path: "/chatbot" },
   ];
 
