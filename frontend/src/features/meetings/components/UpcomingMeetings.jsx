@@ -73,11 +73,11 @@ export const UpcomingMeetings = ({
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100 mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[#0B0B0C]">
+            <div className="w-8 h-8 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-midnight">
               <Calendar className="w-4 h-4 stroke-[2.2]" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-[#0B0B0C] tracking-tight">
+              <h3 className="text-sm font-bold text-midnight tracking-tight">
                 Upcoming Meetings
               </h3>
               <p className="text-[11px] text-zinc-500 font-medium">
@@ -89,10 +89,10 @@ export const UpcomingMeetings = ({
           <button
             type="button"
             onClick={onViewCalendar}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 hover:bg-[#C6F432] text-zinc-700 hover:text-[#0B0B0C] border border-zinc-200 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 hover:bg-lime-accent text-zinc-700 hover:text-midnight border border-zinc-200 transition-all cursor-pointer"
             title="Open Interactive Calendar"
           >
-            <Calendar className="w-3 h-3 text-[#0B0B0C]" />
+            <Calendar className="w-3 h-3 text-midnight" />
             <span>Calendar</span>
           </button>
         </div>
