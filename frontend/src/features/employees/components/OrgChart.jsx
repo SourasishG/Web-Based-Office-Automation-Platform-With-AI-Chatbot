@@ -1,17 +1,13 @@
 import { useMemo } from "react";
 import { ShieldCheck, ChevronDown, UserCheck } from "lucide-react";
-import { GlassPanel } from "../../../components/ui/GlassPanel";
-import { GlassAvatar } from "../../../components/ui/GlassAvatar";
-import { GlassBadge } from "../../../components/ui/GlassBadge";
 
 /**
- * OrgChart - Visual Organizational Structure & Reporting Hierarchy Diagram
- * Groups team members into Executive Level -> Department Leads -> Specialists
+ * OrgChart - Quixotic Visual Organizational Structure & Reporting Hierarchy
+ * Positioned in the lower 40% Pure White region with #0B0B0C typography and lime accents.
  * 
  * @param {Array} employees - Array of employee object records
  */
 export const OrgChart = ({ employees = [] }) => {
-  // Hierarchical grouping
   const hierarchy = useMemo(() => {
     const executive = employees.filter(
       (e) => e.department === "Executive" || e.roleLevel === "Admin"
@@ -22,69 +18,77 @@ export const OrgChart = ({ employees = [] }) => {
     );
 
     const staff = employees.filter(
-      (e) => e.roleLevel !== "Admin" && e.roleLevel !== "Lead" && e.department !== "Executive"
+      (e) =>
+        e.roleLevel !== "Admin" &&
+        e.roleLevel !== "Lead" &&
+        e.department !== "Executive"
     );
 
     return { executive, leads, staff };
   }, [employees]);
 
-  return (
-    <GlassPanel variant="floating" padding="lg" className="my-6 relative overflow-hidden">
-      {/* Background Ambient Radial Glow */}
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-linear-to-b from-cyan-500/10 via-purple-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+  const getAvatar = (emp) =>
+    emp.avatar ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      emp.name || "U"
+    )}&background=0B0B0C&color=C6F432`;
 
+  return (
+    <div className="bg-white border border-zinc-200/80 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
       {/* Chart Header */}
-      <div className="text-center mb-10 relative z-10">
-        <GlassBadge variant="cyan" size="sm" icon={ShieldCheck}>
+      <div className="text-center mb-10">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#C6F432]/25 text-[#244203] border border-[#C6F432]/50">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#386b03]" />
           Corporate Governance Tree
-        </GlassBadge>
-        <h2 className="text-2xl font-extrabold text-white mt-2 tracking-tight">
+        </span>
+        <h2 className="text-2xl font-extrabold text-[#0B0B0C] mt-3 tracking-tight">
           Organizational Hierarchy & Reporting Structure
         </h2>
-        <p className="text-xs text-slate-400 mt-1 max-w-lg mx-auto">
+        <p className="text-xs text-zinc-500 mt-1 max-w-lg mx-auto font-medium">
           Interactive view of workplace leadership, department leads, and project teams.
         </p>
       </div>
 
       {/* Level 1: Executive Leadership */}
-      <div className="relative z-10 flex flex-col items-center">
-        <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-          <UserCheck className="w-3.5 h-3.5 text-cyan-400" /> Executive Leadership
+      <div className="flex flex-col items-center">
+        <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+          <UserCheck className="w-3.5 h-3.5 text-[#0B0B0C]" /> Executive Leadership
         </div>
 
         <div className="flex flex-wrap justify-center gap-6">
           {hierarchy.executive.map((exec) => (
             <div
               key={exec.id}
-              className="p-5 rounded-3xl bg-slate-900/60 border border-cyan-400/40 shadow-xl shadow-cyan-500/5 text-center min-w-[260px] relative group"
+              className="p-5 rounded-3xl bg-[#141416] border-2 border-[#C6F432] shadow-xl text-center min-w-[260px] relative"
             >
-              <GlassAvatar
-                src={exec.avatar}
-                name={exec.name}
-                size="xl"
-                status={exec.status}
-                glow
-                className="mx-auto mb-3"
+              <img
+                src={getAvatar(exec)}
+                alt={exec.name}
+                className="w-16 h-16 rounded-2xl object-cover border-2 border-[#C6F432] mx-auto mb-3 shadow-md"
               />
-              <h3 className="text-base font-bold text-white tracking-tight">{exec.name}</h3>
-              <p className="text-xs font-medium text-cyan-400">{exec.title}</p>
-              <div className="mt-2">
-                <GlassBadge variant="purple" size="sm">
+              <h3 className="text-base font-bold text-white tracking-tight">
+                {exec.name}
+              </h3>
+              <p className="text-xs font-semibold text-[#C6F432] mt-0.5">
+                {exec.title}
+              </p>
+              <div className="mt-2.5">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/10 text-zinc-200 border border-white/10">
                   {exec.department}
-                </GlassBadge>
+                </span>
               </div>
             </div>
           ))}
         </div>
 
         {/* Vertical Connector Line */}
-        <div className="w-0.5 h-8 bg-linear-to-b from-cyan-400/60 to-white/20 my-2" />
-        <ChevronDown className="w-4 h-4 text-cyan-400 -mt-2 mb-4" />
+        <div className="w-0.5 h-8 bg-zinc-300 my-2" />
+        <ChevronDown className="w-4 h-4 text-[#0B0B0C] -mt-2 mb-4" />
       </div>
 
       {/* Level 2: Department Leads */}
-      <div className="relative z-10 flex flex-col items-center mt-2">
-        <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+      <div className="flex flex-col items-center mt-2">
+        <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">
           Department Leads & Division Heads
         </div>
 
@@ -92,34 +96,34 @@ export const OrgChart = ({ employees = [] }) => {
           {hierarchy.leads.map((lead) => (
             <div
               key={lead.id}
-              className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center flex flex-col items-center justify-between"
+              className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-center flex flex-col items-center justify-between hover:border-[#C6F432] transition-colors shadow-xs"
             >
-              <GlassAvatar
-                src={lead.avatar}
-                name={lead.name}
-                size="lg"
-                status={lead.status}
-                className="mb-2"
+              <img
+                src={getAvatar(lead)}
+                alt={lead.name}
+                className="w-12 h-12 rounded-xl object-cover border border-zinc-200 mb-2"
               />
-              <h4 className="text-sm font-bold text-white">{lead.name}</h4>
-              <p className="text-[11px] text-slate-300 font-medium">{lead.title}</p>
-              <div className="mt-2">
-                <GlassBadge variant="cyan" size="sm">
+              <h4 className="text-sm font-bold text-[#0B0B0C]">{lead.name}</h4>
+              <p className="text-[11px] text-zinc-600 font-medium mt-0.5">
+                {lead.title}
+              </p>
+              <div className="mt-2.5">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#C6F432]/25 text-[#244203] border border-[#C6F432]/50">
                   {lead.department}
-                </GlassBadge>
+                </span>
               </div>
             </div>
           ))}
         </div>
 
         {/* Vertical Connector Line */}
-        <div className="w-0.5 h-8 bg-linear-to-b from-white/20 to-white/10 my-2" />
-        <ChevronDown className="w-4 h-4 text-slate-400 -mt-2 mb-4" />
+        <div className="w-0.5 h-8 bg-zinc-200 my-2" />
+        <ChevronDown className="w-4 h-4 text-zinc-400 -mt-2 mb-4" />
       </div>
 
       {/* Level 3: Specialists & Staff */}
-      <div className="relative z-10 flex flex-col items-center mt-2">
-        <div className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+      <div className="flex flex-col items-center mt-2">
+        <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">
           Specialists & Team Members
         </div>
 
@@ -127,23 +131,26 @@ export const OrgChart = ({ employees = [] }) => {
           {hierarchy.staff.map((member) => (
             <div
               key={member.id}
-              className="px-4 py-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3"
+              className="px-4 py-2.5 rounded-2xl bg-zinc-50 border border-zinc-200/80 flex items-center gap-3 hover:border-[#C6F432] transition-colors"
             >
-              <GlassAvatar
-                src={member.avatar}
-                name={member.name}
-                size="sm"
-                status={member.status}
+              <img
+                src={getAvatar(member)}
+                alt={member.name}
+                className="w-8 h-8 rounded-lg object-cover border border-zinc-200 shrink-0"
               />
               <div className="text-left">
-                <h5 className="text-xs font-bold text-white">{member.name}</h5>
-                <p className="text-[10px] text-slate-400">{member.title}</p>
+                <h5 className="text-xs font-bold text-[#0B0B0C]">
+                  {member.name}
+                </h5>
+                <p className="text-[10px] text-zinc-500 font-medium">
+                  {member.title}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </GlassPanel>
+    </div>
   );
 };
 
