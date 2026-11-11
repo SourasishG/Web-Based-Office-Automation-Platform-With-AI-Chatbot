@@ -12,7 +12,6 @@ import {
 import { GlassModal } from "../../../components/ui/GlassModal";
 import { GlassInput } from "../../../components/ui/GlassInput";
 import { GlassTextarea } from "../../../components/ui/GlassTextarea";
-import { GlassButton } from "../../../components/ui/GlassButton";
 import { GlassSelect } from "../../../components/ui/GlassSelect";
 import { ticketService } from "../../../services/ticketService";
 import { employeeService } from "../../../services/employeeService";
@@ -46,7 +45,9 @@ export const CreateTicketModal = ({
           const list = res?.data?.employees || res?.data || [];
           setEmployees(list);
         })
-        .catch((err) => console.warn("Failed to load employees for ticket modal:", err));
+        .catch((err) =>
+          console.warn("Failed to load employees for ticket modal:", err)
+        );
     }
   }, [isOpen]);
 
@@ -120,23 +121,27 @@ export const CreateTicketModal = ({
       maxWidth="2xl"
       footer={
         <div className="flex items-center justify-end gap-3 w-full">
-          <GlassButton
-            variant="ghost"
+          <button
             type="button"
             onClick={onClose}
             disabled={loading}
+            className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-zinc-200 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
           >
             Cancel
-          </GlassButton>
-          <GlassButton
-            variant="primary"
+          </button>
+          <button
             type="button"
-            icon={loading ? Loader2 : Sparkles}
             onClick={handleSubmit}
             disabled={loading}
+            className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
           >
-            {loading ? "Submitting..." : "Submit Ticket"}
-          </GlassButton>
+            {loading ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5 stroke-[2.2]" />
+            )}
+            <span>{loading ? "Submitting..." : "Submit Ticket"}</span>
+          </button>
         </div>
       }
     >

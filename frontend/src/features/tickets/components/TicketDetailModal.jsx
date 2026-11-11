@@ -44,7 +44,6 @@ export const TicketDetailModal = ({
       setError("");
       setCommentText("");
 
-      // Fetch latest ticket details with full comment timeline
       if (ticket.id) {
         ticketService
           .getTicketById(ticket.id)
@@ -99,10 +98,10 @@ export const TicketDetailModal = ({
       assignee.name ||
       "Unassigned"
     : "Unassigned";
-  const assigneeRole = assignee?.jobTitle || assignee?.role || "IT Support Engineer";
+  const assigneeRole =
+    assignee?.jobTitle || assignee?.role || "IT Support Engineer";
   const assigneeAvatar = assignee?.avatarUrl || assignee?.avatar;
 
-  // Format Category
   const formatCategory = (cat) => {
     if (!cat) return "General";
     const map = {
@@ -115,7 +114,6 @@ export const TicketDetailModal = ({
     return map[cat] || cat;
   };
 
-  // SLA Calculation
   const getSlaLabel = () => {
     if (slaTime) return slaTime;
     if (!slaDueAt) return "Standard SLA";
@@ -125,7 +123,6 @@ export const TicketDetailModal = ({
     return `${hours} hrs remaining`;
   };
 
-  // Herric AI Diagnostics
   const handleGenerateAiResolution = async () => {
     try {
       setIsGenerating(true);
@@ -151,7 +148,6 @@ export const TicketDetailModal = ({
     }
   };
 
-  // Copy AI Draft to comments
   const handleApplyDraftToComment = () => {
     if (!aiDraft) return;
     setCommentText(aiDraft);
@@ -159,7 +155,6 @@ export const TicketDetailModal = ({
     setTimeout(() => setCopiedDraft(false), 2000);
   };
 
-  // Status Change
   const handleStatusSelect = async (e) => {
     const newStatus = e.target.value;
     try {
@@ -176,7 +171,6 @@ export const TicketDetailModal = ({
     }
   };
 
-  // Comment Submit
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
@@ -187,7 +181,9 @@ export const TicketDetailModal = ({
 
       const res = await ticketService.addComment(currentTicket.id, {
         message: commentText.trim(),
-        isAiGenerated: Boolean(aiDraft && commentText.includes(aiDraft.slice(0, 30))),
+        isAiGenerated: Boolean(
+          aiDraft && commentText.includes(aiDraft.slice(0, 30))
+        ),
       });
 
       const createdComment = res?.data || {
@@ -232,7 +228,7 @@ export const TicketDetailModal = ({
   };
 
   const normPriority = (priority || "").toUpperCase();
-  const normStatus = (status || "").toUpperCase();
+  const normStatus = (status || "").toUpperCase().replace(/-/g, "_");
 
   const formattedCreated = createdAt
     ? new Date(createdAt).toLocaleString("en-US", {
@@ -265,22 +261,22 @@ export const TicketDetailModal = ({
         {/* Top Control Bar: Status Dropdown & Priority */}
         <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white/5 border border-white/10">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-slate-300">Status:</span>
+            <span className="text-xs font-semibold text-zinc-300">Status:</span>
             <select
               value={normStatus}
               onChange={handleStatusSelect}
-              className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-white/10 text-xs font-semibold text-cyan-300 focus:outline-none focus:border-cyan-400"
+              className="px-3 py-1.5 rounded-xl bg-[#0B0B0C] border border-white/15 text-xs font-bold text-[#C6F432] focus:outline-none focus:border-[#C6F432] transition-colors cursor-pointer"
             >
-              <option value="OPEN" className="bg-slate-900 text-slate-200">
+              <option value="OPEN" className="bg-[#141416] text-white">
                 Open Queue
               </option>
-              <option value="IN_PROGRESS" className="bg-slate-900 text-slate-200">
+              <option value="IN_PROGRESS" className="bg-[#141416] text-white">
                 In Progress
               </option>
-              <option value="REVIEW" className="bg-slate-900 text-slate-200">
+              <option value="REVIEW" className="bg-[#141416] text-white">
                 Under Review
               </option>
-              <option value="RESOLVED" className="bg-slate-900 text-slate-200">
+              <option value="RESOLVED" className="bg-[#141416] text-white">
                 Resolved
               </option>
             </select>
@@ -293,7 +289,7 @@ export const TicketDetailModal = ({
                   ? "danger"
                   : normPriority === "HIGH"
                   ? "warning"
-                  : "purple"
+                  : "default"
               }
               size="sm"
             >
@@ -303,9 +299,9 @@ export const TicketDetailModal = ({
               {normPriority} Priority
             </GlassBadge>
 
-            <GlassBadge variant="cyan" size="sm">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#C6F432]/15 text-[#C6F432] border border-[#C6F432]/30">
               {formatCategory(category)}
-            </GlassBadge>
+            </span>
           </div>
         </div>
 
@@ -314,70 +310,83 @@ export const TicketDetailModal = ({
           <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
             <GlassAvatar src={requesterAvatar} name={requesterName} size="md" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400">
+              <p className="text-[10px] uppercase font-bold text-zinc-400">
                 Requester
               </p>
               <h4 className="text-xs font-bold text-white">{requesterName}</h4>
-              <p className="text-[11px] text-slate-400">{requesterEmail}</p>
+              <p className="text-[11px] text-zinc-400">{requesterEmail}</p>
             </div>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
             <GlassAvatar src={assigneeAvatar} name={assigneeName} size="md" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400">
+              <p className="text-[10px] uppercase font-bold text-zinc-400">
                 Assigned Engineer
               </p>
               <h4 className="text-xs font-bold text-white">{assigneeName}</h4>
-              <p className="text-[11px] text-cyan-400">{assigneeRole}</p>
+              <p className="text-[11px] text-[#C6F432] font-medium">
+                {assigneeRole}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Description Box */}
         <div className="space-y-1.5">
-          <h4 className="text-xs font-semibold text-slate-300">Ticket Description</h4>
-          <div className="p-4 rounded-2xl bg-slate-950/40 border border-white/5 text-xs text-slate-200 leading-relaxed whitespace-pre-line">
+          <h4 className="text-xs font-semibold text-zinc-300">
+            Ticket Description
+          </h4>
+          <div className="p-4 rounded-2xl bg-[#1A1A1E] border border-white/10 text-xs text-zinc-200 leading-relaxed whitespace-pre-line">
             {description}
           </div>
         </div>
 
         {/* Herric AI Resolution Diagnostics */}
         <div className="space-y-3 pt-2 border-t border-white/10">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Herric IT Copilot Diagnostics
+              <Sparkles className="w-3.5 h-3.5 text-[#C6F432]" /> Herric IT Copilot Diagnostics
             </span>
 
-            <GlassButton
-              variant="outline"
-              size="sm"
-              icon={isGenerating ? Loader2 : Sparkles}
+            <button
+              type="button"
               onClick={handleGenerateAiResolution}
               disabled={isGenerating}
-              className="text-cyan-300 border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-500/10"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#C6F432]/10 border border-[#C6F432]/30 text-[#C6F432] hover:bg-[#C6F432]/20 transition-all cursor-pointer disabled:opacity-50"
             >
-              {isGenerating ? "Herric Analyzing Issue..." : "Diagnose with Herric"}
-            </GlassButton>
+              {isGenerating ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5" />
+              )}
+              <span>
+                {isGenerating ? "Herric Analyzing Issue..." : "Diagnose with Herric"}
+              </span>
+            </button>
           </div>
 
           {aiDraft && (
-            <div className="p-4 rounded-2xl bg-purple-950/30 border border-purple-400/30 text-purple-100 text-xs leading-relaxed space-y-3">
-              <div className="flex items-center justify-between border-b border-purple-400/20 pb-2">
-                <span className="text-[11px] font-semibold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-cyan-400" /> Herric Diagnostic Assessment
+            <div className="p-4 rounded-2xl bg-[#1A1A1E] border border-[#C6F432]/30 text-zinc-100 text-xs leading-relaxed space-y-3">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                <span className="text-[11px] font-bold text-[#C6F432] uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3 text-[#C6F432]" /> Herric Diagnostic Assessment
                 </span>
-                <GlassButton
-                  variant="ghost"
-                  size="xs"
-                  icon={copiedDraft ? Check : Copy}
+                <button
+                  type="button"
                   onClick={handleApplyDraftToComment}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-[11px] font-semibold text-white transition-all cursor-pointer"
                 >
-                  {copiedDraft ? "Copied to Update" : "Use in Response"}
-                </GlassButton>
+                  {copiedDraft ? (
+                    <Check className="w-3 h-3 text-[#C6F432]" />
+                  ) : (
+                    <Copy className="w-3 h-3 text-zinc-300" />
+                  )}
+                  <span>{copiedDraft ? "Copied to Update" : "Use in Response"}</span>
+                </button>
               </div>
 
-              <div className="text-xs text-slate-200 max-h-64 overflow-y-auto pr-1">
+              <div className="text-xs text-zinc-200 max-h-64 overflow-y-auto pr-1">
                 <HerricMarkdown content={aiDraft} />
               </div>
             </div>
@@ -386,10 +395,10 @@ export const TicketDetailModal = ({
 
         {/* Conversation Stream Timeline */}
         <div className="space-y-3 pt-2 border-t border-white/10">
-          <h4 className="text-xs font-semibold text-slate-300 flex items-center justify-between">
+          <h4 className="text-xs font-semibold text-zinc-300 flex items-center justify-between">
             <span>Conversation Stream ({comments.length})</span>
-            <span className="text-[11px] text-slate-400 flex items-center gap-1">
-              <Clock className="w-3 h-3 text-cyan-400" /> {getSlaLabel()}
+            <span className="text-[11px] text-zinc-400 flex items-center gap-1 font-mono">
+              <Clock className="w-3 h-3 text-[#C6F432]" /> {getSlaLabel()}
             </span>
           </h4>
 
@@ -416,12 +425,13 @@ export const TicketDetailModal = ({
                           {authorName}
                         </span>
                         {c.isAiGenerated && (
-                          <GlassBadge variant="cyan" size="xs" icon={Sparkles}>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C6F432]/15 text-[#C6F432] border border-[#C6F432]/30">
+                            <Sparkles className="w-2.5 h-2.5" />
                             Herric Assisting
-                          </GlassBadge>
+                          </span>
                         )}
                       </div>
-                      <span className="text-[10px] text-slate-400 font-mono">
+                      <span className="text-[10px] text-zinc-400 font-mono">
                         {c.createdAt
                           ? new Date(c.createdAt).toLocaleTimeString([], {
                               hour: "2-digit",
@@ -430,7 +440,7 @@ export const TicketDetailModal = ({
                           : ""}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line pl-6">
+                    <p className="text-xs text-zinc-300 leading-relaxed whitespace-pre-line pl-6">
                       {c.message}
                     </p>
                   </div>
@@ -438,7 +448,7 @@ export const TicketDetailModal = ({
               })}
             </div>
           ) : (
-            <p className="text-xs text-slate-500 italic py-2">
+            <p className="text-xs text-zinc-500 italic py-2">
               No replies yet. Post the first update or diagnostic notes below.
             </p>
           )}
@@ -464,15 +474,18 @@ export const TicketDetailModal = ({
               Delete
             </GlassButton>
 
-            <GlassButton
-              variant="primary"
-              size="sm"
+            <button
               type="submit"
-              icon={isPostingComment ? Loader2 : Send}
               disabled={isPostingComment || !commentText.trim()}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#C6F432] text-[#0B0B0C] text-xs font-bold tracking-tight shadow-md shadow-[#C6F432]/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
             >
-              {isPostingComment ? "Posting..." : "Post Update"}
-            </GlassButton>
+              {isPostingComment ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Send className="w-3.5 h-3.5 stroke-[2.2]" />
+              )}
+              <span>{isPostingComment ? "Posting..." : "Post Update"}</span>
+            </button>
           </div>
         </form>
       </div>
