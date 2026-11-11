@@ -84,34 +84,34 @@ const EmployeeForm = ({ initialData, onClose, onSubmit }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
-            <Building className="w-3.5 h-3.5 text-cyan-400" /> Department
+            <Building className="w-3.5 h-3.5 text-[#C6F432]" /> Department
           </label>
           <select
             value={formData.department}
             onChange={(e) => handleChange("department", e.target.value)}
-            className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400/60"
+            className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-[#C6F432] transition-colors"
           >
-            <option value="Engineering" className="bg-slate-900">Engineering</option>
-            <option value="Design" className="bg-slate-900">Design</option>
-            <option value="Product" className="bg-slate-900">Product</option>
-            <option value="Marketing" className="bg-slate-900">Marketing</option>
-            <option value="HR" className="bg-slate-900">Human Resources (HR)</option>
-            <option value="Executive" className="bg-slate-900">Executive</option>
+            <option value="Engineering" className="bg-[#141416]">Engineering</option>
+            <option value="Design" className="bg-[#141416]">Design</option>
+            <option value="Product" className="bg-[#141416]">Product</option>
+            <option value="Marketing" className="bg-[#141416]">Marketing</option>
+            <option value="HR" className="bg-[#141416]">Human Resources (HR)</option>
+            <option value="Executive" className="bg-[#141416]">Executive</option>
           </select>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" /> Role Tier
+            <ShieldCheck className="w-3.5 h-3.5 text-[#C6F432]" /> Role Tier
           </label>
           <select
             value={formData.roleLevel}
             onChange={(e) => handleChange("roleLevel", e.target.value)}
-            className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400/60"
+            className="w-full h-11 px-4 rounded-2xl bg-slate-950/50 border border-white/10 text-sm text-slate-100 focus:outline-none focus:border-[#C6F432] transition-colors"
           >
-            <option value="Specialist" className="bg-slate-900">Specialist / Contributor</option>
-            <option value="Lead" className="bg-slate-900">Team / Department Lead</option>
-            <option value="Admin" className="bg-slate-900">Administrator</option>
+            <option value="Specialist" className="bg-[#141416]">Specialist / Contributor</option>
+            <option value="Lead" className="bg-[#141416]">Team / Department Lead</option>
+            <option value="Admin" className="bg-[#141416]">Administrator</option>
           </select>
         </div>
       </div>
